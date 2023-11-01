@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="修改NexT主题的配置，并添加一些常见的功能，让博客页面更加美观，功能更加齐全。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NexT主题配置和优化">
+<meta property="og:url" content="http://tsq0316.github.io/2023/10/19/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="修改NexT主题的配置，并添加一些常见的功能，让博客页面更加美观，功能更加齐全。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic2/pic1.png">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic2/pic2.png">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic2/pic3.png">
+<meta property="article:published_time" content="2023-10-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-21T20:44:20.769Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="NexT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://tsq0316.github.io/images/pic2/pic1.png">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/10/19/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BC%98%E5%8C%96/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/10/19/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BC%98%E5%8C%96/","path":"2023/10/19/博客搭建/NexT主题配置和优化/","title":"NexT主题配置和优化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NexT主题配置和优化 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%AB%99%E7%82%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">修改站点配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">修改主题配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9Schemes"><span class="nav-number">2.1.</span> <span class="nav-text">修改Schemes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%AB%99%E7%82%B9icon"><span class="nav-number">2.2.</span> <span class="nav-text">设置站点icon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%8F%9C%E5%8D%95%E6%A0%8F%E9%80%89%E9%A1%B9"><span class="nav-number">2.3.</span> <span class="nav-text">设置菜单栏选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B5%E9%9D%A2"><span class="nav-number">2.4.</span> <span class="nav-text">创建页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%8D%9A%E5%AE%A2%E5%A4%B4%E5%83%8F"><span class="nav-number">2.5.</span> <span class="nav-text">修改博客头像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD"><span class="nav-number">2.6.</span> <span class="nav-text">添加搜索功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%A4%BE%E4%BA%A4%E7%95%8C%E9%9D%A2"><span class="nav-number">2.7.</span> <span class="nav-text">设置社交界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%98%85%E8%AF%BB%E6%97%B6%E9%97%B4%E5%92%8C%E5%AD%97%E6%95%B0%E6%8F%90%E7%A4%BA"><span class="nav-number">2.8.</span> <span class="nav-text">添加阅读时间和字数提示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E9%98%85%E8%AF%BB%E4%BA%BA%E6%AC%A1%E7%BB%9F%E8%AE%A1"><span class="nav-number">2.9.</span> <span class="nav-text">添加阅读人次统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E6%8E%89%E7%BD%91%E9%A1%B5Hexo%E8%87%AA%E5%B8%A6%E5%BA%95%E9%83%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">2.10.</span> <span class="nav-text">去掉网页Hexo自带底部信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%B3%E4%B8%8A%E8%A7%92%E5%AE%9E%E7%8E%B0github%E6%8C%89%E9%92%AE"><span class="nav-number">2.11.</span> <span class="nav-text">右上角实现github按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%9B%9E%E5%88%B0%E9%A1%B6%E9%83%A8%E6%8C%89%E9%92%AE"><span class="nav-number">2.12.</span> <span class="nav-text">配置回到顶部按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%B7%B2%E8%AF%BB%E8%BF%9B%E5%BA%A6%E6%9D%A1"><span class="nav-number">2.13.</span> <span class="nav-text">添加已读进度条</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81%E6%A0%B7%E5%BC%8F"><span class="nav-number">2.14.</span> <span class="nav-text">配置代码样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87"><span class="nav-number">2.15.</span> <span class="nav-text">更改背景图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%BE%B9%E6%A1%86%E5%9C%86%E8%A7%92%E7%9F%A9%E5%BD%A2"><span class="nav-number">2.16.</span> <span class="nav-text">设置边框圆角矩形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E8%B5%8F%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0"><span class="nav-number">2.17.</span> <span class="nav-text">打赏功能添加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD%E6%B7%BB%E5%8A%A0"><span class="nav-number">2.18.</span> <span class="nav-text">评论功能添加</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gitalk"><span class="nav-number">2.18.1.</span> <span class="nav-text">gitalk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#utterances"><span class="nav-number">2.18.2.</span> <span class="nav-text">utterances</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/10/19/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="NexT主题配置和优化 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NexT主题配置和优化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-19 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-19T00:00:00+08:00">2023-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-22 04:44:20" itemprop="dateModified" datetime="2023-10-22T04:44:20+08:00">2023-10-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">博客搭建</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>修改NexT主题的配置，并添加一些常见的功能，让博客页面更加美观，功能更加齐全。</p>
+<span id="more"></span>
+
+<h2 id="修改站点配置文件"><a href="#修改站点配置文件" class="headerlink" title="修改站点配置文件"></a>修改站点配置文件</h2><p>在站点配置文件_config.yml中修改博客的基本信息，如标题，副标题，描述，作者等。此时要执行<code>hexo g</code>和<code>hexo s</code>之后才能刷新在本地看到效果。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">title: tsq的博客</span><br><span class="line">subtitle: <span class="string">&#x27;&#x27;</span></span><br><span class="line">description: <span class="string">&#x27;&#x27;</span></span><br><span class="line">keywords: <span class="string">&quot;C#, C++, Lua, Unity, 数据结构, 算法&quot;</span></span><br><span class="line">author: TongShuqi</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: <span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="修改主题配置文件"><a href="#修改主题配置文件" class="headerlink" title="修改主题配置文件"></a>修改主题配置文件</h2><p>Next是常用的hexo主题，之前已经讲过如何使用新主题，今天说一下如何配置和优化NexT主题，修改配置需要修改NexT主题的_config.yml文件（区分于博客站点的配置文件，以下称为<strong>主题配置文件</strong>）。<br>查看配置修改效果只需要启动hexo服务器（在博客文件夹下打开git命令行，执行<code>hexo s</code>）,修改配置保存后通过<code>localhost:4000</code>刷新查看即可（部分内容需要重新hexo g生成静态文件才能看到效果）。  </p>
+<h3 id="修改Schemes"><a href="#修改Schemes" class="headerlink" title="修改Schemes"></a>修改Schemes</h3><p>Next有四种主题，通过修改<code>scheme</code>来进行修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scheme: Muse</span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line"><span class="comment">#scheme: Pisces</span></span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="设置站点icon"><a href="#设置站点icon" class="headerlink" title="设置站点icon"></a>设置站点icon</h3><p>一个常用的icon下载地址：<a target="_blank" rel="noopener" href="https://www.iconfont.cn/">iconfont</a>。</p>
+<ul>
+<li>把下载好的icon图片放在 &#x2F;themes&#x2F;next&#x2F;source&#x2F;img&#x2F; 文件夹下。</li>
+<li>修改主题配置文件中<code>favicon</code>的内容，也可以直接替换图片。</li>
+</ul>
+<h3 id="设置菜单栏选项"><a href="#设置菜单栏选项" class="headerlink" title="设置菜单栏选项"></a>设置菜单栏选项</h3><p>修改<code>menu</code>中的内容，把需要的菜单栏取消注释即可。</p>
+<h3 id="创建页面"><a href="#创建页面" class="headerlink" title="创建页面"></a>创建页面</h3><p>菜单栏配置修改完后，需要分别创建菜单栏页面。</p>
+<ul>
+<li><p>在博客文件夹下打开git命令窗口，执行以下命令。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo new page about</span><br><span class="line">hexo new page categories</span><br><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以目录为例，执行命令后，成功会显示<code>INFO  Created: ~/Documents/blog/source/categories/index.md</code>，可以在source文件夹下看见这几个新生成的目录。</p>
+</li>
+<li><p>根据上面的路径，找到index.md这个文件，打开后默认内容是这样的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: categories</span><br><span class="line"><span class="built_in">date</span>: 2023-10-20 22:55:09</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>添加<code>type</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章分类</span><br><span class="line"><span class="built_in">date</span>: 2023-10-20 22:55:09</span><br><span class="line"><span class="built_in">type</span>: <span class="string">&quot;categories&quot;</span></span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>按这种方式为tags添加type。</p>
+</li>
+<li><p>同理，我们也可以自己创建菜单，使用以上命令，并在配置文件的<code>menu</code>中添加即可。</p>
+</li>
+</ul>
+<h3 id="修改博客头像"><a href="#修改博客头像" class="headerlink" title="修改博客头像"></a>修改博客头像</h3><p>保存图片到 &#x2F;themes&#x2F;next&#x2F;source&#x2F;img&#x2F; 文件夹下，在主题配置文件中修改<code>avatar</code>的内容，填写url路径即可。</p>
+<h3 id="添加搜索功能"><a href="#添加搜索功能" class="headerlink" title="添加搜索功能"></a>添加搜索功能</h3><p>当博客文章变多后，找到一篇文章就很困难。NexT支持为博客添加搜索功能，可以通过文章内容词汇快速搜索。</p>
+<ul>
+<li>在博客根目录打开黑窗口输入命令：</li>
+</ul>
+<p><code>npm install hexo-generator-search --save</code></p>
+<ul>
+<li><p>修改<strong>站点配置文件</strong>,加入以下内容（选项内容可适当修改）：</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  <span class="built_in">limit</span>: 1000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改<strong>主题配置文件</strong>：</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">local_search:</span><br><span class="line"><span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="设置社交界面"><a href="#设置社交界面" class="headerlink" title="设置社交界面"></a>设置社交界面</h3><p>可以添加一些常用的社交链接，例如Github、Twitter、CSDN等，也可以自定义链接。</p>
+<ul>
+<li>在主题配置文件中修改<code>social</code>字段，把想要展示的内容取消注释。</li>
+<li>也可以自己添加，格式为:显示文本: 链接地址 || Front Awesome图标名称</li>
+</ul>
+<h3 id="添加阅读时间和字数提示"><a href="#添加阅读时间和字数提示" class="headerlink" title="添加阅读时间和字数提示"></a>添加阅读时间和字数提示</h3><p>Hexo支持添加单篇文章和全站点的阅读时间及字数提示。步骤如下：</p>
+<ul>
+<li><p>博客根目录黑窗口下载插件：<br><code>npm install hexo-symbols-count-time</code></p>
+</li>
+<li><p>在站点配置文件末尾加入如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">  symbols: <span class="literal">true</span></span><br><span class="line">  time: <span class="literal">true</span></span><br><span class="line">  total_symbols: <span class="literal">true</span></span><br><span class="line">  total_time: <span class="literal">true</span></span><br><span class="line">  exclude_codeblock: <span class="literal">false</span></span><br><span class="line">  awl: 2    </span><br><span class="line">  wpm: 275</span><br><span class="line">  suffix: <span class="string">&quot;mins.&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">  separated_meta: <span class="literal">true</span></span><br><span class="line">  item_text_post: <span class="literal">true</span></span><br><span class="line">  item_text_total: <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="添加阅读人次统计"><a href="#添加阅读人次统计" class="headerlink" title="添加阅读人次统计"></a>添加阅读人次统计</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">busuanzi_count:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="去掉网页Hexo自带底部信息"><a href="#去掉网页Hexo自带底部信息" class="headerlink" title="去掉网页Hexo自带底部信息"></a>去掉网页Hexo自带底部信息</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powered: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="右上角实现github按钮"><a href="#右上角实现github按钮" class="headerlink" title="右上角实现github按钮"></a>右上角实现github按钮</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">github_banner:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  permalink: https://github.com/yourname</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置回到顶部按钮"><a href="#配置回到顶部按钮" class="headerlink" title="配置回到顶部按钮"></a>配置回到顶部按钮</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">back2top:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>边栏和滚动百分比可以按照需求自行添加。</p>
+<h3 id="添加已读进度条"><a href="#添加已读进度条" class="headerlink" title="添加已读进度条"></a>添加已读进度条</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reading_progress:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>进度条的位置，颜色，高度等属性可以自行设置。</p>
+<h3 id="配置代码样式"><a href="#配置代码样式" class="headerlink" title="配置代码样式"></a>配置代码样式</h3><p>在主题配置文件中搜索<code>codeblock</code>，按需求进行样式修改即可。</p>
+<h3 id="更改背景图片"><a href="#更改背景图片" class="headerlink" title="更改背景图片"></a>更改背景图片</h3><ul>
+<li><p>在主题配置文件中找到<code>custom_file_path</code>，把<code>style</code>取消注释。</p>
+</li>
+<li><p>在博客根目录的 source 文件夹下新建 _data 文件夹（不是主题目文件夹的 source）。</p>
+</li>
+<li><p>文件夹里新建 styles.styl 文件。</p>
+</li>
+<li><p>styles 文件里加入如下内容，注意图片要放在next文件夹的next&#x2F;source&#x2F;images下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//背景图片设置</span><br><span class="line">body &#123;</span><br><span class="line">    background-image: url(/images/background.jpg); </span><br><span class="line">    background-repeat: no-repeat;</span><br><span class="line">    background-attachment: fixed;</span><br><span class="line">    background-size: 100% 100%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="设置边框圆角矩形"><a href="#设置边框圆角矩形" class="headerlink" title="设置边框圆角矩形"></a>设置边框圆角矩形</h3><ul>
+<li><p>在主题配置文件中找到<code>custom_file_path</code>，把<code>variable</code>取消注释。</p>
+</li>
+<li><p>主题文件夹的 source 文件夹里新建 variables.styl 文件。</p>
+</li>
+<li><p>variables 文件里加入如下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 圆角设置</span><br><span class="line"><span class="variable">$border</span>-radius-inner     = 30px 30px 30px 30px;</span><br><span class="line"><span class="variable">$border</span>-radius           = 30px;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="打赏功能添加"><a href="#打赏功能添加" class="headerlink" title="打赏功能添加"></a>打赏功能添加</h3><ul>
+<li><p>首先需要有一个微信或支付宝的二维码图片，放在 &#x2F;next&#x2F;source&#x2F;images 下。</p>
+</li>
+<li><p>修改主题配置文件，会在每篇文章末尾生成一个打赏按钮，可以根据情况选择打赏方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">reward_settings:</span><br><span class="line"><span class="comment"># If true, a donate button will be displayed in every article by default.</span></span><br><span class="line"><span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">animation: <span class="literal">false</span></span><br><span class="line">comment: づ♡ど</span><br><span class="line"></span><br><span class="line">reward:</span><br><span class="line">  wechatpay: /images/wechatpay.png</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="评论功能添加"><a href="#评论功能添加" class="headerlink" title="评论功能添加"></a>评论功能添加</h3><p>NexT 主题支持多种评论系统，如Disqus、GitTalk等。<br>这里介绍使用 gitalk 和 utterances 来实现评论功能。</p>
+<h4 id="gitalk"><a href="#gitalk" class="headerlink" title="gitalk"></a>gitalk</h4><p>PS：官方服务器已炸，现在不能直接用了，建议使用别的评论系统，此时仅作记录，之后有时间再研究解决方案。</p>
+<ul>
+<li><p>在开始之前，你需要创建一个 GitHub OAuth App。这将用于 Gittalk 连接到你的 GitHub 仓库。<br>登陆到自己的GitHub账户，点击头像-Settings-Developer settings。</p>
+</li>
+<li><p>在 “Developer settings” 页面上，点击 “OAuth Apps” 选项卡，然后点击注册按钮。</p>
+</li>
+<li><p>在 “Register a new OAuth application” 页面上，填写 OAuth App 的详细信息:<br>Application name：应用名称，随便写。<br>Homepage URL：博客主页。<br>Application description：应用的简短描述。<br>Authorization callback URL：回调 URL，可以是博客主页。</p>
+</li>
+<li><p>获取 Client ID 和 Client Secret：<br>在成功创建 OAuth App 后，你会看到一个页面，其中包含你的 OAuth App 的详细信息，包括 “Client ID” 和 “Client Secret”。这些是你的 OAuth App 的凭证，将用于与 GitHub 进行授权。<br><img src="/../images/pic2/pic1.png" alt="OAuth"></p>
+</li>
+<li><p>在主题配置文件中，修改如下配置（NexT8内置了gittalk，无需安装）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  github_id: <span class="comment"># GitHub 仓库的所有者（repo owner）的用户名</span></span><br><span class="line">  repo: <span class="comment"># 存储评论的 GitHub 仓库的名称</span></span><br><span class="line">  client_id: <span class="comment"># OAuth App 的 Client ID </span></span><br><span class="line">  client_secret: <span class="comment"># OAuth App 的 Client Secret</span></span><br><span class="line">  admin_user: <span class="comment"># 评论管理者的 GitHub 用户名，通常是你自己，以便你可以管理评论</span></span><br><span class="line">  distraction_free_mode: <span class="literal">true</span> <span class="comment"># Facebook-like</span></span><br><span class="line">  language: zh-CN</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">comments:</span><br><span class="line">  style: tabs</span><br><span class="line">  active: gitalk</span><br><span class="line">  storage: <span class="literal">true</span></span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  nav:</span><br><span class="line">    gitalk:</span><br><span class="line">    order: -1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行以下代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署完成后，登录博客，任一一篇博文下应该变成了<br><img src="/../images/pic2/pic2.png" alt="issue"></p>
+</li>
+<li><p>登录，验证。应该能看到评论了。假如出现：<br><img src="/../images/pic2/pic3.png" alt="issue"><br>查一下主题配置文件中gitalk的proxy是不是 <code>https://github.com/login/oauth/access_token</code> 。<br>如果是，改为 <code>https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token</code> 。</p>
+</li>
+</ul>
+<h4 id="utterances"><a href="#utterances" class="headerlink" title="utterances"></a>utterances</h4><p>同样是依托于 github 的 issue 做评论区，但是索取的权限更少，也不需要指定某个人来初始化，因此好用得多。较新版本的NexT已经集成了utterances，使用非常简单。</p>
+<ul>
+<li><p>新建一个仓库用于存储博客评论。</p>
+</li>
+<li><p>授权<a target="_blank" rel="noopener" href="https://github.com/apps/utterances">utterances</a>，选择建立的仓库。</p>
+</li>
+<li><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">comments:</span><br><span class="line">  style: tabs</span><br><span class="line">  active: utterances <span class="comment">#激活utterances</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">utterances:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  repo: tsq0316/blog-comments <span class="comment"># Your Github repository owner and name</span></span><br><span class="line">  issue_term: title</span><br><span class="line">  label: utteranc</span><br><span class="line">  theme: github-light</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在站点配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url: http://tsq0316.github.io/ <span class="comment"># Your Github site</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/NexT/" rel="tag"># NexT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/18/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/Hexo+Github%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="hexo + github 博客搭建">
+                  <i class="fa fa-angle-left"></i> hexo + github 博客搭建
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/20/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0%E5%8F%91%E5%B8%83/" rel="next" title="博客文章发布流程">
+                  博客文章发布流程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

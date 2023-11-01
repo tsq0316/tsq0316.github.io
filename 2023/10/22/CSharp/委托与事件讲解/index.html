@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文将详细介绍一下C#中的委托是什么，委托的分类，委托的适用情形和使用要求，委托的多播，以及事件机制，以帮助大家更深入地理解委托机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C#委托与事件讲解">
+<meta property="og:url" content="http://tsq0316.github.io/2023/10/22/CSharp/%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6%E8%AE%B2%E8%A7%A3/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="本文将详细介绍一下C#中的委托是什么，委托的分类，委托的适用情形和使用要求，委托的多播，以及事件机制，以帮助大家更深入地理解委托机制。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-27T13:21:23.544Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="C#">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/10/22/CSharp/%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6%E8%AE%B2%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/10/22/CSharp/%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6%E8%AE%B2%E8%A7%A3/","path":"2023/10/22/CSharp/委托与事件讲解/","title":"C#委托与事件讲解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C#委托与事件讲解 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A7%94%E6%89%98"><span class="nav-number">2.</span> <span class="nav-text">什么是委托</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A7%94%E6%89%98%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%92%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">委托的类型和使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%86%85%E7%BD%AE%E5%A7%94%E6%89%98"><span class="nav-number">3.1.</span> <span class="nav-text">系统内置委托</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Action%E5%A7%94%E6%89%98"><span class="nav-number">3.1.1.</span> <span class="nav-text">Action委托</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Func%E5%A7%94%E6%89%98"><span class="nav-number">3.1.2.</span> <span class="nav-text">Func委托</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Predicate-%E5%A7%94%E6%89%98"><span class="nav-number">3.1.3.</span> <span class="nav-text">Predicate 委托</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EventHandler-%E5%A7%94%E6%89%98"><span class="nav-number">3.1.4.</span> <span class="nav-text">EventHandler 委托</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A7%94%E6%89%98"><span class="nav-number">3.2.</span> <span class="nav-text">自定义委托</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A7%94%E6%89%98%E7%9A%84%E8%A6%81%E6%B1%82"><span class="nav-number">4.</span> <span class="nav-text">使用委托的要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A7%94%E6%89%98%E7%9A%84%E5%A4%9A%E6%92%AD"><span class="nav-number">5.</span> <span class="nav-text">委托的多播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A7%94%E6%89%98%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">6.</span> <span class="nav-text">使用委托的好处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6"><span class="nav-number">7.</span> <span class="nav-text">事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9D%9F%E8%AF%AD"><span class="nav-number">8.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/10/22/CSharp/%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6%E8%AE%B2%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C#委托与事件讲解 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C#委托与事件讲解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-22 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-22T00:00:00+08:00">2023-10-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-27 21:21:23" itemprop="dateModified" datetime="2023-10-27T21:21:23+08:00">2023-10-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本文将详细介绍一下C#中的委托是什么，委托的分类，委托的适用情形和使用要求，委托的多播，以及事件机制，以帮助大家更深入地理解委托机制。</p>
+<span id="more"></span>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们首先试想一下这种业务场景：假设你正在编写一个闹钟设置程序，你可以为不同行为设置不同的闹钟内容，允许用户设置不同的活动提醒，该怎么做呢？<br>我们可能会定义一个闹钟类，并为这个类添加很多方法：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AlarmClock</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetWorkAlarm</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 设置工作提醒音乐</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetExerciseAlarm</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 设置锻炼提醒音乐</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetRelaxAlarm</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 设置放松提醒音乐</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种写法有显而易见的弊端，我们必须编写多个方法来处理不同的提醒音乐，导致代码冗余，而且当我们在不同地方，试图加入更多的闹钟行为时，必须要修改AlarmClock类，这也不便于代码管理。<br>假设此时，我们可以有一个通用的方法，将不同的提醒音乐表示成一个委托，在具体使用时定义委托的内容，是不是可以更加灵活，也减少了代码重复呢？</p>
+<h2 id="什么是委托"><a href="#什么是委托" class="headerlink" title="什么是委托"></a>什么是委托</h2><p>此时就要提到C#中一种强大的特性：<strong>委托</strong>。熟悉面向对象的话，可以把委托粗暴理解为方法的抽象，即一个方法的模板，具体是怎么样的，由这个方法自己去实现。使用时不直接执行这个方法，而是通过调用委托来执行这个方法。<br>委托简单来说可以理解为指向一个或者一组方法的指针，用于声明和处理方法引用，如果没有函数指针的概念，可以更简单地理解为委托就是一类相同类型函数（参数列表和返回值类型一致）的引用。<br>委托是C#中的一种类型，它允许将方法作为参数传递，存储对方法的引用，并在运行时动态选择要执行的方法。委托以特定的方法签名（返回类型和参数列表）来声明，可以用于表示一类方法，而不是特定的具体的方法。</p>
+<blockquote>
+<p>委托类似于函数指针，但更加类型安全和面向对象。函数指针只能引用静态方法，委托可以引用实例和静态方法。</p>
+</blockquote>
+<h2 id="委托的类型和使用方式"><a href="#委托的类型和使用方式" class="headerlink" title="委托的类型和使用方式"></a>委托的类型和使用方式</h2><p>委托分为<strong>系统内置委托</strong>和<strong>自定义委托</strong>。系统内置委托是 .NET Framework提供的一组常用委托类型，而自定义委托是开发人员自己定义的委托类型，以满足特定需求。在使用委托的时候，可以像对待一个类一样对待它。即<strong>先声明，再实例化</strong>。</p>
+<h3 id="系统内置委托"><a href="#系统内置委托" class="headerlink" title="系统内置委托"></a>系统内置委托</h3><p>这些内置委托类型具有特定的方法签名，使其适用于各种情况。</p>
+<h4 id="Action委托"><a href="#Action委托" class="headerlink" title="Action委托"></a>Action委托</h4><ul>
+<li><p>用途：Action 委托表示一个不带返回值的委托，用于执行操作而不返回结果。</p>
+</li>
+<li><p>方法签名：<code>Action</code> 委托可以接受零到六个参数，具体取决于不同重载。通常，Action 委托没有参数，例如 <code>Action action = () =&gt; &#123; /* 执行操作 */ &#125;</code>;。</p>
+</li>
+<li><p>示例：以下是一个示例，演示了 Action 委托的用法。这里我们定义一个 Action 委托并将其绑定到一个方法，然后调用 Action 委托执行操作。<br>不带参数的Action委托：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Action action = () =&gt; Console.WriteLine(<span class="string">&quot;这是一个操作。&quot;</span>);</span><br><span class="line">action(); <span class="comment">// 输出：这是一个操作。</span></span><br></pre></td></tr></table></figure>
+
+<p>带参数的Action委托:</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Action&lt;<span class="built_in">string</span>&gt; action = (message) =&gt; Console.WriteLine(message);</span><br><span class="line">action(<span class="string">&quot;这是一个操作。&quot;</span>); <span class="comment">// 输出：这是一个操作。</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Func委托"><a href="#Func委托" class="headerlink" title="Func委托"></a>Func委托</h4><ul>
+<li><p>用途：Func 委托表示带有返回值的委托，用于执行操作并返回结果。</p>
+</li>
+<li><p>方法签名：<code>Func</code> 委托可以接受零到六个参数，具体取决于不同重载。最后一个参数表示返回值类型。例如<code>Func&lt;int, int, int&gt; add = (a, b) =&gt; a + b</code>; 表示一个接受两个整数参数并返回整数结果的委托。</p>
+</li>
+<li><p>示例：以下是一个示例，演示了 Func 委托的用法。这里我们定义一个 Func 委托，并将其绑定到一个方法，然后调用 Func 委托执行操作并返回结果。</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Func&lt;<span class="built_in">int</span>, <span class="built_in">int</span>, <span class="built_in">int</span>&gt; <span class="keyword">add</span> = (a, b) =&gt; a + b;</span><br><span class="line"><span class="built_in">int</span> result = <span class="keyword">add</span>(<span class="number">5</span>, <span class="number">3</span>); <span class="comment">// 执行操作并返回结果，打印 result 等于 8</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Predicate-委托"><a href="#Predicate-委托" class="headerlink" title="Predicate 委托"></a>Predicate 委托</h4><ul>
+<li><p>用途：Predicate 委托表示一个返回布尔值的委托，通常用于测试条件。</p>
+</li>
+<li><p>方法签名：<code>Predicate&lt;T&gt;</code> 委托表示接受一个泛型参数 T 并返回布尔值的委托。例如，<code>Predicate&lt;int&gt; isEven = n =&gt; n % 2 == 0</code>; 表示一个用于检查整数是否为偶数的委托。</p>
+</li>
+<li><p>示例：以下是一个示例，演示了 Predicate 委托的用法。这里我们定义一个 Predicate 委托并将其绑定到一个方法，然后使用 Predicate 委托测试条件。</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Predicate&lt;<span class="built_in">int</span>&gt; isEven = n =&gt; n % <span class="number">2</span> == <span class="number">0</span>;</span><br><span class="line"><span class="built_in">bool</span> result = isEven(<span class="number">6</span>); <span class="comment">// 使用 Predicate 委托测试条件，打印 result 为 true</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="EventHandler-委托"><a href="#EventHandler-委托" class="headerlink" title="EventHandler 委托"></a>EventHandler 委托</h4><p>  此处简单介绍一下事件，具体什么是事件，之后会详细介绍。</p>
+<ul>
+<li><p>用途：EventHandler 委托通常用于处理事件，用于订阅和取消订阅事件。</p>
+</li>
+<li><p>方法签名： <code>EventHandler</code> 委托接受两个参数，第一个参数是事件源，第二个参数是事件参数。例如，<code>public event EventHandler&lt;EventArgs&gt; MyEvent</code>; 定义了一个事件，使用 <code>EventHandler</code> 委托作为事件处理程序的类型。</p>
+</li>
+<li><p>示例：以下是一个示例，演示了 EventHandler 委托的用法。这里我们定义一个事件并订阅它，使用 EventHandler 委托来处理事件。</p>
+ <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Example</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler&lt;EventArgs&gt; MyEvent;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RaiseEvent</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        MyEvent?.Invoke(<span class="keyword">this</span>, EventArgs.Empty);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 订阅事件</span></span><br><span class="line">Example example = <span class="keyword">new</span> Example();</span><br><span class="line">example.MyEvent += (sender, e) =&gt; Console.WriteLine(<span class="string">&quot;事件已触发。&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 触发事件</span></span><br><span class="line">example.RaiseEvent();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>这些系统内置委托类型使编程更加方便，无需手动定义委托类型来处理通用编程任务。它们提供了一种通用的方式来处理不同的场景，包括执行操作、处理事件、测试条件以及处理委托的返回值。</p>
+<h3 id="自定义委托"><a href="#自定义委托" class="headerlink" title="自定义委托"></a>自定义委托</h3><p>自定义委托是由开发人员根据应用程序特定的需求创建的委托类型。这些委托具有特定的方法签名，允许定义自己的委托类型，以适应不同的场景。<br>自定义委托是一种自定义的委托类型，它包含以下要素：</p>
+<ul>
+<li><p>方法签名： 自定义委托具有特定的方法签名，包括返回类型和参数列表。开发人员定义这个方法签名以确保委托可以用于特定的操作。</p>
+</li>
+<li><p>委托类型名称： 自定义委托需要分配一个类型名称，以便在代码中引用和实例化。</p>
+</li>
+</ul>
+<p>自定义委托通常用于以下情况：</p>
+<ul>
+<li><p>事件处理： 当您需要处理自定义事件时，可以创建自定义委托类型来表示事件处理程序的方法签名。</p>
+</li>
+<li><p>特定操作： 当某个方法需要执行特定操作，而这个操作不适合任何现有的系统内置委托类型时，您可以创建自定义委托类型。</p>
+</li>
+</ul>
+<p>以下是一个示例，展示了如何创建和使用自定义委托：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个自定义委托类型</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">CustomDelegate</span>(<span class="params"><span class="built_in">string</span> message</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 自定义委托的使用</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SayHello</span>(<span class="params"><span class="built_in">string</span> name</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Hello, <span class="subst">&#123;name&#125;</span>!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SayGoodbye</span>(<span class="params"><span class="built_in">string</span> name</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;Goodbye, <span class="subst">&#123;name&#125;</span>!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 实例化自定义委托并绑定方法</span></span><br><span class="line">        CustomDelegate helloDelegate = SayHello;</span><br><span class="line">        CustomDelegate goodbyeDelegate = SayGoodbye;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用自定义委托调用方法</span></span><br><span class="line">        helloDelegate(<span class="string">&quot;Ann&quot;</span>); <span class="comment">// 调用 SayHello 方法</span></span><br><span class="line">        goodbyeDelegate(<span class="string">&quot;Bob&quot;</span>); <span class="comment">// 调用 SayGoodbye 方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：只有签名相同的方法才能注册到委托里</p>
+</blockquote>
+<p>自定义委托的优点在于，它允许你根据需要定义特定的方法签名，从而在不同的上下文中重用委托，提高代码的灵活性和可维护性。自定义委托也在事件处理和异步编程等方面发挥重要作用，使开发人员能够更好地构建应用程序。</p>
+<h2 id="使用委托的要求"><a href="#使用委托的要求" class="headerlink" title="使用委托的要求"></a>使用委托的要求</h2><ul>
+<li>定义委托类型：首先要定义委托类型，指定委托可以引用的方法的参数和返回类型。</li>
+<li>实例化委托： 委托是引用类型，需要创建委托实例，通常使用委托的构造函数或直接初始化。</li>
+<li>调用委托：通过调用委托实例，可以执行它所引用的方法。调用时，传递给方法的参数应与委托的参数列表匹配。</li>
+<li>处理空引用：在调用委托之前，需要确保委托不为 null。使用条件运算符（?.）或 null 合并运算符（??）可以帮助处理可能为空的委托。</li>
+<li>委托安全性：当使用委托时，需要注意委托的安全性和访问权限。例如，私有方法不可通过公共委托从外部调用。</li>
+</ul>
+<blockquote>
+<p>Tips：<br>在C#中，Invoke 是用于显式调用委托实例所引用的方法的方法。<br>虽然通常我们可以直接调用委托实例（像方法一样使用括号 ()），但在某些情况下，使用 Invoke 方法可以提供更多的控制和可读性。<br>C# 6.0 和更高版本引入了空值条件运算符（null-conditional operator） ?.，它可以与委托的 Invoke 方法一起使用，以避免可能的空引用异常。<br>示例：<br>Action myDelegate &#x3D; () &#x3D;&gt; Console.WriteLine(“这是一个操作。”);<br>myDelegate?.Invoke(); &#x2F;&#x2F; 使用 ?. 运算符来避免可能的空引用异常</p>
+</blockquote>
+<h2 id="委托的多播"><a href="#委托的多播" class="headerlink" title="委托的多播"></a>委托的多播</h2><p>多播委托是指将多个方法绑定到同一个委托实例上，以便在调用委托时依次执行这些方法。这对于事件处理和回调机制非常有用，因为它可以让多个事件处理程序<strong>同时</strong>响应事件。在注册方法时可以在委托中使用加号运算符或者减号运算符来实现添加或撤销方法。<br>以下是一个多播委托的示例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义一个简单的委托类型</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">SimpleDelegate</span>(<span class="params"><span class="built_in">string</span> message</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 创建一个委托实例</span></span><br><span class="line">        SimpleDelegate myDelegate = (message) =&gt; Console.WriteLine(<span class="string">$&quot;第一个处理程序：<span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 注册多个匿名函数</span></span><br><span class="line">        myDelegate += (message) =&gt; Console.WriteLine(<span class="string">$&quot;第二个处理程序：<span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line">        myDelegate += (message) =&gt; Console.WriteLine(<span class="string">$&quot;第三个处理程序：<span class="subst">&#123;message&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 调用委托，执行多个方法</span></span><br><span class="line">        myDelegate(<span class="string">&quot;这是一个消息。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码会得到结果：<br>第一个处理程序：这是一个消息。<br>第二个处理程序：这是一个消息。<br>第三个处理程序：这是一个消息。</p>
+<blockquote>
+<p>注意：对于匿名函数，是无法通过对匿名函数本身 -&#x3D; 来取消注册的，因为匿名函数没有引用。如果要取消注册特定的匿名函数，需要使用命名方法而不是匿名函数。</p>
+</blockquote>
+<p>需要注意的一点是，多播是把添加到委托中的所有目标函数都视为一个整体去执行的，这就导致有两个问题需要注意：</p>
+<ul>
+<li><p>异常处理：程序在执行这些目标函数的过程中可能发生异常，发生异常之后，异常后面的委托链就不会再执行，这是为了避免潜在的异常蔓延和让程序的行为更可控；</p>
+</li>
+<li><p>执行结果：程序会把最后执行的那个目标函数所返回的结果当成整个委托的结果。</p>
+</li>
+</ul>
+<p><strong>如何避免踩坑:</strong><br>因为C#把委托链当成了一个对象来执行，所以才有了上述坑。<br>如果你想确保委托链中的每一个方法都被执行，我们可以把委托链拆分成一个列表，只要在该列表上面迭代（foreach），并把这些目标函数轮流执行一遍就可以了。这种方法使您能够更灵活地管理和控制要执行的目标函数，并可以处理每个目标函数的异常情况。以下是一个示例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义一个简单的委托类型</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">SimpleDelegate</span>()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">FirstMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;第一个方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SecondMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;第二个方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ThirdMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;第三个方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 创建一个 List 来存储目标函数</span></span><br><span class="line">        List&lt;SimpleDelegate&gt; methodList = <span class="keyword">new</span> List&lt;SimpleDelegate&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            FirstMethod,</span><br><span class="line">            SecondMethod,</span><br><span class="line">            ThirdMethod</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 逐个执行 List 中的目标函数</span></span><br><span class="line">        <span class="keyword">foreach</span> (SimpleDelegate method <span class="keyword">in</span> methodList)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                method();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">$&quot;发生异常: <span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另一个手动迭代目标函数的方法：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    SimpleDelegate multiDelegate = FirstMethod;</span><br><span class="line">    multiDelegate += SecondMethod;</span><br><span class="line">    multiDelegate += ThirdMethod;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 手动迭代多播委托的目标函数</span></span><br><span class="line">    <span class="keyword">foreach</span> (SimpleDelegate method <span class="keyword">in</span> multiDelegate.GetInvocationList())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            method();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;发生异常: <span class="subst">&#123;ex.Message&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用委托的好处"><a href="#使用委托的好处" class="headerlink" title="使用委托的好处"></a>使用委托的好处</h2><ul>
+<li><p>松耦合和模块化：委托允许将代码模块分离开来，降低了不同部分之间的耦合度。这使得代码更易于理解、维护和扩展。开发者可以在不修改现有代码的情况下添加新的委托实例，以执行不同的操作。</p>
+</li>
+<li><p>多播委托：委托支持多播，即多个方法可以绑定到同一个委托实例上。这使得事件处理和触发事件时能够调用多个事件处理程序成为可能。多播委托在许多情况下非常有用，如事件系统和回调机制。</p>
+</li>
+<li><p>回调和异步编程：委托用于回调函数，允许在异步操作完成后执行特定操作。这对于处理异步编程任务非常有用，例如在多线程编程中执行回调操作。</p>
+</li>
+<li><p>泛型编程：委托允许开发者编写泛型算法，使其适应不同的数据类型和操作。可以将不同的委托传递给算法，以实现不同的功能。</p>
+</li>
+<li><p>动态方法调用：委托允许在运行时动态地选择要调用的方法。这对于插件系统和动态代码生成非常有用，因为可以在运行时根据需求选择要执行的代码。</p>
+</li>
+<li><p>事件处理：委托是事件处理的核心，使你能够订阅和取消订阅事件，以便在事件发生时执行特定操作。这在GUI应用程序和Web应用程序中非常常见。</p>
+</li>
+<li><p>可测试性：委托允许将依赖注入（Dependency Injection）和模拟（Mocking）引入应用程序，以便更轻松地进行单元测试。开发者可以模拟委托以测试代码的不同路径和情况。</p>
+</li>
+<li><p>灵活性：委托使代码更加灵活，可以根据需要执行不同的操作。这提供了一种通用的方式来处理各种编程任务，而无需编写大量的重复代码。</p>
+</li>
+</ul>
+<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><p>委托大致说完了，我们再来简单了解一下事件吧~<br>在C#中，事件是一种用于实现观察者模式的重要机制，用于处理对象之间的通信和交互。事件允许一个对象（称为<strong>事件源</strong>）通知其他对象（称为<strong>事件处理程序</strong>）发生了特定的情况，以便事件处理程序能够采取适当的行动。事件和委托是密切相关的。</p>
+<ul>
+<li><p>事件定义：在C#中，事件的定义通常包括两个主要元素：事件声明和事件处理程序（委托）。以下是一个事件的基本定义：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventPublisher</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 事件声明</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler MyEvent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的示例中，我们定义了一个名为 MyEvent 的事件，它使用 EventHandler 委托作为事件处理程序的类型。事件通常声明为 public，以便其他类能够订阅它。</p>
+</li>
+<li><p>订阅事件：其他类可以订阅事件，以便在事件发生时执行特定的操作。事件处理程序是一个方法，其签名与事件声明中指定的委托类型相匹配。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventSubscriber</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">EventSubscriber</span>(<span class="params">EventPublisher publisher</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 订阅事件</span></span><br><span class="line">        publisher.MyEvent += HandleEvent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件处理程序</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">HandleEvent</span>(<span class="params"><span class="built_in">object</span> sender, EventArgs e</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;事件已发生！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>触发事件：事件源使用事件触发方法来通知事件处理程序事件已发生。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventPublisher</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 事件声明</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler MyEvent;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 触发事件的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">RaiseEvent</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 触发事件</span></span><br><span class="line">        MyEvent?.Invoke(<span class="keyword">this</span>, EventArgs.Empty);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>事件参数：通常，事件处理程序需要访问有关事件的信息。为此，事件参数类通常派生自 EventArgs 类，可以包含事件相关的任何信息。事件处理程序可以从事件参数对象中获取这些信息。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyEventArgs</span> : <span class="title">EventArgs</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> EventInfo &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyEventArgs</span>(<span class="params"><span class="built_in">string</span> info</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        EventInfo = info;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>取消订阅事件：在不再需要订阅事件的情况下，可以取消订阅以释放资源和避免不必要的事件通知。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventSubscriber</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">EventSubscriber</span>(<span class="params">EventPublisher publisher</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 订阅事件</span></span><br><span class="line">        publisher.MyEvent += HandleEvent;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 取消订阅事件</span></span><br><span class="line">        publisher.MyEvent -= HandleEvent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件处理程序</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">HandleEvent</span>(<span class="params"><span class="built_in">object</span> sender, EventArgs e</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">&quot;事件已发生！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>委托和事件都在C#中具有重要意义，它们有助于实现松散耦合的、模块化的代码，提高代码的可维护性和可扩展性，同时允许实现各种设计模式和编程范例，所以了解委托和事件很重要。<br>在最后，让我们用委托的方式来实现一下开头的需求吧！<br>首先，定义一个提醒音乐委托类型：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public delegate void AlarmSound();</span><br></pre></td></tr></table></figure>
+
+<p>然后，修改AlarmClock类以接受委托作为参数：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AlarmClock</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetAlarm</span>(<span class="params">AlarmSound alarm</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 设置提醒音乐</span></span><br><span class="line">        alarm();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，可以使用一个通用的SetAlarm方法，将不同的提醒音乐表示为委托：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">AlarmClock clock = <span class="keyword">new</span> AlarmClock();</span><br><span class="line"></span><br><span class="line">AlarmSound workAlarm = () =&gt; &#123; <span class="comment">/* 设置工作提醒音乐的操作 */</span> &#125;;</span><br><span class="line">AlarmSound exerciseAlarm = () =&gt; &#123; <span class="comment">/* 设置锻炼提醒音乐的操作 */</span> &#125;;</span><br><span class="line"></span><br><span class="line">clock.SetAlarm(workAlarm);</span><br><span class="line">clock.SetAlarm(exerciseAlarm);</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C#</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/22/LeetCode/LeetCode2698.%E6%B1%82%E4%B8%80%E4%B8%AA%E6%95%B4%E6%95%B0%E7%9A%84%E6%83%A9%E7%BD%9A%E6%95%B0/" rel="prev" title="LeetCode2698.求一个整数的惩罚数">
+                  <i class="fa fa-angle-left"></i> LeetCode2698.求一个整数的惩罚数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/23/CSharp/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E5%A4%A7%E7%89%B9%E7%82%B9/" rel="next" title="面向对象的三大特点">
+                  面向对象的三大特点 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="协程（Coroutine）是一种用于异步编程的概念和技术，它允许程序在执行任务的过程中暂停，然后在稍后的时间继续执行，而不会阻塞整个应用程序或线程。协程在游戏开发、图形编程和事件驱动的应用程序中非常有用，因为它们可以处理需要等待、延迟执行、动画效果、网络请求等情况，同时保持应用的响应性和性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity协程详解">
+<meta property="og:url" content="http://tsq0316.github.io/2023/10/26/Unity/Unity%E5%8D%8F%E7%A8%8B%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="协程（Coroutine）是一种用于异步编程的概念和技术，它允许程序在执行任务的过程中暂停，然后在稍后的时间继续执行，而不会阻塞整个应用程序或线程。协程在游戏开发、图形编程和事件驱动的应用程序中非常有用，因为它们可以处理需要等待、延迟执行、动画效果、网络请求等情况，同时保持应用的响应性和性能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-01T08:24:51.486Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/10/26/Unity/Unity%E5%8D%8F%E7%A8%8B%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/10/26/Unity/Unity%E5%8D%8F%E7%A8%8B%E8%AF%A6%E8%A7%A3/","path":"2023/10/26/Unity/Unity协程详解/","title":"Unity协程详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity协程详解 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">什么是协程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">协程和线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">协程的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">协程的底层原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">协程的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%8D%8F%E7%A8%8B%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">定义协程方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E5%8D%8F%E7%A8%8B"><span class="nav-number">5.2.</span> <span class="nav-text">开启协程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E5%8D%8F%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text">关闭协程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#StopCoroutine"><span class="nav-number">6.1.</span> <span class="nav-text">StopCoroutine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StopAllCoroutines"><span class="nav-number">6.2.</span> <span class="nav-text">StopAllCoroutines</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yield"><span class="nav-number">7.</span> <span class="nav-text">yield</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-0"><span class="nav-number">7.1.</span> <span class="nav-text">yield 0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-null"><span class="nav-number">7.2.</span> <span class="nav-text">yield return null</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-break"><span class="nav-number">7.3.</span> <span class="nav-text">yield break</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-asyncOperation"><span class="nav-number">7.4.</span> <span class="nav-text">yield return asyncOperation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WaitForSeconds-seconds"><span class="nav-number">7.5.</span> <span class="nav-text">yield return new WaitForSeconds(seconds)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WaitForSecondsRealtime-seconds"><span class="nav-number">7.6.</span> <span class="nav-text">yield return new WaitForSecondsRealtime(seconds)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WaitForFixedUpdate"><span class="nav-number">7.7.</span> <span class="nav-text">yield return new WaitForFixedUpdate()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WaitForEndOfFrame"><span class="nav-number">7.8.</span> <span class="nav-text">yield return new WaitForEndOfFrame()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WWW-url"><span class="nav-number">7.9.</span> <span class="nav-text">yield return new WWW(url)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-StartCoroutine-MyCoroutine"><span class="nav-number">7.10.</span> <span class="nav-text">yield return StartCoroutine(MyCoroutine())</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WaitUntil-x3D-gt-someCondition"><span class="nav-number">7.11.</span> <span class="nav-text">yield return new WaitUntil(() &#x3D;&gt; someCondition)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-WaitWhile-x3D-gt-someCondition"><span class="nav-number">7.12.</span> <span class="nav-text">yield return new WaitWhile(() &#x3D;&gt; someCondition)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-return-new-YieldInstruction"><span class="nav-number">7.13.</span> <span class="nav-text">yield return new YieldInstruction()</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/10/26/Unity/Unity%E5%8D%8F%E7%A8%8B%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity协程详解 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity协程详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-26T00:00:00+08:00">2023-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-01 16:24:51" itemprop="dateModified" datetime="2023-11-01T16:24:51+08:00">2023-11-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>协程（Coroutine）是一种用于异步编程的概念和技术，它允许程序在执行任务的过程中暂停，然后在稍后的时间继续执行，而不会阻塞整个应用程序或线程。协程在游戏开发、图形编程和事件驱动的应用程序中非常有用，因为它们可以处理需要等待、延迟执行、动画效果、网络请求等情况，同时保持应用的响应性和性能。</p>
+<span id="more"></span>
+<h2 id="什么是协程"><a href="#什么是协程" class="headerlink" title="什么是协程"></a>什么是协程</h2><p>在 unity 中，我们一般不考虑多线程，因为Unity只能在主线程中获取物体的组件、方法、对象等，脱离了这些功能，多线程的意义就不大了。但当主线程在执行一个对资源消耗很大的操作时，如果在一帧中实现这些操作，游戏就会变得十分卡顿，这个时候，我们就可以通过协程，在<strong>多帧</strong>内完成该工作的处理，同时不影响主任务的进行。所以协程顾名思义，就是辅助主线程的协助程序，用来执行一些资源消耗大的脏活累活，避免主线程卡顿。需要明确<strong>协程不是线程，协程依旧是在主线程中进行的</strong>。</p>
+<h2 id="协程和线程"><a href="#协程和线程" class="headerlink" title="协程和线程"></a>协程和线程</h2><p>线程：线程是操作系统级别的并发执行单位。每个线程都有自己的堆栈和寄存器上下文，可以在多个CPU核心上并行执行。线程通常是由操作系统调度和管理的。<br>协程：<strong>协程是在单个线程内部执行的轻量级任务</strong>。它们由开发人员显式地控制，可以通过挂起和恢复来实现多任务切换。</p>
+<h2 id="协程的特点"><a href="#协程的特点" class="headerlink" title="协程的特点"></a>协程的特点</h2><ul>
+<li>轻量级任务：协程是轻量级的任务，可以在单个线程内<strong>顺序执行</strong>。它们不需要创建额外的线程，因此不会引入多线程的同步和竞争条件问题。</li>
+<li>异步操作：协程常用于处理异步操作，如加载资源、网络请求、延时执行等。通过协程，可以避免阻塞主线程，使应用保持响应性。</li>
+<li>非阻塞执行：协程允许在不阻塞主线程的情况下执行代码。这对于需要等待某些条件满足或执行长时间运行的操作非常有用，而不会导致游戏卡顿。</li>
+<li>多帧执行：协程的执行是<strong>分帧</strong>的，它可以*<em>在多个帧之间分散执行</em>。协程可以在代码中使用yield语句来指定何时暂停执行并等待条件满足，然后继续执行。</li>
+<li>任务分割：协程使任务分割变得容易。可以将一个复杂的任务分解成多个协程，每个协程负责执行特定部分的任务，从而使代码更易于管理和理解。</li>
+<li>事件处理：协程可以用于处理事件，如用户输入、碰撞检测等。例如，可以编写协程以在某个条件满足时触发特定的事件处理逻辑。</li>
+<li>动画控制：协程常用于控制动画序列。例如，在游戏中，可以使用协程实现角色的平滑移动、淡入淡出效果等。</li>
+<li>易于编写和调试：相对于多线程编程，协程通常更容易编写和调试。它们允许开发人员以顺序方式编写异步逻辑，而无需担心线程同步问题。</li>
+<li>不适用于多核CPU：协程在单线程内执行，因此无法充分利用多核CPU。它适用于需要处理异步操作和控制流程的场景，但不适用于需要高度并行处理的性能密集型任务。</li>
+</ul>
+<h2 id="协程的底层原理"><a href="#协程的底层原理" class="headerlink" title="协程的底层原理"></a>协程的底层原理</h2><ul>
+<li>调度器：Unity 引擎内部有一个协程调度器，用于管理和调度协程的执行。多个协程在主线程中以<strong>轮换分时</strong>的方式运行，这个调度器在主线程中运行，负责管理协程的生命周期和执行顺序，协程调度器会在每一帧中检查协程的状态，并决定哪一个协程应该继续执行。</li>
+<li>协程方法：协程是通过<strong>迭代器</strong>来实现功能的，通过关键字 IEnumerator 来定义一个协程方法，返回 IEnumerator 类型，这是一个接口，表示一个可枚举的集合。<strong>当在 Unity 中启动协程时，实际上是向协程调度器注册了一个待执行的协程任务</strong>。</li>
+<li>yield 指令：迭代方法必须包含 yield  语句，用于<strong>指定协程的挂起点</strong>。一个迭代方法中可以有多个 yield 语句，每个 yield 语句都表示协程的一个状态，这个状态可以是等待一段时间、等待一个条件满足、执行一个操作等。协程的执行过程实际上是一个<strong>状态机</strong>（State Machine），每个 yield 语句都表示协程的一个状态，每次访问时会基于状态知道当前应该执行哪一个 yield。</li>
+<li>帧执行：协程任务在每一帧中执行。当一个协程任务被注册后，协程调度器会在每一帧中检查协程的状态，并根据 yield 语句的指令来控制协程的执行。</li>
+<li>执行流程：当协程开始执行时，它会一直执行到遇到 yield 语句。在遇到 yield 后，协程会在当前帧结束后，或在等待的时间间隔过后，继续执行。这个过程会持续循环，直到协程执行完毕。</li>
+</ul>
+<p>总之，协程的核心概念是迭代器和 yield 关键字，而迭代器是一个特殊的C#方法，其返回值必须是 IEnumerator 接口。当你在协程方法中使用yield关键字，编译器会生成一个迭代器，将协程的执行分为多个状态。每个 yield 语句会导致生成一个状态，每个状态都会在调用 MoveNext 时执行一次。所以，一个 yield 语句通常会生成一个 MoveNext。这些状态在不同帧中检测当前帧是否满足协程所定义的条件，一旦满足，当前帧就会抽出 CPU 时间执行你所定义的协程迭代器的 MoveNext。</p>
+<h2 id="协程的使用"><a href="#协程的使用" class="headerlink" title="协程的使用"></a>协程的使用</h2><h3 id="定义协程方法"><a href="#定义协程方法" class="headerlink" title="定义协程方法"></a>定义协程方法</h3><p>首先，你需要定义一个协程方法。这个方法的返回类型通常是IEnumerator。协程方法内部可以包含yield语句，用于控制协程的执行流程。</p>
+<p>不带参数的协程方法：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">MyCoroutine</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 协程的执行逻辑</span></span><br><span class="line">    <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">2.0f</span></span>)</span>;</span><br><span class="line">    Debug.Log(<span class="string">&quot;Coroutine executed!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>带参数的协程方法：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">MyCoroutineWithArgs</span>(<span class="params"><span class="built_in">int</span> <span class="keyword">value</span></span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 在这里使用传递的参数 value</span></span><br><span class="line">    Debug.Log(<span class="string">&quot;Received value: &quot;</span> + <span class="keyword">value</span>);</span><br><span class="line">    <span class="comment">// 这里可以进行其他协程操作</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="开启协程"><a href="#开启协程" class="headerlink" title="开启协程"></a>开启协程</h3><ul>
+<li>StartCoroutine(string methodName)：这种方式使用协程方法的名称（字符串形式）来启动协程。适用于不需要参数的协程方法。<br>示例：<code>StartCoroutine(&quot;MyCoroutine&quot;);</code></li>
+<li>StartCoroutine(IEnumerator routine)：这种方式通过协程方法的实际方法来启动协程。适用于带有参数的协程方法或不需要参数的协程方法。<br>示例1：<code>StartCoroutine(MyCoroutine());</code><br>示例2：<code>StartCoroutine(MyCoroutineWithArgs(1));</code></li>
+<li>StartCoroutine(string methodName, object values)：这种方式使用协程方法的名称和参数（以object形式传递）来启动协程。适用于需要传递参数给协程方法的情况。<br>示例：<code>StartCoroutine(&quot;MyCoroutineWithArgs&quot;, someValue);</code></li>
+</ul>
+<h2 id="关闭协程"><a href="#关闭协程" class="headerlink" title="关闭协程"></a>关闭协程</h2><h3 id="StopCoroutine"><a href="#StopCoroutine" class="headerlink" title="StopCoroutine"></a>StopCoroutine</h3><ul>
+<li><p>根据协程的方法名：可以使用方法的名称来停止协程，只需传递协程的方法名（作为字符串）给 StopCoroutine 方法。<br>示例：<code>StopCoroutine(&quot;MyCoroutine&quot;);</code></p>
+</li>
+<li><p>根据协程的引用：可以使用已经引用的协程的引用来停止它。<br>示例：</p>
+</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IEnumerator myCoroutineInstance = MyCoroutine();</span><br><span class="line">StartCoroutine(myCoroutineInstance);</span><br><span class="line"><span class="comment">// 在需要的时候停止协程</span></span><br><span class="line">StopCoroutine(myCoroutineInstance);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>根据协程返回的协程句柄：当你启动协程时，StartCoroutine 方法会返回一个协程句柄，你可以使用这个句柄来停止协程。<br>示例：</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Coroutine myCoroutineHandle = StartCoroutine(MyCoroutine());</span><br><span class="line"><span class="comment">// 在需要的时候停止协程</span></span><br><span class="line">StopCoroutine(myCoroutineHandle);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：以下这样调用停不掉Coroutine。<br>StartCoroutine(Test1());<br>StopCoroutine(Test1());</p>
+<p>StartCoroutine(Test2(1));<br>StopCoroutine(Test2(1));</p>
+<p>StartCoroutine(Test3());<br>StopCoroutine(“Test3”);</p>
+</blockquote>
+<h3 id="StopAllCoroutines"><a href="#StopAllCoroutines" class="headerlink" title="StopAllCoroutines"></a>StopAllCoroutines</h3><p>请注意，使用 StopCoroutine 只会停止指定的协程。如果你有多个具有相同方法名的协程在运行，StopCoroutine 只会停止其中一个。如果要停止所有具有相同方法名的协程，可以使用 StopAllCoroutines。<br><code>StopAllCoroutines(); // 停止所有协程</code></p>
+<blockquote>
+<p>注意：将游戏对象的activeself设置为false时，可停掉此GameObject上的所有协程，并且再次激活时协程不会继续。但是将脚本的脚本enabled设置为false时，不可停掉协程。</p>
+</blockquote>
+<h2 id="yield"><a href="#yield" class="headerlink" title="yield"></a>yield</h2><p>关键字在 C# 中用于创建协程，它可以在协程中暂停执行，然后在稍后的某个时间点恢复执行。以下是一些常见的 yield 使用方式：</p>
+<h3 id="yield-0"><a href="#yield-0" class="headerlink" title="yield 0"></a>yield 0</h3><p>yield return 0; &#x2F;&#x2F;下一帧再执行后续代码<br>yield return 6;&#x2F;&#x2F;(任意数字) 下一帧再执行后续代码</p>
+<h3 id="yield-return-null"><a href="#yield-return-null" class="headerlink" title="yield return null"></a>yield return null</h3><p>这是最常见的用法，用于等待一帧的时间，通常用于实现延迟操作。例如，yield return null; 可以使协程等待一帧后再执行下一步。</p>
+<h3 id="yield-break"><a href="#yield-break" class="headerlink" title="yield break"></a>yield break</h3><p>该语句用于终止协程的执行。它允许你在协程中的任何地方显式地停止执行协程，就像 return 语句在常规函数中终止执行一样。当调用 yield break，协程将立即结束，不再执行后续的代码。这可以在协程的任何地方用于提前退出协程。</p>
+<h3 id="yield-return-asyncOperation"><a href="#yield-return-asyncOperation" class="headerlink" title="yield return asyncOperation"></a>yield return asyncOperation</h3><p>等异步操作结束后再执行后续代码。注意，不是直接写yield return asyncOperation，正确示例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">AsyncOperation asyncOperation = SomeAsyncMethod();</span><br><span class="line"><span class="comment">// 在协程中等待异步操作完成</span></span><br><span class="line"><span class="keyword">while</span> (!asyncOperation.isDone) &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 异步操作完成后执行下面的代码</span></span><br><span class="line">Debug.Log(<span class="string">&quot;Async operation is done.&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="yield-return-new-WaitForSeconds-seconds"><a href="#yield-return-new-WaitForSeconds-seconds" class="headerlink" title="yield return new WaitForSeconds(seconds)"></a>yield return new WaitForSeconds(seconds)</h3><p>这用于等待指定的秒数。例如，<code>yield return new WaitForSeconds(2.0f);</code> 可以使协程等待 2 秒钟。</p>
+<h3 id="yield-return-new-WaitForSecondsRealtime-seconds"><a href="#yield-return-new-WaitForSecondsRealtime-seconds" class="headerlink" title="yield return new WaitForSecondsRealtime(seconds)"></a>yield return new WaitForSecondsRealtime(seconds)</h3><p>与 WaitForSeconds 类似，但不受游戏暂停影响，用于在实时时间中等待一段时间。</p>
+<h3 id="yield-return-new-WaitForFixedUpdate"><a href="#yield-return-new-WaitForFixedUpdate" class="headerlink" title="yield return new WaitForFixedUpdate()"></a>yield return new WaitForFixedUpdate()</h3><p>用于等待下一个固定帧更新（FixedUpdate）。<br>通常在物理更新或与物理相关的操作中使用。</p>
+<h3 id="yield-return-new-WaitForEndOfFrame"><a href="#yield-return-new-WaitForEndOfFrame" class="headerlink" title="yield return new WaitForEndOfFrame()"></a>yield return new WaitForEndOfFrame()</h3><p>用于等待当前帧的结束，然后再执行下一步，通常在需要在渲染完成后执行某些操作时使用。</p>
+<h3 id="yield-return-new-WWW-url"><a href="#yield-return-new-WWW-url" class="headerlink" title="yield return new WWW(url)"></a>yield return new WWW(url)</h3><p>用于等待从指定 URL 下载的内容（通常是网络请求）,在下载完成后继续执行协程。</p>
+<h3 id="yield-return-StartCoroutine-MyCoroutine"><a href="#yield-return-StartCoroutine-MyCoroutine" class="headerlink" title="yield return StartCoroutine(MyCoroutine())"></a>yield return StartCoroutine(MyCoroutine())</h3><p>用于等待另一个协程完成执行，这可以用于协程的嵌套和顺序执行多个协程。</p>
+<h3 id="yield-return-new-WaitUntil-x3D-gt-someCondition"><a href="#yield-return-new-WaitUntil-x3D-gt-someCondition" class="headerlink" title="yield return new WaitUntil(() &#x3D;&gt; someCondition)"></a>yield return new WaitUntil(() &#x3D;&gt; someCondition)</h3><p>用于等待某个条件变为真，可以在协程中等待直到给定条件满足。</p>
+<h3 id="yield-return-new-WaitWhile-x3D-gt-someCondition"><a href="#yield-return-new-WaitWhile-x3D-gt-someCondition" class="headerlink" title="yield return new WaitWhile(() &#x3D;&gt; someCondition)"></a>yield return new WaitWhile(() &#x3D;&gt; someCondition)</h3><p>用于等待某个条件变为假，可以在协程中等待直到给定条件不满足。</p>
+<h3 id="yield-return-new-YieldInstruction"><a href="#yield-return-new-YieldInstruction" class="headerlink" title="yield return new YieldInstruction()"></a>yield return new YieldInstruction()</h3><p>也可以创建自定义的 yield 指令，实现协程中的等待操作，YieldInstruction 是基类，也可以派生出自定义的等待条件。</p>
+<p>这些 yield 使用方式可以帮助你在协程中实现不同类型的等待和延迟操作。通过合理使用 yield，你可以更好地控制协程的执行顺序和时机。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/25/Unity/%E6%B5%85%E8%B0%88Unity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="prev" title="浅谈Unity生命周期">
+                  <i class="fa fa-angle-left"></i> 浅谈Unity生命周期
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

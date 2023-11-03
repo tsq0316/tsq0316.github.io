@@ -1,79 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>面向对象的三大特点</title>
-    <url>/2023/10/23/CSharp/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E5%A4%A7%E7%89%B9%E7%82%B9/</url>
-    <content><![CDATA[<p>C#是一种面向对象的编程语言，广泛用于开发各类应用程序。同时，C#作为一种多范式语言，也支持面向过程编程。面向对象的特点我们耳熟能详，但新手可能会说不清楚，为什么要这样设计。今天我们就对面向对象的三大核心特点：封装，继承，多态来进行超详细讲解。</p>
-<span id="more"></span>
-<blockquote>
-<p><strong>面向对象编程</strong>是一种以对象为中心的编程范式，它将数据和操作数据的方法组合成对象。在面向对象编程中，程序被组织成一组相互作用的对象，这些对象通过彼此发送消息来传递数据。<br><strong>面向过程编程</strong>是一种以过程为中心的编程范式，它主要关注解决问题时所需要执行的步骤。在面向过程编程中，程序被组织成一系列的函数或方法，这些函数或方法按照特定的顺序被调用来完成任务。</p>
-</blockquote>
-<h2 id="封装（Encapsulation）"><a href="#封装（Encapsulation）" class="headerlink" title="封装（Encapsulation）"></a>封装（Encapsulation）</h2><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithoutEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">decimal</span> Balance; <span class="comment">// 公开的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance -= amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>举一个简单的小例子，假设一种场景，有一个银行账户类，包括余额和存取款方法等。如果直接将余额设为public，其他类能直接从外部访问账户类的余额信息，这种设计存在一些问题：</p>
-<ul>
-<li>数据不受限制：外部代码可以随意修改Balance字段，而没有任何限制，这可能导致不合法的操作，如负数余额。</li>
-<li>无法实施验证：无法在存款或取款方法中实施验证，以确保金额不为负数或其他不合法值。</li>
-<li>缺乏安全性：敏感的账户余额可以在外部被直接访问，而不受任何控制。</li>
-</ul>
-<p>这种设计明显是不合理的，那么应该怎样修改呢？我们可以试着将Balance声明为private，添加一个public方法来访问Balance，外部代码无法直接访问它，而必须使用公共方法来与余额进行交互，这样就解决了上述问题。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">decimal</span> balance; <span class="comment">// 私有的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">decimal</span> <span class="title">GetBalance</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> balance; <span class="comment">// 通过公共方法返回余额</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            balance += amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span> &amp;&amp; balance &gt;= amount)</span><br><span class="line">        &#123;</span><br><span class="line">            balance -= amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这就是一个简单的运用了封装的例子，体现了封装的数据隐藏和安全性。<br>那么具体什么是封装呢？封装其实就是一种将数据（属性）和操作数据的方法（方法）组合成一个单元，并且把这些内部细节隐藏起来，只暴露必要的公共接口供其他对象访问的机制。封装的主要目标是隔离对象的内部实现，以提高代码的可维护性、安全性和可重用性。封装的关键概念包括：</p>
-<ul>
-<li><p>数据隐藏：封装将对象的数据（通常是字段或属性）设为私有或受限访问，使其不能直接被外部对象访问，从而防止外部对象直接修改或破坏对象的内部状态。</p>
-</li>
-<li><p>公共接口：封装通过提供公共方法或属性，允许其他对象与封装对象进行交互。这些公共接口定义了外部对象可以如何与对象互动，并提供了访问对象数据和执行对象操作的途径。</p>
-</li>
-<li><p>数据验证和保护：通过封装，可以在公共接口中添加数据验证逻辑，以确保数据的合法性，防止不合法的访问和修改。</p>
-</li>
-<li><p>隐藏实现细节：封装允许对象内部的实现细节保持私有，外部对象不需要了解对象的内部工作原理，只需要知道如何与对象互动。</p>
-</li>
-<li><p>安全性：封装提高了数据的安全性，因为外部对象无法直接访问和修改对象的私有数据。</p>
-</li>
-</ul>
-<p>通过封装，面向对象编程能够将复杂性管理在对象内部，提供了清晰、简化的公共接口，使代码更易于理解、维护和扩展，有助于构建模块化、可靠和可维护的应用程序。</p>
-<h2 id="继承（Inheritance）"><a href="#继承（Inheritance）" class="headerlink" title="继承（Inheritance）"></a>继承（Inheritance）</h2><p>继续假设这样一个场景，我们想做一个动物管理系统，涉及到很多个动物种类，假如直接为每一种动物都写一个类，那么每一个类都要包含名称，种类，科属等字段，并且每一个类都会有一些相同的方法，例如吃饭，休息等。这样写下来代码就会有非常大的重复和冗余。那么该怎样改进呢？<br>我们可以将这些动物的共同属性和方法提取出来，放在一个类中，提供一个基础的框架，以定义动物的基本属性和行为。在这个框架的基础上，每个动物类都可以添加自己独有的属性和方法，例如”Cat”类可以添加属性”毛色”和方法”捉老鼠”，”Bird”类可以添加属性”翅膀长度”和方法”飞翔”。<br>这就是继承的思想。这个被提取出来的公共类就叫做基类，在这个框架的基础上进行拓展的类就叫做派生类。继承允许我们构建层次化结构，其中基类定义了共享特征，而派生类继承这些特征并添加特定于自身的内容，从而实现了代码重用和抽象化，这有助于更清晰地表示现实世界中的关系和层次结构。继承的好处非常多，例如：</p>
-<ul>
-<li>代码重用：继承允许子类（派生类）继承父类（基类）的属性和方法，从而避免了重复编写相同的代码。这促进了代码的重用，减少了代码冗余。</li>
-<li>抽象化和通用性：基类可以定义通用的属性和方法，捕获多个子类之间共享的特性。这种抽象化有助于更好地建模现实世界的关系，并提供通用性。</li>
-<li>层次化组织：继承允许创建层次结构，通过将相关的类组织在一起，更清晰地表示它们之间的关系。这有助于代码的结构和理解。</li>
-<li>可扩展性：新的子类可以轻松地添加到继承层次结构中，而无需修改现有的代码。这提高了应用程序的可扩展性，使其能够适应新的需求。</li>
-<li>维护性：继承有助于代码的维护，因为通用代码只需在一个地方维护，而不需要在每个子类中进行修改。这降低了维护的成本。<br>-多态性：继承是多态性的基础。多态性允许不同的子类对象对相同的方法进行不同的实现，从而提高了代码的灵活性和可扩展性。</li>
-<li>封装实现细节：基类可以封装实现细节，隐藏其内部工作原理，允许子类专注于其独特的功能。</li>
-<li>重用已有类：继承允许在现有类的基础上构建新的类，以便重用已有类的功能，并添加新的功能。</li>
-</ul>
-<p>总之，继承是面向对象编程中的重要概念，它提供了许多好处，包括代码重用、抽象化、层次化组织、可扩展性、维护性和灵活性，这使得继承成为构建复杂应用程序的强大工具。</p>
-<blockquote>
-<p>继承的传递性：传递机制 a-&gt;b，b-&gt;c，c具有a的特性。<br>继承的单根性：在C#中一个类只能继承一个父类，不能有多个父类。</p>
-</blockquote>
-<h2 id="多态（Polymorphism）"><a href="#多态（Polymorphism）" class="headerlink" title="多态（Polymorphism）"></a>多态（Polymorphism）</h2><p>多态是个比较抽象的概念，我们可以继续通过一个小例子来理解多态的概念。回合制游戏中，往往有这样一种场景：场上有一组不同类型的怪物，例如巨魔，巫师，恶龙，怪物依次对玩家进行攻击。假设没有继承和多态，需要为每种类型的怪物都设置一个列表，巨魔列表，恶龙列表，狼人列表，依次遍历所有列表，调用对应怪物类的Attack方法来对玩家进行攻击。<br>再有了继承的概念之后，我们可以将所有怪物的共同属性和方法提取出来，变成一个Monster基类，不同怪物类都可以继承Monster类，这样就只需要一个<code>List&lt;Monster&gt;</code>就能管理所有怪物，不需要多个列表。<br>但这样依然会有一个问题，在遍历这个列表的过程中，我们需要依次判断列表元素对应的怪物种类是什么，然后再执行对应怪物子类的攻击方法，这样做依然很不方便，需要大量的switch和if语句，这时候，就引入了多态的概念。<br>多态是什么呢？多态顾名思义，就是<strong>对象的多种状态</strong>。它表示在不同的对象上可以执行相同的操作，但这些操作可以根据对象的实际类型而具有不同的行为。多态性的核心思想是：在同一个方法或属性被不同类的对象调用时，可以根据对象的实际类型来执行不同的操作。<br>多态性有两种主要形式：</p>
-<ul>
-<li>编译时多态性（静态多态性）：这是方法的重载和方法的重写，它们在编译时确定方法调用的方式。方法的重载是指在同一个类中有多个方法，但它们具有相同的名称，但不同的参数列表。方法的重写是指派生类可以覆盖基类中的方法，以提供自己的实现。</li>
-<li>运行时多态性（动态多态性）：这是多态性的经典形式，它允许在运行时根据对象的实际类型来确定方法调用的方式。这通常涉及到继承和方法覆盖。在运行时，基于对象的实际类型，可以调用适当的方法实现。</li>
-</ul>
-<p>落到这个例子上，多态是如何实现的呢？首先我们定义一个Moster基类，包含一个virtual修饰的Attack方法，其他怪物子类继承这个基类，在子类中重写（覆盖）这个Attack方法。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;怪物攻击了！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Troll</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巨魔挥舞着大棒攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Wizard</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巫师发射了火球攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Dragon</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;恶龙喷射火焰攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>假设场上的怪物都用<code>List&lt;Monster&gt; monsters</code>来存储，我们遍历这个列表，调用Attack方法时，根据每个怪物的实际类型，会自动执行对应的攻击方式。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (Monster monster <span class="keyword">in</span> monsters)</span><br><span class="line">&#123;</span><br><span class="line">    monster.Attack();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>多态性的优势在于可以将不同类型的对象当作通用的基类对象处理，从而提高代码的可重用性、可维护性和可扩展性。多态性使代码更具灵活性，能够处理不同情况下的相同方法调用，从而更好地模拟现实世界的复杂性。<br>多态的优点主要有：</p>
-<ul>
-<li>提高代码的灵活性和通用性：多态性允许将不同类型的对象视为其共同的基类对象，从而编写通用代码，可以处理多种不同类型的对象。这提高了代码的通用性和灵活性。</li>
-<li>简化代码：使用多态性可以减少重复的代码，因为可以将通用的操作应用于多个对象，而不需要为每个对象编写特定的操作。</li>
-<li>支持动态绑定：多态性允许在运行时动态地选择要调用的方法，而不需要在编译时知道对象的具体类型。这提供了更大的灵活性，适应不同的运行时条件。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总之，封装、继承和多态性有助于构建更安全、可维护、可扩展和通用的软件系统。它们提供了一种有效的方式来管理复杂性，降低代码的复杂性，从而更好地满足现实世界问题的需求。</p>
-]]></content>
-      <categories>
-        <category>C#</category>
-      </categories>
-      <tags>
-        <tag>C#</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>C#委托与事件讲解</title>
     <url>/2023/10/22/CSharp/%E5%A7%94%E6%89%98%E4%B8%8E%E4%BA%8B%E4%BB%B6%E8%AE%B2%E8%A7%A3/</url>
     <content><![CDATA[<p>本文将详细介绍一下C#中的委托是什么，委托的分类，委托的适用情形和使用要求，委托的多播，以及事件机制，以帮助大家更深入地理解委托机制。</p>
@@ -221,6 +148,79 @@
 
 <p>最后，可以使用一个通用的SetAlarm方法，将不同的提醒音乐表示为委托：</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">AlarmClock clock = <span class="keyword">new</span> AlarmClock();</span><br><span class="line"></span><br><span class="line">AlarmSound workAlarm = () =&gt; &#123; <span class="comment">/* 设置工作提醒音乐的操作 */</span> &#125;;</span><br><span class="line">AlarmSound exerciseAlarm = () =&gt; &#123; <span class="comment">/* 设置锻炼提醒音乐的操作 */</span> &#125;;</span><br><span class="line"></span><br><span class="line">clock.SetAlarm(workAlarm);</span><br><span class="line">clock.SetAlarm(exerciseAlarm);</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>C#</category>
+      </categories>
+      <tags>
+        <tag>C#</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>面向对象的三大特点</title>
+    <url>/2023/10/23/CSharp/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E5%A4%A7%E7%89%B9%E7%82%B9/</url>
+    <content><![CDATA[<p>C#是一种面向对象的编程语言，广泛用于开发各类应用程序。同时，C#作为一种多范式语言，也支持面向过程编程。面向对象的特点我们耳熟能详，但新手可能会说不清楚，为什么要这样设计。今天我们就对面向对象的三大核心特点：封装，继承，多态来进行超详细讲解。</p>
+<span id="more"></span>
+<blockquote>
+<p><strong>面向对象编程</strong>是一种以对象为中心的编程范式，它将数据和操作数据的方法组合成对象。在面向对象编程中，程序被组织成一组相互作用的对象，这些对象通过彼此发送消息来传递数据。<br><strong>面向过程编程</strong>是一种以过程为中心的编程范式，它主要关注解决问题时所需要执行的步骤。在面向过程编程中，程序被组织成一系列的函数或方法，这些函数或方法按照特定的顺序被调用来完成任务。</p>
+</blockquote>
+<h2 id="封装（Encapsulation）"><a href="#封装（Encapsulation）" class="headerlink" title="封装（Encapsulation）"></a>封装（Encapsulation）</h2><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithoutEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">decimal</span> Balance; <span class="comment">// 公开的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance -= amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举一个简单的小例子，假设一种场景，有一个银行账户类，包括余额和存取款方法等。如果直接将余额设为public，其他类能直接从外部访问账户类的余额信息，这种设计存在一些问题：</p>
+<ul>
+<li>数据不受限制：外部代码可以随意修改Balance字段，而没有任何限制，这可能导致不合法的操作，如负数余额。</li>
+<li>无法实施验证：无法在存款或取款方法中实施验证，以确保金额不为负数或其他不合法值。</li>
+<li>缺乏安全性：敏感的账户余额可以在外部被直接访问，而不受任何控制。</li>
+</ul>
+<p>这种设计明显是不合理的，那么应该怎样修改呢？我们可以试着将Balance声明为private，添加一个public方法来访问Balance，外部代码无法直接访问它，而必须使用公共方法来与余额进行交互，这样就解决了上述问题。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">decimal</span> balance; <span class="comment">// 私有的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">decimal</span> <span class="title">GetBalance</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> balance; <span class="comment">// 通过公共方法返回余额</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            balance += amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span> &amp;&amp; balance &gt;= amount)</span><br><span class="line">        &#123;</span><br><span class="line">            balance -= amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这就是一个简单的运用了封装的例子，体现了封装的数据隐藏和安全性。<br>那么具体什么是封装呢？封装其实就是一种将数据（属性）和操作数据的方法（方法）组合成一个单元，并且把这些内部细节隐藏起来，只暴露必要的公共接口供其他对象访问的机制。封装的主要目标是隔离对象的内部实现，以提高代码的可维护性、安全性和可重用性。封装的关键概念包括：</p>
+<ul>
+<li><p>数据隐藏：封装将对象的数据（通常是字段或属性）设为私有或受限访问，使其不能直接被外部对象访问，从而防止外部对象直接修改或破坏对象的内部状态。</p>
+</li>
+<li><p>公共接口：封装通过提供公共方法或属性，允许其他对象与封装对象进行交互。这些公共接口定义了外部对象可以如何与对象互动，并提供了访问对象数据和执行对象操作的途径。</p>
+</li>
+<li><p>数据验证和保护：通过封装，可以在公共接口中添加数据验证逻辑，以确保数据的合法性，防止不合法的访问和修改。</p>
+</li>
+<li><p>隐藏实现细节：封装允许对象内部的实现细节保持私有，外部对象不需要了解对象的内部工作原理，只需要知道如何与对象互动。</p>
+</li>
+<li><p>安全性：封装提高了数据的安全性，因为外部对象无法直接访问和修改对象的私有数据。</p>
+</li>
+</ul>
+<p>通过封装，面向对象编程能够将复杂性管理在对象内部，提供了清晰、简化的公共接口，使代码更易于理解、维护和扩展，有助于构建模块化、可靠和可维护的应用程序。</p>
+<h2 id="继承（Inheritance）"><a href="#继承（Inheritance）" class="headerlink" title="继承（Inheritance）"></a>继承（Inheritance）</h2><p>继续假设这样一个场景，我们想做一个动物管理系统，涉及到很多个动物种类，假如直接为每一种动物都写一个类，那么每一个类都要包含名称，种类，科属等字段，并且每一个类都会有一些相同的方法，例如吃饭，休息等。这样写下来代码就会有非常大的重复和冗余。那么该怎样改进呢？<br>我们可以将这些动物的共同属性和方法提取出来，放在一个类中，提供一个基础的框架，以定义动物的基本属性和行为。在这个框架的基础上，每个动物类都可以添加自己独有的属性和方法，例如”Cat”类可以添加属性”毛色”和方法”捉老鼠”，”Bird”类可以添加属性”翅膀长度”和方法”飞翔”。<br>这就是继承的思想。这个被提取出来的公共类就叫做基类，在这个框架的基础上进行拓展的类就叫做派生类。继承允许我们构建层次化结构，其中基类定义了共享特征，而派生类继承这些特征并添加特定于自身的内容，从而实现了代码重用和抽象化，这有助于更清晰地表示现实世界中的关系和层次结构。继承的好处非常多，例如：</p>
+<ul>
+<li>代码重用：继承允许子类（派生类）继承父类（基类）的属性和方法，从而避免了重复编写相同的代码。这促进了代码的重用，减少了代码冗余。</li>
+<li>抽象化和通用性：基类可以定义通用的属性和方法，捕获多个子类之间共享的特性。这种抽象化有助于更好地建模现实世界的关系，并提供通用性。</li>
+<li>层次化组织：继承允许创建层次结构，通过将相关的类组织在一起，更清晰地表示它们之间的关系。这有助于代码的结构和理解。</li>
+<li>可扩展性：新的子类可以轻松地添加到继承层次结构中，而无需修改现有的代码。这提高了应用程序的可扩展性，使其能够适应新的需求。</li>
+<li>维护性：继承有助于代码的维护，因为通用代码只需在一个地方维护，而不需要在每个子类中进行修改。这降低了维护的成本。<br>-多态性：继承是多态性的基础。多态性允许不同的子类对象对相同的方法进行不同的实现，从而提高了代码的灵活性和可扩展性。</li>
+<li>封装实现细节：基类可以封装实现细节，隐藏其内部工作原理，允许子类专注于其独特的功能。</li>
+<li>重用已有类：继承允许在现有类的基础上构建新的类，以便重用已有类的功能，并添加新的功能。</li>
+</ul>
+<p>总之，继承是面向对象编程中的重要概念，它提供了许多好处，包括代码重用、抽象化、层次化组织、可扩展性、维护性和灵活性，这使得继承成为构建复杂应用程序的强大工具。</p>
+<blockquote>
+<p>继承的传递性：传递机制 a-&gt;b，b-&gt;c，c具有a的特性。<br>继承的单根性：在C#中一个类只能继承一个父类，不能有多个父类。</p>
+</blockquote>
+<h2 id="多态（Polymorphism）"><a href="#多态（Polymorphism）" class="headerlink" title="多态（Polymorphism）"></a>多态（Polymorphism）</h2><p>多态是个比较抽象的概念，我们可以继续通过一个小例子来理解多态的概念。回合制游戏中，往往有这样一种场景：场上有一组不同类型的怪物，例如巨魔，巫师，恶龙，怪物依次对玩家进行攻击。假设没有继承和多态，需要为每种类型的怪物都设置一个列表，巨魔列表，恶龙列表，狼人列表，依次遍历所有列表，调用对应怪物类的Attack方法来对玩家进行攻击。<br>再有了继承的概念之后，我们可以将所有怪物的共同属性和方法提取出来，变成一个Monster基类，不同怪物类都可以继承Monster类，这样就只需要一个<code>List&lt;Monster&gt;</code>就能管理所有怪物，不需要多个列表。<br>但这样依然会有一个问题，在遍历这个列表的过程中，我们需要依次判断列表元素对应的怪物种类是什么，然后再执行对应怪物子类的攻击方法，这样做依然很不方便，需要大量的switch和if语句，这时候，就引入了多态的概念。<br>多态是什么呢？多态顾名思义，就是<strong>对象的多种状态</strong>。它表示在不同的对象上可以执行相同的操作，但这些操作可以根据对象的实际类型而具有不同的行为。多态性的核心思想是：在同一个方法或属性被不同类的对象调用时，可以根据对象的实际类型来执行不同的操作。<br>多态性有两种主要形式：</p>
+<ul>
+<li>编译时多态性（静态多态性）：这是方法的重载和方法的重写，它们在编译时确定方法调用的方式。方法的重载是指在同一个类中有多个方法，但它们具有相同的名称，但不同的参数列表。方法的重写是指派生类可以覆盖基类中的方法，以提供自己的实现。</li>
+<li>运行时多态性（动态多态性）：这是多态性的经典形式，它允许在运行时根据对象的实际类型来确定方法调用的方式。这通常涉及到继承和方法覆盖。在运行时，基于对象的实际类型，可以调用适当的方法实现。</li>
+</ul>
+<p>落到这个例子上，多态是如何实现的呢？首先我们定义一个Moster基类，包含一个virtual修饰的Attack方法，其他怪物子类继承这个基类，在子类中重写（覆盖）这个Attack方法。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;怪物攻击了！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Troll</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巨魔挥舞着大棒攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Wizard</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巫师发射了火球攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Dragon</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;恶龙喷射火焰攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设场上的怪物都用<code>List&lt;Monster&gt; monsters</code>来存储，我们遍历这个列表，调用Attack方法时，根据每个怪物的实际类型，会自动执行对应的攻击方式。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (Monster monster <span class="keyword">in</span> monsters)</span><br><span class="line">&#123;</span><br><span class="line">    monster.Attack();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>多态性的优势在于可以将不同类型的对象当作通用的基类对象处理，从而提高代码的可重用性、可维护性和可扩展性。多态性使代码更具灵活性，能够处理不同情况下的相同方法调用，从而更好地模拟现实世界的复杂性。<br>多态的优点主要有：</p>
+<ul>
+<li>提高代码的灵活性和通用性：多态性允许将不同类型的对象视为其共同的基类对象，从而编写通用代码，可以处理多种不同类型的对象。这提高了代码的通用性和灵活性。</li>
+<li>简化代码：使用多态性可以减少重复的代码，因为可以将通用的操作应用于多个对象，而不需要为每个对象编写特定的操作。</li>
+<li>支持动态绑定：多态性允许在运行时动态地选择要调用的方法，而不需要在编译时知道对象的具体类型。这提供了更大的灵活性，适应不同的运行时条件。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总之，封装、继承和多态性有助于构建更安全、可维护、可扩展和通用的软件系统。它们提供了一种有效的方式来管理复杂性，降低代码的复杂性，从而更好地满足现实世界问题的需求。</p>
 ]]></content>
       <categories>
         <category>C#</category>
@@ -432,6 +432,96 @@
       </tags>
   </entry>
   <entry>
+    <title>浅谈Unity中的存档系统</title>
+    <url>/2023/10/23/Unity/%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/</url>
+    <content><![CDATA[<p>Unity中的存档系统用于保存和加载游戏的状态、进度和设置。存档系统通常用于实现游戏的保存和载入功能，以便玩家可以在游戏中保存当前状态，然后稍后重新加载。<br>Unity读档与存档采用的储存方式主要有PlayerPrefs，外部文件，云储存等，存储形式有直接存储数据、序列化(Binary、Xml、Json)，自定义序列化格式等，数据存储过程一般需要加密。本文介绍一些常用的数据存档方式。</p>
+<span id="more"></span>
+<h2 id="Player-Prefs"><a href="#Player-Prefs" class="headerlink" title="Player Prefs"></a>Player Prefs</h2><p>Player Prefs是unity引擎内建的主要用来存储玩家偏好设定的一个类，也是用于存储小型游戏数据和偏好设置的简单键值对存储方式。它将数据存储在本地设备上，通常用于保存玩家的设置、解锁状态、得分等小型数据。<br>Player Prefs使用的是类似字典的存储方式，玩家进行数据存储时，需要输入一个key参数以及一个value参数；获取数据时只要输入键就可以获取到对应的值了。Player Prefs形式存储的数据保存在当前开发平台的注册表中，详细位置可以查看官方文档。</p>
+<h3 id="数据存储和读取"><a href="#数据存储和读取" class="headerlink" title="数据存储和读取"></a>数据存储和读取</h3><p>数据存储函数：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetString</span>(<span class="params"><span class="built_in">string</span> Key, <span class="built_in">string</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetInt</span>(<span class="params"><span class="built_in">string</span> Key, <span class="built_in">int</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetFloat</span>(<span class="params"><span class="built_in">string</span> Key, <span class="built_in">float</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"><span class="comment">//示例:PlayerPrefs.SetString(&quot;PlayerName&quot;, playerName);</span></span><br></pre></td></tr></table></figure>
+
+<p>设置完后需要保存PlayerPrefs的状态：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">PlayerPrefs.Save();</span><br></pre></td></tr></table></figure>
+
+<p>数据读取函数：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">GetString</span>(<span class="params"><span class="built_in">string</span> Key</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">GetInt</span>(<span class="params"><span class="built_in">string</span> Key</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">float</span> <span class="title">GetFloat</span>(<span class="params"><span class="built_in">string</span> Key</span>)</span>;</span><br><span class="line"><span class="comment">//示例:string name = PlayerPrefs.GetString(&quot;PlayerName&quot;, &quot;Guest&quot;);</span></span><br><span class="line"><span class="comment">//第二个参数是默认值，如果指定的键不存在或不是string类型，则返回默认值</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="适用场景和特点"><a href="#适用场景和特点" class="headerlink" title="适用场景和特点"></a>适用场景和特点</h3><ul>
+<li>适用场景： 适合保存游戏设置、解锁状态、用户首选项等小型数据。</li>
+<li>优点： 简单易用，适用于少量数据，无需额外文件操作。</li>
+<li>缺点：数据类型单一，安全性低。</li>
+<li>拓展：JsonUtility<br>通过它我们可以将任何Unity序列化程序支持的类转成Json对象，而Json就是一个按一定格式书写的字符串，这样我们就可以使用PlayerPrefs.SetString()函数来存储Json字符串了</li>
+</ul>
+<h2 id="JSON存储"><a href="#JSON存储" class="headerlink" title="JSON存储"></a>JSON存储</h2><p>JSON是一种轻量级的数据交换格式，支持多种主流编程语言，JSON数据可以轻松地在多种不同的语言之间进行转换，适用于保存和加载游戏状态、配置文件、角色属性等复杂的数据结构。而在本质上，JSON是将数据按一定规则和格式书写的文本文件。<br>以下是在Unity中使用JSON进行数据存储和读取的一般步骤：</p>
+<h3 id="序列化对象到JSON"><a href="#序列化对象到JSON" class="headerlink" title="序列化对象到JSON"></a>序列化对象到JSON</h3><p>首先，你需要将游戏数据对象转换为JSON格式，以便将其保存到文件或PlayerPrefs中。Unity提供了JsonUtility类来实现这一目的。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个数据结构</span></span><br><span class="line">[<span class="meta">System.Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerData</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> playerName;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> playerScore;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span> isPlayerAlive;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个数据对象</span></span><br><span class="line">PlayerData playerData = <span class="keyword">new</span> PlayerData();</span><br><span class="line">playerData.playerName = <span class="string">&quot;John&quot;</span>;</span><br><span class="line">playerData.playerScore = <span class="number">1000</span>;</span><br><span class="line">playerData.isPlayerAlive = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将数据对象转换为JSON字符串</span></span><br><span class="line"><span class="built_in">string</span> jsonData = JsonUtility.ToJson(playerData);</span><br></pre></td></tr></table></figure>
+
+<h3 id="保存JSON数据"><a href="#保存JSON数据" class="headerlink" title="保存JSON数据"></a>保存JSON数据</h3><p>接下来，你可以将生成的JSON字符串保存到文件或PlayerPrefs中。如果要保存到文件，你可以使用C#的文件操作方法。<br>如果要将JSON保存到PlayerPrefs中：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 保存JSON字符串到PlayerPrefs</span></span><br><span class="line">PlayerPrefs.SetString(<span class="string">&quot;PlayerData&quot;</span>, jsonData);</span><br><span class="line">PlayerPrefs.Save(); <span class="comment">// 确保数据已保存</span></span><br></pre></td></tr></table></figure>
+
+<p>如果要将JSON保存到文件中：</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SaveByJson</span>(<span class="params"><span class="built_in">string</span> saveFileName, <span class="built_in">object</span> data</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> json = JsonUtility.ToJson(data);</span><br><span class="line">    <span class="comment">//Application.persistentDataPath是unity提供的存储永久化数据的路径，随着发布平台的不同而自动变更</span></span><br><span class="line">    <span class="keyword">var</span> path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">    File.WriteAllText(path, json);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取JSON数据"><a href="#读取JSON数据" class="headerlink" title="读取JSON数据"></a>读取JSON数据</h3><p>当需要读取数据时，你可以从文件或PlayerPrefs中检索JSON字符串，然后将其转换回游戏数据对象。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 从文件中读取JSON字符串</span></span><br><span class="line"><span class="built_in">string</span> jsonData = File.ReadAllText(<span class="string">&quot;playerData.json&quot;</span>);</span><br><span class="line"><span class="comment">// 或者从PlayerPrefs中读取JSON字符串</span></span><br><span class="line"><span class="built_in">string</span> jsonData = PlayerPrefs.GetString(<span class="string">&quot;PlayerData&quot;</span>);</span><br><span class="line"><span class="comment">// 将JSON字符串转换为数据对象</span></span><br><span class="line">PlayerData loadedData = JsonUtility.FromJson&lt;PlayerData&gt;(jsonData);</span><br></pre></td></tr></table></figure>
+
+<h3 id="JSON适用场景和特点"><a href="#JSON适用场景和特点" class="headerlink" title="JSON适用场景和特点"></a>JSON适用场景和特点</h3><ul>
+<li>优点：<br>相对来说更方便人类阅读和编写；<br>适用范围广泛，支持多种主流编程语言；<br>轻量级，易于网络传输与机器解析和生成；</li>
+<li>缺点：<br>支持的数据类型有限；<br>数据安全性低；</li>
+<li>适用范围：<br>联网：优秀的网络数据交换载体、云存档；<br>本地存储：非敏感而需要大量读取和修改的数据，玩家的偏好设置等。</li>
+</ul>
+<h3 id="ToJson详解"><a href="#ToJson详解" class="headerlink" title="ToJson详解"></a>ToJson详解</h3><p>对于ToJson函数，我们需要做一些补充了解。ToJson(object obj, bool x)函数会尝试序列化我们传入到第一个参数的对象里面的可序列化数据（第二个参数代表是否将json数据转换成符合阅读习惯的格式），而不是序列化我们传入的这个参数本身，所以传入的参数为一个data实例就行，结构体和类都可以直接序列化（将类标记为[System.Serializable]）。<br>但ToJson的第一个参数object并不能接收所有类型，如果你传入的参数，或者这个参数所包含的数据中，有一些对象是Unity序列化程序所不支持的，那么这些对象就会被忽略。</p>
+<p>那么Unity序列化程序支持哪些类型的对象呢？</p>
+<ul>
+<li>整数和浮点数：包括int、float、double等。</li>
+<li>布尔值：bool类型。</li>
+<li>字符串：string类型。</li>
+<li>枚举：枚举类型，如enum。</li>
+<li>结构体：用户自定义的结构体。</li>
+<li>数组：数组类型，如int[]、string[]等。</li>
+<li>表和集合：一些集合类型，如<code>List&lt;T&gt;</code>、<code>Dictionary&lt;K, V&gt;</code>等。</li>
+<li>Unity内置类型： Unity的Vector2、Vector3、Quaternion、Color等类型。</li>
+<li>自定义类和对象：你可以自定义类，并使用[Serializable]属性来标记它们以进行序列化。</li>
+<li>接口：接口可以在Unity中被序列化，但只有具体实现的类的实例可以被正确序列化。</li>
+<li>GameObject和Component： Unity中的GameObject和Component也可以被序列化，但需要注意它们的序列化与持久性存储有关，如Prefab和Scene。</li>
+<li>序列化嵌套对象： 你可以嵌套序列化对象，即一个序列化对象中包含另一个序列化对象。</li>
+</ul>
+<p>Unity的序列化系统在序列化和反序列化对象时具有一些限制和规则，包括：</p>
+<ul>
+<li>字段访问级别：只有public的字段可以被Unity的序列化系统正确序列化和反序列化。这些字段通常是被标记为 [Serializable] 特性的字段。</li>
+<li>字段类型限制：Unity的序列化系统支持一系列常见的数据类型，如整数、浮点数、字符串、布尔值、枚举、结构体等。对于更复杂的数据类型，如字典、多维数组、泛型、委托等，通常需要进行转换或者使用其他方法来实现序列化和反序列化。</li>
+<li>MonoBehaviour序列化：Unity的MonoBehaviour脚本中的字段，即使是私有字段，也可以被Unity序列化系统正确序列化和在Inspector中编辑，因为MonoBehaviour继承了Unity的序列化接口。</li>
+<li>非静态字段：非静态字段可以被序列化，但静态字段通常不会被序列化。</li>
+<li>只读和常量字段：只读和常量字段不能被序列化，因为它们的值不能被更改。</li>
+<li>嵌套对象：Unity支持嵌套对象的序列化，允许你在一个序列化对象中包含其他序列化对象。</li>
+</ul>
+<p>如果需要在Unity中存储不支持序列化的数据类型，你通常需要将其转换成支持Unity序列化的类型，或者手动将其数据转换成一种支持的数据结构。对于字典、泛型集合等复杂数据结构，你可能需要编写自定义的序列化和反序列化逻辑。Unity的JsonUtility等工具可以帮助你将数据转换成JSON格式以进行存储和加载。</p>
+<p>怎样快速知道一个类型的数据能否被序列化存储？</p>
+<p>将这些数据标记为公有，或添加[Serializable]属性，能在Inspector窗口观察到，就说明可以进行序列化存储。</p>
+<h2 id="Binary-Serialization"><a href="#Binary-Serialization" class="headerlink" title="Binary Serialization"></a>Binary Serialization</h2><p>声明：二进制序列化有重大风险，不建议将其用于数据处理，谨慎使用，详情见<br><a href="https://docs.microsoft.com/zh-cn/dotnet/standard/serialization/binaryformatter-security-guide">使用 BinaryFormatter 和相关类型时的反序列化风险</a>。</p>
+<h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>在Unity中使用XML序列化和反序列化需要使用System.Xml.Serialization命名空间提供的类。下面是使用XML序列化的基本步骤：</p>
+<h3 id="创建可序列化的数据类"><a href="#创建可序列化的数据类" class="headerlink" title="创建可序列化的数据类"></a>创建可序列化的数据类</h3><p>首先，你需要创建一个用于存储数据的类，该类需要被标记为 [System.Serializable] 特性，并包含公共字段或属性以保存数据。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Xml.Serialization;</span><br><span class="line"></span><br><span class="line">[<span class="meta">System.Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerData</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> playerName;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> playerScore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="序列化数据到XML"><a href="#序列化数据到XML" class="headerlink" title="序列化数据到XML"></a>序列化数据到XML</h3><p>使用XmlSerializer类将数据对象序列化为XML格式，需要提供一个FileStream或TextWriter来将XML数据写入文件或其他数据源。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Xml;</span><br><span class="line"><span class="keyword">using</span> System.Xml.Serialization;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SerializeToXML</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    PlayerData player = <span class="keyword">new</span> PlayerData();</span><br><span class="line">    player.playerName = <span class="string">&quot;John&quot;</span>;</span><br><span class="line">    player.playerScore = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    XmlSerializer serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(PlayerData));</span><br><span class="line">    <span class="keyword">using</span> (FileStream stream = <span class="keyword">new</span> FileStream(<span class="string">&quot;playerData.xml&quot;</span>, FileMode.Create))</span><br><span class="line">    &#123;</span><br><span class="line">        serializer.Serialize(stream, player);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="反序列化数据"><a href="#反序列化数据" class="headerlink" title="反序列化数据"></a>反序列化数据</h3><p>若要读取和还原XML数据，可以使用相同的XmlSerializer类将XML数据反序列化为对象。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PlayerData <span class="title">DeserializeFromXML</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    XmlSerializer serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(PlayerData));</span><br><span class="line">    <span class="keyword">using</span> (FileStream stream = <span class="keyword">new</span> FileStream(<span class="string">&quot;playerData.xml&quot;</span>, FileMode.Open))</span><br><span class="line">    &#123;</span><br><span class="line">        PlayerData player = (PlayerData)serializer.Deserialize(stream);</span><br><span class="line">        <span class="keyword">return</span> player;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意事项：<br>确保你的数据类和字段&#x2F;属性都被标记为 [System.Serializable]。XmlSerializer使用属性访问来序列化和反序列化数据，因此需要使用公共字段或属性。要保存和加载XML数据，需要使用文件操作或其他数据源。在示例中，我们使用了FileStream来保存和加载XML文件。</p>
+</blockquote>
+<p>XML序列化是一种强大的数据存储和交换方式，可用于保存和加载游戏状态、配置文件和其他复杂的数据结构。但需要注意，XML文件通常相对较大，因此在性能和存储空间方面要有所考虑。</p>
+]]></content>
+      <categories>
+        <category>Unity</category>
+      </categories>
+      <tags>
+        <tag>Unity</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Unity协程详解</title>
     <url>/2023/10/26/Unity/Unity%E5%8D%8F%E7%A8%8B%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<p>协程（Coroutine）是一种用于异步编程的概念和技术，它允许程序在执行任务的过程中暂停，然后在稍后的时间继续执行，而不会阻塞整个应用程序或线程。协程在游戏开发、图形编程和事件驱动的应用程序中非常有用，因为它们可以处理需要等待、延迟执行、动画效果、网络请求等情况，同时保持应用的响应性和性能。</p>
@@ -606,96 +696,6 @@
       </tags>
   </entry>
   <entry>
-    <title>浅谈Unity中的存档系统</title>
-    <url>/2023/10/23/Unity/%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F/</url>
-    <content><![CDATA[<p>Unity中的存档系统用于保存和加载游戏的状态、进度和设置。存档系统通常用于实现游戏的保存和载入功能，以便玩家可以在游戏中保存当前状态，然后稍后重新加载。<br>Unity读档与存档采用的储存方式主要有PlayerPrefs，外部文件，云储存等，存储形式有直接存储数据、序列化(Binary、Xml、Json)，自定义序列化格式等，数据存储过程一般需要加密。本文介绍一些常用的数据存档方式。</p>
-<span id="more"></span>
-<h2 id="Player-Prefs"><a href="#Player-Prefs" class="headerlink" title="Player Prefs"></a>Player Prefs</h2><p>Player Prefs是unity引擎内建的主要用来存储玩家偏好设定的一个类，也是用于存储小型游戏数据和偏好设置的简单键值对存储方式。它将数据存储在本地设备上，通常用于保存玩家的设置、解锁状态、得分等小型数据。<br>Player Prefs使用的是类似字典的存储方式，玩家进行数据存储时，需要输入一个key参数以及一个value参数；获取数据时只要输入键就可以获取到对应的值了。Player Prefs形式存储的数据保存在当前开发平台的注册表中，详细位置可以查看官方文档。</p>
-<h3 id="数据存储和读取"><a href="#数据存储和读取" class="headerlink" title="数据存储和读取"></a>数据存储和读取</h3><p>数据存储函数：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetString</span>(<span class="params"><span class="built_in">string</span> Key, <span class="built_in">string</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetInt</span>(<span class="params"><span class="built_in">string</span> Key, <span class="built_in">int</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetFloat</span>(<span class="params"><span class="built_in">string</span> Key, <span class="built_in">float</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"><span class="comment">//示例:PlayerPrefs.SetString(&quot;PlayerName&quot;, playerName);</span></span><br></pre></td></tr></table></figure>
-
-<p>设置完后需要保存PlayerPrefs的状态：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line">PlayerPrefs.Save();</span><br></pre></td></tr></table></figure>
-
-<p>数据读取函数：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">GetString</span>(<span class="params"><span class="built_in">string</span> Key</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">GetInt</span>(<span class="params"><span class="built_in">string</span> Key</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">float</span> <span class="title">GetFloat</span>(<span class="params"><span class="built_in">string</span> Key</span>)</span>;</span><br><span class="line"><span class="comment">//示例:string name = PlayerPrefs.GetString(&quot;PlayerName&quot;, &quot;Guest&quot;);</span></span><br><span class="line"><span class="comment">//第二个参数是默认值，如果指定的键不存在或不是string类型，则返回默认值</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="适用场景和特点"><a href="#适用场景和特点" class="headerlink" title="适用场景和特点"></a>适用场景和特点</h3><ul>
-<li>适用场景： 适合保存游戏设置、解锁状态、用户首选项等小型数据。</li>
-<li>优点： 简单易用，适用于少量数据，无需额外文件操作。</li>
-<li>缺点：数据类型单一，安全性低。</li>
-<li>拓展：JsonUtility<br>通过它我们可以将任何Unity序列化程序支持的类转成Json对象，而Json就是一个按一定格式书写的字符串，这样我们就可以使用PlayerPrefs.SetString()函数来存储Json字符串了</li>
-</ul>
-<h2 id="JSON存储"><a href="#JSON存储" class="headerlink" title="JSON存储"></a>JSON存储</h2><p>JSON是一种轻量级的数据交换格式，支持多种主流编程语言，JSON数据可以轻松地在多种不同的语言之间进行转换，适用于保存和加载游戏状态、配置文件、角色属性等复杂的数据结构。而在本质上，JSON是将数据按一定规则和格式书写的文本文件。<br>以下是在Unity中使用JSON进行数据存储和读取的一般步骤：</p>
-<h3 id="序列化对象到JSON"><a href="#序列化对象到JSON" class="headerlink" title="序列化对象到JSON"></a>序列化对象到JSON</h3><p>首先，你需要将游戏数据对象转换为JSON格式，以便将其保存到文件或PlayerPrefs中。Unity提供了JsonUtility类来实现这一目的。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个数据结构</span></span><br><span class="line">[<span class="meta">System.Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerData</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> playerName;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> playerScore;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">bool</span> isPlayerAlive;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个数据对象</span></span><br><span class="line">PlayerData playerData = <span class="keyword">new</span> PlayerData();</span><br><span class="line">playerData.playerName = <span class="string">&quot;John&quot;</span>;</span><br><span class="line">playerData.playerScore = <span class="number">1000</span>;</span><br><span class="line">playerData.isPlayerAlive = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将数据对象转换为JSON字符串</span></span><br><span class="line"><span class="built_in">string</span> jsonData = JsonUtility.ToJson(playerData);</span><br></pre></td></tr></table></figure>
-
-<h3 id="保存JSON数据"><a href="#保存JSON数据" class="headerlink" title="保存JSON数据"></a>保存JSON数据</h3><p>接下来，你可以将生成的JSON字符串保存到文件或PlayerPrefs中。如果要保存到文件，你可以使用C#的文件操作方法。<br>如果要将JSON保存到PlayerPrefs中：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 保存JSON字符串到PlayerPrefs</span></span><br><span class="line">PlayerPrefs.SetString(<span class="string">&quot;PlayerData&quot;</span>, jsonData);</span><br><span class="line">PlayerPrefs.Save(); <span class="comment">// 确保数据已保存</span></span><br></pre></td></tr></table></figure>
-
-<p>如果要将JSON保存到文件中：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SaveByJson</span>(<span class="params"><span class="built_in">string</span> saveFileName, <span class="built_in">object</span> data</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> json = JsonUtility.ToJson(data);</span><br><span class="line">    <span class="comment">//Application.persistentDataPath是unity提供的存储永久化数据的路径，随着发布平台的不同而自动变更</span></span><br><span class="line">    <span class="keyword">var</span> path = Path.Combine(Application.persistentDataPath, saveFileName);</span><br><span class="line">    File.WriteAllText(path, json);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="读取JSON数据"><a href="#读取JSON数据" class="headerlink" title="读取JSON数据"></a>读取JSON数据</h3><p>当需要读取数据时，你可以从文件或PlayerPrefs中检索JSON字符串，然后将其转换回游戏数据对象。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 从文件中读取JSON字符串</span></span><br><span class="line"><span class="built_in">string</span> jsonData = File.ReadAllText(<span class="string">&quot;playerData.json&quot;</span>);</span><br><span class="line"><span class="comment">// 或者从PlayerPrefs中读取JSON字符串</span></span><br><span class="line"><span class="built_in">string</span> jsonData = PlayerPrefs.GetString(<span class="string">&quot;PlayerData&quot;</span>);</span><br><span class="line"><span class="comment">// 将JSON字符串转换为数据对象</span></span><br><span class="line">PlayerData loadedData = JsonUtility.FromJson&lt;PlayerData&gt;(jsonData);</span><br></pre></td></tr></table></figure>
-
-<h3 id="JSON适用场景和特点"><a href="#JSON适用场景和特点" class="headerlink" title="JSON适用场景和特点"></a>JSON适用场景和特点</h3><ul>
-<li>优点：<br>相对来说更方便人类阅读和编写；<br>适用范围广泛，支持多种主流编程语言；<br>轻量级，易于网络传输与机器解析和生成；</li>
-<li>缺点：<br>支持的数据类型有限；<br>数据安全性低；</li>
-<li>适用范围：<br>联网：优秀的网络数据交换载体、云存档；<br>本地存储：非敏感而需要大量读取和修改的数据，玩家的偏好设置等。</li>
-</ul>
-<h3 id="ToJson详解"><a href="#ToJson详解" class="headerlink" title="ToJson详解"></a>ToJson详解</h3><p>对于ToJson函数，我们需要做一些补充了解。ToJson(object obj, bool x)函数会尝试序列化我们传入到第一个参数的对象里面的可序列化数据（第二个参数代表是否将json数据转换成符合阅读习惯的格式），而不是序列化我们传入的这个参数本身，所以传入的参数为一个data实例就行，结构体和类都可以直接序列化（将类标记为[System.Serializable]）。<br>但ToJson的第一个参数object并不能接收所有类型，如果你传入的参数，或者这个参数所包含的数据中，有一些对象是Unity序列化程序所不支持的，那么这些对象就会被忽略。</p>
-<p>那么Unity序列化程序支持哪些类型的对象呢？</p>
-<ul>
-<li>整数和浮点数：包括int、float、double等。</li>
-<li>布尔值：bool类型。</li>
-<li>字符串：string类型。</li>
-<li>枚举：枚举类型，如enum。</li>
-<li>结构体：用户自定义的结构体。</li>
-<li>数组：数组类型，如int[]、string[]等。</li>
-<li>表和集合：一些集合类型，如<code>List&lt;T&gt;</code>、<code>Dictionary&lt;K, V&gt;</code>等。</li>
-<li>Unity内置类型： Unity的Vector2、Vector3、Quaternion、Color等类型。</li>
-<li>自定义类和对象：你可以自定义类，并使用[Serializable]属性来标记它们以进行序列化。</li>
-<li>接口：接口可以在Unity中被序列化，但只有具体实现的类的实例可以被正确序列化。</li>
-<li>GameObject和Component： Unity中的GameObject和Component也可以被序列化，但需要注意它们的序列化与持久性存储有关，如Prefab和Scene。</li>
-<li>序列化嵌套对象： 你可以嵌套序列化对象，即一个序列化对象中包含另一个序列化对象。</li>
-</ul>
-<p>Unity的序列化系统在序列化和反序列化对象时具有一些限制和规则，包括：</p>
-<ul>
-<li>字段访问级别：只有public的字段可以被Unity的序列化系统正确序列化和反序列化。这些字段通常是被标记为 [Serializable] 特性的字段。</li>
-<li>字段类型限制：Unity的序列化系统支持一系列常见的数据类型，如整数、浮点数、字符串、布尔值、枚举、结构体等。对于更复杂的数据类型，如字典、多维数组、泛型、委托等，通常需要进行转换或者使用其他方法来实现序列化和反序列化。</li>
-<li>MonoBehaviour序列化：Unity的MonoBehaviour脚本中的字段，即使是私有字段，也可以被Unity序列化系统正确序列化和在Inspector中编辑，因为MonoBehaviour继承了Unity的序列化接口。</li>
-<li>非静态字段：非静态字段可以被序列化，但静态字段通常不会被序列化。</li>
-<li>只读和常量字段：只读和常量字段不能被序列化，因为它们的值不能被更改。</li>
-<li>嵌套对象：Unity支持嵌套对象的序列化，允许你在一个序列化对象中包含其他序列化对象。</li>
-</ul>
-<p>如果需要在Unity中存储不支持序列化的数据类型，你通常需要将其转换成支持Unity序列化的类型，或者手动将其数据转换成一种支持的数据结构。对于字典、泛型集合等复杂数据结构，你可能需要编写自定义的序列化和反序列化逻辑。Unity的JsonUtility等工具可以帮助你将数据转换成JSON格式以进行存储和加载。</p>
-<p>怎样快速知道一个类型的数据能否被序列化存储？</p>
-<p>将这些数据标记为公有，或添加[Serializable]属性，能在Inspector窗口观察到，就说明可以进行序列化存储。</p>
-<h2 id="Binary-Serialization"><a href="#Binary-Serialization" class="headerlink" title="Binary Serialization"></a>Binary Serialization</h2><p>声明：二进制序列化有重大风险，不建议将其用于数据处理，谨慎使用，详情见<br><a href="https://docs.microsoft.com/zh-cn/dotnet/standard/serialization/binaryformatter-security-guide">使用 BinaryFormatter 和相关类型时的反序列化风险</a>。</p>
-<h2 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h2><p>在Unity中使用XML序列化和反序列化需要使用System.Xml.Serialization命名空间提供的类。下面是使用XML序列化的基本步骤：</p>
-<h3 id="创建可序列化的数据类"><a href="#创建可序列化的数据类" class="headerlink" title="创建可序列化的数据类"></a>创建可序列化的数据类</h3><p>首先，你需要创建一个用于存储数据的类，该类需要被标记为 [System.Serializable] 特性，并包含公共字段或属性以保存数据。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Xml.Serialization;</span><br><span class="line"></span><br><span class="line">[<span class="meta">System.Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerData</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> playerName;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> playerScore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="序列化数据到XML"><a href="#序列化数据到XML" class="headerlink" title="序列化数据到XML"></a>序列化数据到XML</h3><p>使用XmlSerializer类将数据对象序列化为XML格式，需要提供一个FileStream或TextWriter来将XML数据写入文件或其他数据源。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Xml;</span><br><span class="line"><span class="keyword">using</span> System.Xml.Serialization;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SerializeToXML</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    PlayerData player = <span class="keyword">new</span> PlayerData();</span><br><span class="line">    player.playerName = <span class="string">&quot;John&quot;</span>;</span><br><span class="line">    player.playerScore = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    XmlSerializer serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(PlayerData));</span><br><span class="line">    <span class="keyword">using</span> (FileStream stream = <span class="keyword">new</span> FileStream(<span class="string">&quot;playerData.xml&quot;</span>, FileMode.Create))</span><br><span class="line">    &#123;</span><br><span class="line">        serializer.Serialize(stream, player);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="反序列化数据"><a href="#反序列化数据" class="headerlink" title="反序列化数据"></a>反序列化数据</h3><p>若要读取和还原XML数据，可以使用相同的XmlSerializer类将XML数据反序列化为对象。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PlayerData <span class="title">DeserializeFromXML</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    XmlSerializer serializer = <span class="keyword">new</span> XmlSerializer(<span class="keyword">typeof</span>(PlayerData));</span><br><span class="line">    <span class="keyword">using</span> (FileStream stream = <span class="keyword">new</span> FileStream(<span class="string">&quot;playerData.xml&quot;</span>, FileMode.Open))</span><br><span class="line">    &#123;</span><br><span class="line">        PlayerData player = (PlayerData)serializer.Deserialize(stream);</span><br><span class="line">        <span class="keyword">return</span> player;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意事项：<br>确保你的数据类和字段&#x2F;属性都被标记为 [System.Serializable]。XmlSerializer使用属性访问来序列化和反序列化数据，因此需要使用公共字段或属性。要保存和加载XML数据，需要使用文件操作或其他数据源。在示例中，我们使用了FileStream来保存和加载XML文件。</p>
-</blockquote>
-<p>XML序列化是一种强大的数据存储和交换方式，可用于保存和加载游戏状态、配置文件和其他复杂的数据结构。但需要注意，XML文件通常相对较大，因此在性能和存储空间方面要有所考虑。</p>
-]]></content>
-      <categories>
-        <category>Unity</category>
-      </categories>
-      <tags>
-        <tag>Unity</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Unity状态机详解</title>
     <url>/2023/10/28/Unity/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/</url>
     <content><![CDATA[<p>状态机（State Machine）全称为有限状态自动机，是一种计算机科学和工程领域中的建模工具，也是一种用于描述对象的不同状态以及状态之间转换的数学模型。状态机在各种应用中都有广泛的应用，包括软件开发、游戏设计、自动控制系统等。在实际编程中，我们将这种数学模型的运用称为状态机设计模式，简称状态模式。在Unity引擎中运用最明显的例子就是Animator动画器。今天，我们就来详细介绍一下状态机。</p>
@@ -744,7 +744,7 @@
 <h3 id="使用状态机的版本"><a href="#使用状态机的版本" class="headerlink" title="使用状态机的版本"></a>使用状态机的版本</h3><h4 id="Base"><a href="#Base" class="headerlink" title="Base"></a>Base</h4><h5 id="IState接口"><a href="#IState接口" class="headerlink" title="IState接口"></a>IState接口</h5><p>通过这个接口，我们定义一个状态必有的几种方法，即状态的进入，退出，逻辑更新，物理更新（我们通过刚体模拟物体运动）。</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IState</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Enter</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Exit</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">LogicUpdate</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">PhysicUpdate</span>()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h5 id="StateMachineBase"><a href="#StateMachineBase" class="headerlink" title="StateMachineBase"></a>StateMachineBase</h5><p>定义状态机类本身。状态机类的功能主要有两点：①持有所有的状态类，并对它们进行管理和切换；②负责进行当前状态的更新。我们使用字典来映射到具体的状态上。</p>
+<h5 id="StateMachineBase"><a href="#StateMachineBase" class="headerlink" title="StateMachineBase"></a>StateMachineBase</h5><p>定义状态机基类。状态机类的功能主要有两点：①持有所有的状态类，并对它们进行管理和切换；②负责进行当前状态的更新。我们使用字典来映射到具体的状态上。</p>
 <figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StateMachineBase</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//当前状态</span></span><br><span class="line">    IState currentState; </span><br><span class="line">    <span class="comment">//设置一个状态表，可以根据state的Type获取到对应的state</span></span><br><span class="line">    <span class="keyword">protected</span> Dictionary&lt;System.Type, IState&gt; stateTable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//进行当前状态的逻辑更新；</span></span><br><span class="line">        currentState.LogicUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">FixedUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//进行当前状态的物理更新；</span></span><br><span class="line">        currentState.PhysicUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">SwitchOn</span>(<span class="params">IState newState</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//当前状态的启动，我们将在这个类的子类中调用这个方法，因此添加protected修饰符</span></span><br><span class="line">        currentState = newState;</span><br><span class="line">        currentState.Enter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SwitchState</span>(<span class="params">IState newState</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//当前状态的切换，和启动函数不同的是，我们进行状态切换时，需要先退出当前状态</span></span><br><span class="line">        currentState.Exit();</span><br><span class="line">        SwitchOn(newState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//传入字典key值的重载</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SwitchState</span>(<span class="params">System.Type newState</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        SwitchState(stateTable[newState]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="Player"><a href="#Player" class="headerlink" title="Player"></a>Player</h4><h5 id="PlayerState玩家状态类"><a href="#PlayerState玩家状态类" class="headerlink" title="PlayerState玩家状态类"></a>PlayerState玩家状态类</h5><p>定义玩家状态类，继承 IState 接口，同时继承 ScriptableObject，让我们更方便的管理玩家的状态。</p>
@@ -769,10 +769,8 @@
 </ul>
 <p>同时，使用状态机也有一些缺点：</p>
 <ul>
-<li><p>针对每一个状态，我们都需要创建一个类来存储数据，造成了文件数量增多，所以使用状态机对文件规范整理的要求很高。</p>
-</li>
-<li><p>代码重复。</p>
-</li>
+<li>针对每一个状态，我们都需要创建一个类来存储数据，造成了文件数量增多，所以使用状态机对文件规范整理的要求很高。</li>
+<li>代码重复。</li>
 </ul>
 <p>总之，使用状态机有助于简化代码、提高可维护性、降低复杂性，同时提供更清晰的结构，这对于游戏开发和软件设计都是非常有益的。状态机是一种强大的工具，可用于管理对象、角色或系统的不同状态和行为，帮助开发人员更好地组织和控制复杂性。</p>
 ]]></content>
@@ -781,6 +779,128 @@
       </categories>
       <tags>
         <tag>Unity</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo + github 博客搭建</title>
+    <url>/2023/10/18/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/Hexo+Github%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<p>记录使用Hexo+Github搭建博客的详细步骤，包含了环境安装、博客搭建、远程部署、主题更换四个部分的内容。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p><strong>git：</strong> git是一个开源的<strong>分布式版本控制系统</strong>，用以有效、高速地处理从非常小到非常大的项目版本管理。</p>
+</li>
+<li><p><strong>github：</strong> 一个基于 Git 的代码托管平台，它提供了一种集中式和协作式的方式，让开发者能够存储、管理、追踪和协作开发软件项目。。</p>
+</li>
+<li><p><strong>Github Pages：</strong> GitHub 提供的一个免费静态网站托管服务，允许用户创建和托管个人、团队或项目的静态网站，支持HTML和MarkDown类型的静态文件。Github Pages三个特点：免费托管、自带主题、支持自制页面和Jekyll。</p>
+<p>GitHub Pages 的设计理念之一是提供一个用户友好的方式来展示项目或个人信息，以减轻新手在 GitHub 上阅读源码时的困难。通过自定义项目首页，用户可以为他们的项目创建简洁、易懂的网页，提供项目的概述、用法说明、示例、文档和其他有关信息。这有助于提高项目的可访问性，使其他开发者更容易理解和使用项目。</p>
+<p>GitHub Pages 还非常适合博客、个人网站和在线履历。许多开发者和创作者使用 GitHub Pages 来分享技术文章、个人作品和项目文档。由于它的简单性和集成性，GitHub Pages 成为了一个非常受欢迎的方式来托管静态内容，并将其与 GitHub 存储库集成在一起。</p>
+</li>
+<li><p><strong>为什么使用Github Pages：</strong><br>①搭建简单且免费；<br>②可以绑定自己的域名；<br>③支持静态脚本；<br>④DIY自由发挥，支持使用模板，git、markdown、bootstrap、jekyll等；<br>⑤方便使用git做版本管理。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>两种Pages类型</strong>  </p>
+<p><strong>1.User&#x2F;Organization Pages个人或公司站点</strong></p>
+<ul>
+<li>特点：这种模式通过创建一个与用户或组织名称相对应的仓库，然后在该仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。你的网站将可以通过 <a href="https://username.github.io/">https://username.github.io</a> 或 <a href="https://organizationname.github.io/">https://organizationname.github.io</a> 的方式访问，其中 username 是你的 GitHub 用户名，organizationname 是组织的名称。  </li>
+<li>用途：主要用于创建个人或组织的官方网站，或者用于展示与用户&#x2F;组织相关的项目和信息、博客、作品集等。</li>
+</ul>
+<p><strong>2.Project Pages项目站点</strong></p>
+<ul>
+<li>特点：这种模式通过在特定项目的仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。项目页面将通过 <a href="https://username.github.io/repositoryname">https://username.github.io/repositoryname</a> 访问，其中 username 是你的 GitHub 用户名，repositoryname 是项目的名称。</li>
+<li>用途：主要用于创建与项目相关的二级应用页面，用于项目文档、演示、展示和其他相关信息。每个 GitHub 仓库都可以启用此功能，使项目的文档和演示更容易分享和访问。</li>
+</ul>
+<p>这种组织方式允许将主站和项目页面进行有效分离，使用者可以专注于在主站上展示个人或组织信息，同时在项目页面上为不同的项目提供特定的文档或演示。这样的架构有助于保持项目之间的独立性和整洁性。</p>
+</blockquote>
+<h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><h4 id="下载git"><a href="#下载git" class="headerlink" title="下载git"></a>下载git</h4><p>官方地址：<a href="https://">https://git-scm.com/</a><br>访问官方地址，下载对应的安装包，进行安装即可（一直点击下一步）。</p>
+<h4 id="验证git"><a href="#验证git" class="headerlink" title="验证git"></a>验证git</h4><p>安装好之后，鼠标右键可以看到：Git Bash Here，点击后打开。输入 <code>git –-version</code>或<code>git -v</code>，出现版本号说明安装成功。</p>
+<p><img src="/../images/pic1/20221204_195202_pic1.png" alt="查看Git版本"></p>
+<h3 id="安装Node"><a href="#安装Node" class="headerlink" title="安装Node"></a>安装Node</h3><h4 id="下载Node"><a href="#下载Node" class="headerlink" title="下载Node"></a>下载Node</h4><p>官方地址：<a href="https://">https://nodejs.org/en/</a></p>
+<p>访问Node官网，下载适合自己windows的版本，安装过程中一直点下一步。在Custom Setup这一步的时候，选择Add to Path（有的时候这个选项是默认的）。</p>
+<h4 id="验证Node"><a href="#验证Node" class="headerlink" title="验证Node"></a>验证Node</h4><p>安装好以后，打开cmd命令窗口，输入 <code>npm –v</code>，出现版本号则说明安装成功且环境变量已经配置好了。</p>
+<p><img src="/../images/pic1/20221204_195900_pic2.png" alt="查看Node版本"></p>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><h4 id="下载Hexo"><a href="#下载Hexo" class="headerlink" title="下载Hexo"></a>下载Hexo</h4><p>这一步可以使用git bash来安装，也可以直接使用cmd窗口，命令是一样的。官方地址：<a href="https://">https://nodejs.org/en</a></p>
+<p><code>npm install -g hexo-cli</code></p>
+<h4 id="验证Hexo"><a href="#验证Hexo" class="headerlink" title="验证Hexo"></a>验证Hexo</h4><p>安装完成后输入 <code>hexo –v</code>，出现一系列版本号就说明安装成功了。</p>
+<p><img src="/../images/pic1/20221204_200230_pic3.png" alt="查看Hexo版本"></p>
+<h2 id="创建个人站点"><a href="#创建个人站点" class="headerlink" title="创建个人站点"></a>创建个人站点</h2><h3 id="新建一个仓库"><a href="#新建一个仓库" class="headerlink" title="新建一个仓库"></a>新建一个仓库</h3><p><img src="/../images/pic1/20221204_202240_pic4.png" alt="新建仓库"></p>
+<p>仓库的名字填写username&lt;用户名&gt;.github.io，权限默认是public，所有人都可以访问我们的仓库；如果想要创建私人权限的仓库，选择“private”。</p>
+<p><img src="/../images/pic1/20221204_230931_pic19.png" alt="填写仓库名字"></p>
+<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><p>进入仓库，点击创建文件。</p>
+<p><img src="/../images/pic1/20221204_231416_pic6.png" alt="创建文件"></p>
+<p>创建一个新的文件，名字叫做index.html（必须叫这个，静态http文件托管服务的默认访问文件就是index.html）。<br>查看网址，选择“Settings”，找到“Pages”。</p>
+<p><img src="/../images/pic1/20221204_231854_pic18.png" alt="查看网址"></p>
+<h2 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h2><p>现在开始可以使用hexo来生成一个博客了。<br>在本地创建一个文件夹，用于存储博客的本地数据。<br>cd到这个文件夹下，运行命令 <code>hexo init</code>，hexo会将这个文件夹初始化成一个博客专用文件夹，这个过程会花费一些时间。</p>
+<p><img src="/../images/pic1/20221204_212425_pic10.png" alt="初始化博客文件夹"></p>
+<p>初始化完成后，可以在source文件夹中看到一个叫hello-world的默认文章，还会有一个默认主题。先生成博客看一下效果，运行命令：<br><code>hexo generate</code>或是简写成 <code>hexo g</code>。</p>
+<p><img src="/../images/pic1/20221204_212531_pic11.png" alt="查看效果"></p>
+<p>然后hexo会开始生成博客，生成结束后，原文件下多了一个public文件夹，这个文件夹是hexo生成的一个完整的静态网站，也就是我们的博客。网站生成好后，我们可以启动服务器来浏览博客，运行命令：<code>hexo server</code>。</p>
+<p><img src="/../images/pic1/20221204_213120_pic12.png" alt="浏览博客"></p>
+<p>打开浏览器，输入localhost:4000就可以浏览博客了。</p>
+<p><img src="/../images/pic1/20221204_213408_pic13.png" alt="本地浏览博客"></p>
+<blockquote>
+<p>Tips：如果出现页面加载不出来，可能是端口被占用了。Ctrl+C 关闭服务器，运行 <code>hexo server -p 5000</code> 更改端口号后重试。</p>
+<p>Hexo 博客文件夹目录结构如下：</p>
+<p><img src="/../images/pic1/20221204_213953_pic14.png" alt="Hexo博客文件夹目录"></p>
+</blockquote>
+<h2 id="远程部署"><a href="#远程部署" class="headerlink" title="远程部署"></a>远程部署</h2><p>此时运行的服务器，是我们的本地服务器，只有在本机上才可以访问。为了让别人能访问我们的博客，需要进行远程部署，将我们生成好的博客部署到远程仓库去。如果远程仓库支持pages服务，就可以通过这样的方法发布和更新博客。</p>
+<p>在博客文件夹内右键，点击Git Bash here。</p>
+<p>初始化git仓库。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>配置github账户信息。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Github用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>继续输入以下命令来生成关联邮箱的密钥：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –t rsa –C <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>按git给出的路径，找到id_rsa.pub文件，并复制其中的内容（用记事本就可以打开）。<br>如果电脑上找不到.ssh文件，使用下边的命令来生成(<strong>记得再执行一次前一条命令</strong>)：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –o</span><br></pre></td></tr></table></figure>
+
+<p>进到仓库，点击右上角setting进入设置。Title随便写，Key的内容填刚才id_rsa.pub文件中复制的内容。</p>
+<p><img src="/../images/pic1/20221204_220509_pic15.png" alt="设置key"></p>
+<p>校验ssh key是否成功：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/pic1/20221205_000741_pic20.png" alt="校验key是否成功"></p>
+<p>修改博客目录配置文件（_congif.yml）中的deploy字段，如下：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git仓库地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Git仓库地址</p>
+<p><img src="/../images/pic1/20221204_221355_pic16.png" alt="修改deploy字段"></p>
+</blockquote>
+<p>要使用远程部署，需要先安装 <code>hexo-deployer-git</code>，这是适用于git类型仓库的方法。cd到博客文件夹后运行命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save  <span class="comment">#安装部署工具</span></span><br></pre></td></tr></table></figure>
+
+<p>验证：在你的 Hexo 项目目录中，打开 package.json 文件。在这个文件中，你可以找到项目的依赖项列表，查看是否包含了 hexo-deployer-git。</p>
+<p>把本地仓库部署到云端：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果成功部署到github，却访问不了网站，重启路由器。</strong></p>
+<h2 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h2><p>hexo主题网站：<a href="https://hexo.io/themes/index.html">https://hexo.io/themes/index.html</a><br>找到博客文件夹的themes文件夹，这是存放博客主题的文件夹。<br><img src="/../images/pic1/themes.png" alt="themes文件夹"><br>挑选一个喜欢的博客主题，进入到对应的git仓库，并下载到本地来（具体可以参考每个主题的README文档），也可以直接下载压缩包，解压到themes文件夹。<br><img src="/../images/pic1/zip.png" alt="zip下载">  </p>
+<blockquote>
+<p>Tips:</p>
+<ul>
+<li>在博客文件夹下打开git命令窗口，执行相关指令；</li>
+<li>按照README执行指令时，如果使用git clone命令时出现了<code> OpenSSL SSL_read: Connection was reset, errno 10054</code>报错，看下是否是README是否没更新https。</li>
+</ul>
+</blockquote>
+<p>确认已经下载好主题到themes文件夹后，打开博客文件夹下的_config.yml文件，修改theme为你所选主题的对应文件夹名，示例：<code>theme:next</code></p>
+<blockquote>
+<p>Tips:每个主题文件夹下也有一个_config.yml文件，这是该主题的配置文件，按照主题文档修改即可，不要和博客的_config.yml搞混了。</p>
+</blockquote>
+<p>然后执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean  <span class="comment">#清除缓存</span></span><br><span class="line">hexo g  <span class="comment">#生成静态界面</span></span><br><span class="line">hexo d  <span class="comment">#部署到github</span></span><br></pre></td></tr></table></figure>
+
+<p>再次打开对应站点应该就可以看到页面被更换为了新主题。也可以启动hexo服务器后访问<code>localhost:4000</code>本地查看后再部署。</p>
+]]></content>
+      <categories>
+        <category>博客搭建</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -989,128 +1109,6 @@
       <tags>
         <tag>Hexo</tag>
         <tag>NexT</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo + github 博客搭建</title>
-    <url>/2023/10/18/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/Hexo+Github%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<p>记录使用Hexo+Github搭建博客的详细步骤，包含了环境安装、博客搭建、远程部署、主题更换四个部分的内容。</p>
-<span id="more"></span>
-
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li><p><strong>git：</strong> git是一个开源的<strong>分布式版本控制系统</strong>，用以有效、高速地处理从非常小到非常大的项目版本管理。</p>
-</li>
-<li><p><strong>github：</strong> 一个基于 Git 的代码托管平台，它提供了一种集中式和协作式的方式，让开发者能够存储、管理、追踪和协作开发软件项目。。</p>
-</li>
-<li><p><strong>Github Pages：</strong> GitHub 提供的一个免费静态网站托管服务，允许用户创建和托管个人、团队或项目的静态网站，支持HTML和MarkDown类型的静态文件。Github Pages三个特点：免费托管、自带主题、支持自制页面和Jekyll。</p>
-<p>GitHub Pages 的设计理念之一是提供一个用户友好的方式来展示项目或个人信息，以减轻新手在 GitHub 上阅读源码时的困难。通过自定义项目首页，用户可以为他们的项目创建简洁、易懂的网页，提供项目的概述、用法说明、示例、文档和其他有关信息。这有助于提高项目的可访问性，使其他开发者更容易理解和使用项目。</p>
-<p>GitHub Pages 还非常适合博客、个人网站和在线履历。许多开发者和创作者使用 GitHub Pages 来分享技术文章、个人作品和项目文档。由于它的简单性和集成性，GitHub Pages 成为了一个非常受欢迎的方式来托管静态内容，并将其与 GitHub 存储库集成在一起。</p>
-</li>
-<li><p><strong>为什么使用Github Pages：</strong><br>①搭建简单且免费；<br>②可以绑定自己的域名；<br>③支持静态脚本；<br>④DIY自由发挥，支持使用模板，git、markdown、bootstrap、jekyll等；<br>⑤方便使用git做版本管理。</p>
-</li>
-</ul>
-<blockquote>
-<p><strong>两种Pages类型</strong>  </p>
-<p><strong>1.User&#x2F;Organization Pages个人或公司站点</strong></p>
-<ul>
-<li>特点：这种模式通过创建一个与用户或组织名称相对应的仓库，然后在该仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。你的网站将可以通过 <a href="https://username.github.io/">https://username.github.io</a> 或 <a href="https://organizationname.github.io/">https://organizationname.github.io</a> 的方式访问，其中 username 是你的 GitHub 用户名，organizationname 是组织的名称。  </li>
-<li>用途：主要用于创建个人或组织的官方网站，或者用于展示与用户&#x2F;组织相关的项目和信息、博客、作品集等。</li>
-</ul>
-<p><strong>2.Project Pages项目站点</strong></p>
-<ul>
-<li>特点：这种模式通过在特定项目的仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。项目页面将通过 <a href="https://username.github.io/repositoryname">https://username.github.io/repositoryname</a> 访问，其中 username 是你的 GitHub 用户名，repositoryname 是项目的名称。</li>
-<li>用途：主要用于创建与项目相关的二级应用页面，用于项目文档、演示、展示和其他相关信息。每个 GitHub 仓库都可以启用此功能，使项目的文档和演示更容易分享和访问。</li>
-</ul>
-<p>这种组织方式允许将主站和项目页面进行有效分离，使用者可以专注于在主站上展示个人或组织信息，同时在项目页面上为不同的项目提供特定的文档或演示。这样的架构有助于保持项目之间的独立性和整洁性。</p>
-</blockquote>
-<h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><h4 id="下载git"><a href="#下载git" class="headerlink" title="下载git"></a>下载git</h4><p>官方地址：<a href="https://">https://git-scm.com/</a><br>访问官方地址，下载对应的安装包，进行安装即可（一直点击下一步）。</p>
-<h4 id="验证git"><a href="#验证git" class="headerlink" title="验证git"></a>验证git</h4><p>安装好之后，鼠标右键可以看到：Git Bash Here，点击后打开。输入 <code>git –-version</code>或<code>git -v</code>，出现版本号说明安装成功。</p>
-<p><img src="/../images/pic1/20221204_195202_pic1.png" alt="查看Git版本"></p>
-<h3 id="安装Node"><a href="#安装Node" class="headerlink" title="安装Node"></a>安装Node</h3><h4 id="下载Node"><a href="#下载Node" class="headerlink" title="下载Node"></a>下载Node</h4><p>官方地址：<a href="https://">https://nodejs.org/en/</a></p>
-<p>访问Node官网，下载适合自己windows的版本，安装过程中一直点下一步。在Custom Setup这一步的时候，选择Add to Path（有的时候这个选项是默认的）。</p>
-<h4 id="验证Node"><a href="#验证Node" class="headerlink" title="验证Node"></a>验证Node</h4><p>安装好以后，打开cmd命令窗口，输入 <code>npm –v</code>，出现版本号则说明安装成功且环境变量已经配置好了。</p>
-<p><img src="/../images/pic1/20221204_195900_pic2.png" alt="查看Node版本"></p>
-<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><h4 id="下载Hexo"><a href="#下载Hexo" class="headerlink" title="下载Hexo"></a>下载Hexo</h4><p>这一步可以使用git bash来安装，也可以直接使用cmd窗口，命令是一样的。官方地址：<a href="https://">https://nodejs.org/en</a></p>
-<p><code>npm install -g hexo-cli</code></p>
-<h4 id="验证Hexo"><a href="#验证Hexo" class="headerlink" title="验证Hexo"></a>验证Hexo</h4><p>安装完成后输入 <code>hexo –v</code>，出现一系列版本号就说明安装成功了。</p>
-<p><img src="/../images/pic1/20221204_200230_pic3.png" alt="查看Hexo版本"></p>
-<h2 id="创建个人站点"><a href="#创建个人站点" class="headerlink" title="创建个人站点"></a>创建个人站点</h2><h3 id="新建一个仓库"><a href="#新建一个仓库" class="headerlink" title="新建一个仓库"></a>新建一个仓库</h3><p><img src="/../images/pic1/20221204_202240_pic4.png" alt="新建仓库"></p>
-<p>仓库的名字填写username&lt;用户名&gt;.github.io，权限默认是public，所有人都可以访问我们的仓库；如果想要创建私人权限的仓库，选择“private”。</p>
-<p><img src="/../images/pic1/20221204_230931_pic19.png" alt="填写仓库名字"></p>
-<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><p>进入仓库，点击创建文件。</p>
-<p><img src="/../images/pic1/20221204_231416_pic6.png" alt="创建文件"></p>
-<p>创建一个新的文件，名字叫做index.html（必须叫这个，静态http文件托管服务的默认访问文件就是index.html）。<br>查看网址，选择“Settings”，找到“Pages”。</p>
-<p><img src="/../images/pic1/20221204_231854_pic18.png" alt="查看网址"></p>
-<h2 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h2><p>现在开始可以使用hexo来生成一个博客了。<br>在本地创建一个文件夹，用于存储博客的本地数据。<br>cd到这个文件夹下，运行命令 <code>hexo init</code>，hexo会将这个文件夹初始化成一个博客专用文件夹，这个过程会花费一些时间。</p>
-<p><img src="/../images/pic1/20221204_212425_pic10.png" alt="初始化博客文件夹"></p>
-<p>初始化完成后，可以在source文件夹中看到一个叫hello-world的默认文章，还会有一个默认主题。先生成博客看一下效果，运行命令：<br><code>hexo generate</code>或是简写成 <code>hexo g</code>。</p>
-<p><img src="/../images/pic1/20221204_212531_pic11.png" alt="查看效果"></p>
-<p>然后hexo会开始生成博客，生成结束后，原文件下多了一个public文件夹，这个文件夹是hexo生成的一个完整的静态网站，也就是我们的博客。网站生成好后，我们可以启动服务器来浏览博客，运行命令：<code>hexo server</code>。</p>
-<p><img src="/../images/pic1/20221204_213120_pic12.png" alt="浏览博客"></p>
-<p>打开浏览器，输入localhost:4000就可以浏览博客了。</p>
-<p><img src="/../images/pic1/20221204_213408_pic13.png" alt="本地浏览博客"></p>
-<blockquote>
-<p>Tips：如果出现页面加载不出来，可能是端口被占用了。Ctrl+C 关闭服务器，运行 <code>hexo server -p 5000</code> 更改端口号后重试。</p>
-<p>Hexo 博客文件夹目录结构如下：</p>
-<p><img src="/../images/pic1/20221204_213953_pic14.png" alt="Hexo博客文件夹目录"></p>
-</blockquote>
-<h2 id="远程部署"><a href="#远程部署" class="headerlink" title="远程部署"></a>远程部署</h2><p>此时运行的服务器，是我们的本地服务器，只有在本机上才可以访问。为了让别人能访问我们的博客，需要进行远程部署，将我们生成好的博客部署到远程仓库去。如果远程仓库支持pages服务，就可以通过这样的方法发布和更新博客。</p>
-<p>在博客文件夹内右键，点击Git Bash here。</p>
-<p>初始化git仓库。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-
-<p>配置github账户信息。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Github用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>继续输入以下命令来生成关联邮箱的密钥：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –t rsa –C <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>按git给出的路径，找到id_rsa.pub文件，并复制其中的内容（用记事本就可以打开）。<br>如果电脑上找不到.ssh文件，使用下边的命令来生成(<strong>记得再执行一次前一条命令</strong>)：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –o</span><br></pre></td></tr></table></figure>
-
-<p>进到仓库，点击右上角setting进入设置。Title随便写，Key的内容填刚才id_rsa.pub文件中复制的内容。</p>
-<p><img src="/../images/pic1/20221204_220509_pic15.png" alt="设置key"></p>
-<p>校验ssh key是否成功：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../images/pic1/20221205_000741_pic20.png" alt="校验key是否成功"></p>
-<p>修改博客目录配置文件（_congif.yml）中的deploy字段，如下：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git仓库地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>Git仓库地址</p>
-<p><img src="/../images/pic1/20221204_221355_pic16.png" alt="修改deploy字段"></p>
-</blockquote>
-<p>要使用远程部署，需要先安装 <code>hexo-deployer-git</code>，这是适用于git类型仓库的方法。cd到博客文件夹后运行命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save  <span class="comment">#安装部署工具</span></span><br></pre></td></tr></table></figure>
-
-<p>验证：在你的 Hexo 项目目录中，打开 package.json 文件。在这个文件中，你可以找到项目的依赖项列表，查看是否包含了 hexo-deployer-git。</p>
-<p>把本地仓库部署到云端：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<p><strong>如果成功部署到github，却访问不了网站，重启路由器。</strong></p>
-<h2 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h2><p>hexo主题网站：<a href="https://hexo.io/themes/index.html">https://hexo.io/themes/index.html</a><br>找到博客文件夹的themes文件夹，这是存放博客主题的文件夹。<br><img src="/../images/pic1/themes.png" alt="themes文件夹"><br>挑选一个喜欢的博客主题，进入到对应的git仓库，并下载到本地来（具体可以参考每个主题的README文档），也可以直接下载压缩包，解压到themes文件夹。<br><img src="/../images/pic1/zip.png" alt="zip下载">  </p>
-<blockquote>
-<p>Tips:</p>
-<ul>
-<li>在博客文件夹下打开git命令窗口，执行相关指令；</li>
-<li>按照README执行指令时，如果使用git clone命令时出现了<code> OpenSSL SSL_read: Connection was reset, errno 10054</code>报错，看下是否是README是否没更新https。</li>
-</ul>
-</blockquote>
-<p>确认已经下载好主题到themes文件夹后，打开博客文件夹下的_config.yml文件，修改theme为你所选主题的对应文件夹名，示例：<code>theme:next</code></p>
-<blockquote>
-<p>Tips:每个主题文件夹下也有一个_config.yml文件，这是该主题的配置文件，按照主题文档修改即可，不要和博客的_config.yml搞混了。</p>
-</blockquote>
-<p>然后执行以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean  <span class="comment">#清除缓存</span></span><br><span class="line">hexo g  <span class="comment">#生成静态界面</span></span><br><span class="line">hexo d  <span class="comment">#部署到github</span></span><br></pre></td></tr></table></figure>
-
-<p>再次打开对应站点应该就可以看到页面被更换为了新主题。也可以启动hexo服务器后访问<code>localhost:4000</code>本地查看后再部署。</p>
-]]></content>
-      <categories>
-        <category>博客搭建</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>

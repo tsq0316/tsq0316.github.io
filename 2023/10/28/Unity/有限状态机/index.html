@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="状态机（State Machine）全称为有限状态自动机，是一种计算机科学和工程领域中的建模工具，也是一种用于描述对象的不同状态以及状态之间转换的数学模型。状态机在各种应用中都有广泛的应用，包括软件开发、游戏设计、自动控制系统等。在实际编程中，我们将这种数学模型的运用称为状态机设计模式，简称状态模式。在Unity引擎中运用最明显的例子就是Animator动画器。今天，我们就来详细介绍一下状态机。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity状态机详解">
+<meta property="og:url" content="http://tsq0316.github.io/2023/10/28/Unity/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="状态机（State Machine）全称为有限状态自动机，是一种计算机科学和工程领域中的建模工具，也是一种用于描述对象的不同状态以及状态之间转换的数学模型。状态机在各种应用中都有广泛的应用，包括软件开发、游戏设计、自动控制系统等。在实际编程中，我们将这种数学模型的运用称为状态机设计模式，简称状态模式。在Unity引擎中运用最明显的例子就是Animator动画器。今天，我们就来详细介绍一下状态机。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-03T20:37:51.277Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/10/28/Unity/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/10/28/Unity/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/","path":"2023/10/28/Unity/有限状态机/","title":"Unity状态机详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unity状态机详解 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">什么是状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">状态机的组成部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8E%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84demo%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">一个基于状态机的demo示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E6%99%AE%E9%80%9A%E7%89%88%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">不使用状态机的普通版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">4.2.</span> <span class="nav-text">使用状态机的版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Base"><span class="nav-number">4.2.1.</span> <span class="nav-text">Base</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#IState%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">IState接口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#StateMachineBase"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">StateMachineBase</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Player"><span class="nav-number">4.2.2.</span> <span class="nav-text">Player</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#PlayerState%E7%8E%A9%E5%AE%B6%E7%8A%B6%E6%80%81%E7%B1%BB"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">PlayerState玩家状态类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%8E%A9%E5%AE%B6%E7%8A%B6%E6%80%81%E6%9C%BA%E7%B1%BB"><span class="nav-number">4.2.2.2.</span> <span class="nav-text">玩家状态机类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Idle%E7%8A%B6%E6%80%81"><span class="nav-number">4.2.2.3.</span> <span class="nav-text">Idle状态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Run%E7%8A%B6%E6%80%81"><span class="nav-number">4.2.2.4.</span> <span class="nav-text">Run状态</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">状态机的优缺点</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/10/28/Unity/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unity状态机详解 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity状态机详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-28T00:00:00+08:00">2023-10-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-04 04:37:51" itemprop="dateModified" datetime="2023-11-04T04:37:51+08:00">2023-11-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>状态机（State Machine）全称为有限状态自动机，是一种计算机科学和工程领域中的建模工具，也是一种用于描述对象的不同状态以及状态之间转换的数学模型。状态机在各种应用中都有广泛的应用，包括软件开发、游戏设计、自动控制系统等。在实际编程中，我们将这种数学模型的运用称为状态机设计模式，简称状态模式。在Unity引擎中运用最明显的例子就是Animator动画器。今天，我们就来详细介绍一下状态机。</p>
+<span id="more"></span>
+<h2 id="什么是状态机"><a href="#什么是状态机" class="headerlink" title="什么是状态机"></a>什么是状态机</h2><p>状态机是一种抽象模型，通常用于描述对象、系统或程序的行为方式。它包括一组可能的状态，每个状态代表对象或系统的一种特定情况或条件，以及规定了在给定条件下如何从一个状态切换到另一个状态的转换规则。这些规则通常依赖于外部输入事件或信号，即状态机会响应这些事件触发状态之间的转换。此外，状态机还可以定义在状态转换时执行的动作或任务，例如状态改变时发送消息、执行计算或触发其他操作。<br>简单来说状态机就是用于描述事物不同状态之间如何互相转换的模型。</p>
+<h2 id="为什么要使用状态机"><a href="#为什么要使用状态机" class="headerlink" title="为什么要使用状态机"></a>为什么要使用状态机</h2><p>在Unity游戏开发中，使用状态机是一种强大的方法，用于管理游戏对象的行为和状态。接下来让我们举一个简单的例子来说明为什么要使用状态机。<br>当你想制作一个敌人角色，可能有如下一些状态，例如：</p>
+<ul>
+<li>徘徊状态：敌人在一个区域内徘徊，不主动攻击玩家。</li>
+<li>追击状态：敌人发现玩家后，开始主动追击玩家。</li>
+<li>攻击状态：敌人接近玩家一定距离后，开始攻击玩家。</li>
+<li>死亡状态：敌人被击败后，进行死亡动画并禁用。</li>
+</ul>
+<p>如果没有状态机，会产生什么问题呢？</p>
+<ul>
+<li>大量的if-else语句<br>我们可能需要在 update 中编写大量的 if-else 语句编写大量的 if-else 语句或开关语句来检查敌人的状态并执行相应的行为。例如，为了处理敌人的不同状态（徘徊、追击、攻击、死亡），往往需要创建大量的条件判断。这会导致代码的可读性下降，难以理解和维护。</li>
+<li>状态之间的影响和纠缠<br>在没有状态机的情况下，不同状态之间的切换和影响可能会变得混乱。例如，当敌人从追击状态切换到攻击状态时，需要确保适当地停止追击、开始攻击，并且不会触发错误的行为。这种状态之间的相互作用可能会导致难以调试的问题，因为需要在多个位置管理状态切换和影响。</li>
+<li>功能难以拓展<br>如果我们希望添加新的状态或更多的行为，而没有使用状态机，那么每次增加新功能都会变得繁琐。我们需要修改和添加更多的 if-else 语句，同时需要小心确保不会影响现有的行为，这会导致代码的膨胀和难以维护。</li>
+<li>可读性差，不利于团队合作<br>在缺少状态机时，代码将变得难以理解，因为所有的状态判断和行为都集中在一起，没有明确的结构。这降低了代码的可读性，使团队合作和维护变得更加复杂。</li>
+</ul>
+<p>总的来说，没有状态机的情况下，我们将面临编写冗长、复杂、难以扩展和难以维护的代码。状态机的使用可以有效地解决这些问题，提高代码的可读性、可维护性，同时使添加新状态和行为变得更加容易。状态机提供了一种清晰的结构，使游戏对象的状态管理更加直观和可控。</p>
+<h2 id="状态机的组成部分"><a href="#状态机的组成部分" class="headerlink" title="状态机的组成部分"></a>状态机的组成部分</h2><p>状态机通常由以下几个基本组成部分构成：</p>
+<ul>
+<li>状态：状态是状态机的核心组成部分，代表了对象、系统或程序可能处于的不同情况或条件。每个状态通常有一个唯一的标识符，并与特定的行为或属性相关联，描述对象或系统的不同情况。</li>
+<li>转换：转换是描述状态之间的切换规则的一组规则。规定了状态之间的切换条件和规则。转换描述了当特定事件发生时，从一个状态切换到另一个状态的方式。转换规则通常包括定义触发条件以及指定目标状态，转换是状态之间的过渡。</li>
+<li>事件：事件是触发状态之间切换的信号或条件。事件可以是外部输入，如玩家的操作，也可以是内部触发条件，如定时事件或特定的系统条件。</li>
+<li>动作：在状态机的特定状态切换中，可以定义执行的动作或任务。这些动作可以包括更新状态、发送消息、执行计算、启动动画或触发其他操作。动作通常与状态转换相关联，以确保状态之间的平稳过渡。</li>
+<li>初始状态：初始状态定义了状态机的初始状态，即对象、系统或程序在启动时所处的状态。状态机通常从初始状态开始，然后根据触发条件逐渐切换到其他状态。</li>
+<li>终止状态：终止状态表示状态机的结束状态，当状态机达到终止状态时，它可能会执行最终的清理操作或结束自身。终止状态并不是每个状态机都必须包含的元素，但在某些情况下它们是有用的。</li>
+<li>上下文数据：状态机可能需要访问和维护一些上下文数据，以在不同状态之间共享信息。这些数据可以用于存储对象属性、计数、计时器等，以影响状态机的行为。</li>
+</ul>
+<p>让我们以操控一个游戏角色进行跑和跳的情境来解释状态机的各个关键组成部分：</p>
+<ul>
+<li>状态：在这个例子中，可能存在以下两个状态。①”跑”状态：当玩家控制角色按下移动键时，角色处于跑步状态；②”跳”状态：当玩家按下跳跃键时，角色处于跳跃状态。</li>
+<li>转换：①从”跑”状态到”跳”状态的转换：当玩家按下跳跃键（事件）时，发生状态从”跑”到”跳”的转换；②从”跳”状态到”跑”状态的转换：当角色着陆（事件）后，状态从”跳”转回到”跑”。</li>
+<li>事件：在这个情境中，事件可以是①”跳跃键按下”：触发从”跑”到”跳”的状态转换；②”角色着陆”：触发从”跳”到”跑”的状态转换。</li>
+<li>动作：①在”跳”状态中，动作可能包括播放跳跃动画、应用重力、移动角色位置；②在”跑”状态中，动作可能包括播放跑步动画、移动角色位置。</li>
+<li>初始状态：初始状态指定了状态机的启动状态。在这个例子中，可能的初始状态是”跑”状态。当游戏开始时，角色默认处于跑状态。</li>
+<li>终止状态：在某些情境下，可能有终止状态，但在这个特定情境中，终止状态不是必需的。</li>
+<li>上下文数据：例如，角色的速度、跳跃高度等属性可以被多个状态访问和修改，以影响角色的行为。</li>
+</ul>
+<p>这些组成部分共同构成了状态机，用于管理游戏角色的不同行为状态和状态之间的切换。在这个示例中，状态机使游戏开发人员能够清晰地定义和控制角色的行为，确保跑和跳的行为按预期进行。</p>
+<h2 id="一个基于状态机的demo示例"><a href="#一个基于状态机的demo示例" class="headerlink" title="一个基于状态机的demo示例"></a>一个基于状态机的demo示例</h2><p>接下来我们使用的示例同样来自于B站阿严老师，B站主页指路<a target="_blank" rel="noopener" href="https://space.bilibili.com/27164588">https://space.bilibili.com/27164588</a>。demo内容是基于状态机模式，控制 unity 酱进行一些简单的跑跳行为。</p>
+<h3 id="不使用状态机的普通版本"><a href="#不使用状态机的普通版本" class="headerlink" title="不使用状态机的普通版本"></a>不使用状态机的普通版本</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerController</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    Animator animator;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponentInChildren&lt;Animator&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 如果按住A键或D键</span></span><br><span class="line">        <span class="keyword">if</span>(Keyboard.current.aKey.isPressed || Keyboard.current.dKey.isPressed)</span><br><span class="line">        &#123;</span><br><span class="line">            animator.Play(<span class="string">&quot;Run&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="comment">// 松开按键时</span></span><br><span class="line">        &#123;</span><br><span class="line">            animator.Play(<span class="string">&quot;Idle&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随着状态的增多，我们需要在 Update 里写越来越多的if-else，而且某些状态还可能会相互制约，例如只有在地面上时，我们才能跳跃或者移动；只有在跑步状态时，我们松开按键才能回到空闲状态。于是我们只能声明一个个的 bool 值，来判断当前属于什么状态，很容易被一大堆互相限制的逻辑搞晕。</p>
+<h3 id="使用状态机的版本"><a href="#使用状态机的版本" class="headerlink" title="使用状态机的版本"></a>使用状态机的版本</h3><h4 id="Base"><a href="#Base" class="headerlink" title="Base"></a>Base</h4><h5 id="IState接口"><a href="#IState接口" class="headerlink" title="IState接口"></a>IState接口</h5><p>通过这个接口，我们定义一个状态必有的几种方法，即状态的进入，退出，逻辑更新，物理更新（我们通过刚体模拟物体运动）。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IState</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Enter</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Exit</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">LogicUpdate</span>()</span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">PhysicUpdate</span>()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="StateMachineBase"><a href="#StateMachineBase" class="headerlink" title="StateMachineBase"></a>StateMachineBase</h5><p>定义状态机类本身。状态机类的功能主要有两点：①持有所有的状态类，并对它们进行管理和切换；②负责进行当前状态的更新。我们使用字典来映射到具体的状态上。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">StateMachineBase</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//当前状态</span></span><br><span class="line">    IState currentState; </span><br><span class="line">    <span class="comment">//设置一个状态表，可以根据state的Type获取到对应的state</span></span><br><span class="line">    <span class="keyword">protected</span> Dictionary&lt;System.Type, IState&gt; stateTable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//进行当前状态的逻辑更新；</span></span><br><span class="line">        currentState.LogicUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">FixedUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//进行当前状态的物理更新；</span></span><br><span class="line">        currentState.PhysicUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">SwitchOn</span>(<span class="params">IState newState</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//当前状态的启动，我们将在这个类的子类中调用这个方法，因此添加protected修饰符</span></span><br><span class="line">        currentState = newState;</span><br><span class="line">        currentState.Enter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SwitchState</span>(<span class="params">IState newState</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//当前状态的切换，和启动函数不同的是，我们进行状态切换时，需要先退出当前状态</span></span><br><span class="line">        currentState.Exit();</span><br><span class="line">        SwitchOn(newState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//传入字典key值的重载</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SwitchState</span>(<span class="params">System.Type newState</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        SwitchState(stateTable[newState]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Player"><a href="#Player" class="headerlink" title="Player"></a>Player</h4><h5 id="PlayerState玩家状态类"><a href="#PlayerState玩家状态类" class="headerlink" title="PlayerState玩家状态类"></a>PlayerState玩家状态类</h5><p>定义玩家状态类，继承 IState 接口，同时继承 ScriptableObject，让我们更方便的管理玩家的状态。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.PlayerLoop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerState</span> : <span class="title">ScriptableObject</span>, <span class="title">IState</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">protected</span> Animator animator; <span class="comment">//执行动画切换</span></span><br><span class="line">    <span class="keyword">protected</span> PlayerStateMachine stateMachine; <span class="comment">//执行状态切换</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Initialize</span>(<span class="params">Animator animator, PlayerStateMachine stateMachine</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//定义一个用来接收这两个变量的公有方法</span></span><br><span class="line">        <span class="keyword">this</span>.animator = animator;</span><br><span class="line">        <span class="keyword">this</span>.stateMachine = stateMachine;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 方法可以先留空，在子类中重写</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Enter</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Exit</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">LogicUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">PhysicUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="玩家状态机类"><a href="#玩家状态机类" class="headerlink" title="玩家状态机类"></a>玩家状态机类</h5><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerStateMachine</span> : <span class="title">StateMachineBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//为了避免每次都要通过代码添加新状态，我们使用一个数组来存储所有的状态类，可以在Inspector面板直接管理</span></span><br><span class="line">    [<span class="meta">SerializeField</span>] PlayerState[] playerStates;</span><br><span class="line">    Animator animator;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator = GetComponentInChildren&lt;Animator&gt;();</span><br><span class="line">        stateTable = <span class="keyword">new</span> Dictionary&lt;System.Type, IState&gt;(playerStates.Length);</span><br><span class="line">        <span class="comment">//状态的初始化</span></span><br><span class="line">        <span class="keyword">foreach</span>(PlayerState playerState <span class="keyword">in</span> playerStates)</span><br><span class="line">        &#123;</span><br><span class="line">            playerState.Initialize(animator, <span class="keyword">this</span>);</span><br><span class="line">            stateTable.Add(playerState.GetType(), playerState);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//以idle作为初始状态</span></span><br><span class="line">        SwitchOn(stateTable[<span class="keyword">typeof</span>(PlayerState_Idle)]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Idle状态"><a href="#Idle状态" class="headerlink" title="Idle状态"></a>Idle状态</h5><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CreateAssetMenu(menuName = <span class="string">&quot;Data/StateMachine/PlayerState/Idle&quot;</span>, fileName = <span class="string">&quot;PlayerState_Idle&quot;</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerState_Idle</span> : <span class="title">PlayerState</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Enter</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator.Play(<span class="string">&quot;Idle&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">LogicUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(Keyboard.current.aKey.isPressed || Keyboard.current.dKey.isPressed)</span><br><span class="line">        &#123;</span><br><span class="line">            stateMachine.SwitchState(<span class="keyword">typeof</span>(PlayerState_Run));     </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Run状态"><a href="#Run状态" class="headerlink" title="Run状态"></a>Run状态</h5><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.Collections;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.InputSystem;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CreateAssetMenu(menuName = <span class="string">&quot;Data/StateMachine/PlayerState/Run&quot;</span>, fileName = <span class="string">&quot;PlayerState_Run&quot;</span>)</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">PlayerState_Run</span> : <span class="title">PlayerState</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Enter</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        animator.Play(<span class="string">&quot;Run&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">LogicUpdate</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(!(Keyboard.current.aKey.isPressed || Keyboard.current.dKey.isPressed))</span><br><span class="line">        &#123;</span><br><span class="line">            stateMachine.SwitchState(<span class="keyword">typeof</span>(PlayerState_Idle));      </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="状态机的优缺点"><a href="#状态机的优缺点" class="headerlink" title="状态机的优缺点"></a>状态机的优缺点</h2><p>使用状态机在游戏开发和软件设计中具有多个优点：</p>
+<ul>
+<li>结构清晰：状态机提供了清晰的结构，使代码易于组织和理解。每个状态和状态之间的转换都可以明确定义，使代码更易于阅读和维护。</li>
+<li>易于扩展：添加新状态或行为时，状态机使修改代码更加简单和可控。你只需创建新状态并定义状态之间的转换规则，而不必修改现有的大量代码。</li>
+<li>降低复杂性和耦合性：状态机将复杂性分解为更小的、可管理的部分。每个状态只关注自己的行为，这减少了状态之间的相互干扰和错误，我们不需要考虑状态间的相互制约，只需要去思考当前状态如何切换到下一个状态，降低了耦合性。</li>
+<li>可重用性：状态机中的状态和转换规则通常可以在不同对象或角色之间重复使用。这提高了代码的可重用性，减少了冗余。</li>
+<li>容易维护：当需要调整游戏对象的行为时，只需关注状态机的定义，而不必搜索整个代码库来查找和修改相关代码。</li>
+<li>增加可读性：状态机提供了一种自然的方式来描述对象的行为。通过查看状态机，开发人员和团队可以快速了解对象可能的状态和行为。</li>
+<li>容易调试：由于状态机的状态切换和行为是明确定义的，因此在调试和查找问题时更容易定位和解决错误。</li>
+<li>可视化工具：许多游戏引擎，包括Unity，提供了可视化工具来创建和管理状态机，使开发人员能够直观地定义状态和转换，而无需编写大量代码。</li>
+</ul>
+<p>同时，使用状态机也有一些缺点：</p>
+<ul>
+<li><p>针对每一个状态，我们都需要创建一个类来存储数据，造成了文件数量增多，所以使用状态机对文件规范整理的要求很高。</p>
+</li>
+<li><p>代码重复。</p>
+</li>
+</ul>
+<p>总之，使用状态机有助于简化代码、提高可维护性、降低复杂性，同时提供更清晰的结构，这对于游戏开发和软件设计都是非常有益的。状态机是一种强大的工具，可用于管理对象、角色或系统的不同状态和行为，帮助开发人员更好地组织和控制复杂性。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/10/27/Unity/Unity%E5%AF%B9%E8%B1%A1%E6%B1%A0%E8%AF%A6%E8%A7%A3/" rel="prev" title="Unity对象池详解">
+                  <i class="fa fa-angle-left"></i> Unity对象池详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">65k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">59 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

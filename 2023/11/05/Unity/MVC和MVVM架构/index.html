@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="试想一下这种场景：初学者想做一个简单的小游戏，由于没有做任何代码结构的分层，可能会将游戏逻辑、角色属性和 ui 交互都混在一起编写。当我们需要增加或修改任何功能或界面时，牵一发而动全身，可能会需要修改整个脚本，容易出现错误和影响其他功能，代码阅读也会更加困难。为了解决这些问题，可以采用一些合适的软件架构模式，以更好地组织和管理游戏代码。今天我们就来了解几种常见的软件架构模式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MVC、MVP、MVVM架构">
+<meta property="og:url" content="http://tsq0316.github.io/2023/11/05/Unity/MVC%E5%92%8CMVVM%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="试想一下这种场景：初学者想做一个简单的小游戏，由于没有做任何代码结构的分层，可能会将游戏逻辑、角色属性和 ui 交互都混在一起编写。当我们需要增加或修改任何功能或界面时，牵一发而动全身，可能会需要修改整个脚本，容易出现错误和影响其他功能，代码阅读也会更加困难。为了解决这些问题，可以采用一些合适的软件架构模式，以更好地组织和管理游戏代码。今天我们就来了解几种常见的软件架构模式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic7/MVC.png">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic7/MVP.jpg">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic7/MVVM.jpg">
+<meta property="article:published_time" content="2023-11-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-06T13:27:16.930Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://tsq0316.github.io/images/pic7/MVC.png">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/11/05/Unity/MVC%E5%92%8CMVVM%E6%9E%B6%E6%9E%84/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/11/05/Unity/MVC%E5%92%8CMVVM%E6%9E%B6%E6%9E%84/","path":"2023/11/05/Unity/MVC和MVVM架构/","title":"MVC、MVP、MVVM架构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MVC、MVP、MVVM架构 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">MVC架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">MVC架构简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">MVC工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">1.3.</span> <span class="nav-text">MVC的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unity%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84MVC%E6%80%9D%E6%83%B3"><span class="nav-number">1.4.</span> <span class="nav-text">Unity项目中的MVC思想</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVP%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">MVP架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVP%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">MVP架构简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVP%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">MVP工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVP%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">2.3.</span> <span class="nav-text">MVP的优点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVVM%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">MVVM架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVVM%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B"><span class="nav-number">3.1.</span> <span class="nav-text">MVVM架构简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVVM%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">MVVM工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVVM%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number">3.3.</span> <span class="nav-text">MVVM的优点</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/11/05/Unity/MVC%E5%92%8CMVVM%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MVC、MVP、MVVM架构 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MVC、MVP、MVVM架构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-05 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-05T00:00:00+08:00">2023-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-06 21:27:16" itemprop="dateModified" datetime="2023-11-06T21:27:16+08:00">2023-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>试想一下这种场景：初学者想做一个简单的小游戏，由于没有做任何代码结构的分层，可能会将游戏逻辑、角色属性和 ui 交互都混在一起编写。当我们需要增加或修改任何功能或界面时，牵一发而动全身，可能会需要修改整个脚本，容易出现错误和影响其他功能，代码阅读也会更加困难。为了解决这些问题，可以采用一些合适的软件架构模式，以更好地组织和管理游戏代码。今天我们就来了解几种常见的软件架构模式。</p>
+<span id="more"></span>
+<h2 id="MVC架构"><a href="#MVC架构" class="headerlink" title="MVC架构"></a>MVC架构</h2><h3 id="MVC架构简介"><a href="#MVC架构简介" class="headerlink" title="MVC架构简介"></a>MVC架构简介</h3><p>MVC（Model-View-Controller）是一种经典的软件架构模式，广泛用于各种应用程序，包括游戏开发。MVC将应用程序分成三个主要部分，每个部分有不同的责任，以实现代码的分离和可维护性。这三个组成部分分别是：</p>
+<ul>
+<li><p><strong>Model（模型）</strong> ：</p>
+<ul>
+<li>模型表示应用程序的数据和业务逻辑，是应用程序的核心。</li>
+<li>它负责数据的存储、处理和更新，以及对外提供数据的访问接口。</li>
+<li>模型通常不直接处理视图和用户输入，是独立的数据层。</li>
+<li>在游戏中，Model可以表示游戏中的角色、物体、游戏规则、关卡数据等。</li>
+</ul>
+</li>
+<li><p><strong>View（视图）</strong> ：</p>
+<ul>
+<li>View代表用户界面，是模型的可视化表示。</li>
+<li>视图负责呈现数据给用户并接受用户输入。</li>
+<li>视图不包含应用程序的业务逻辑，仅负责显示数据，它从模型中获取数据，并将其呈现在屏幕上。</li>
+<li>视图是被动的，它不直接处理用户输入，而是将输入传递给控制器进行处理。</li>
+<li>在游戏中，View可以是游戏中的UI元素、画面渲染等。</li>
+</ul>
+</li>
+<li><p><strong>Controller（控制器）</strong> ：</p>
+<ul>
+<li>控制器是应用程序中的决策者，充当了模型和视图之间的中介。</li>
+<li>控制器负责处理用户的输入，并根据输入更新模型和视图，协调Model和View之间的交互。</li>
+<li>在游戏中，Controller可以处理玩家的输入、游戏规则的执行等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="MVC工作流程"><a href="#MVC工作流程" class="headerlink" title="MVC工作流程"></a>MVC工作流程</h3><p>MVC模式的工作流程通常如下：<br><img src="/../../images/pic7/MVC.png" alt="MVC"></p>
+<ul>
+<li>用户与View进行交互，例如，点击按钮或输入文本，这些操作触发了View中的相关事件。</li>
+<li>View感知到这些事件后，通常通过事件处理程序或回调机制通知Controller进行处理。</li>
+<li>Controller接收到View传递的事件后，开始处理相关业务逻辑，根据用户的操作更新Model中的数据或调用Model中的业务逻辑。</li>
+<li>Model的业务数据改变触发相应事件，通知View业务数据已经发生改变。</li>
+<li>View捕获到Model发出的数据改变事件，重新获取数据并更新用户界面。</li>
+</ul>
+<h3 id="MVC的优点"><a href="#MVC的优点" class="headerlink" title="MVC的优点"></a>MVC的优点</h3><ul>
+<li><strong>代码分离</strong> ：MVC将应用程序分成三个独立的组件（模型、视图和控制器），每个组件都有自己的责任和功能。这样可以实现分离关注点，让代码模块更清晰、结构更合理，提高代码的可读性和可维护性。</li>
+<li><strong>代码重用</strong> ：由于MVC的分离性，不同部分的代码可以更容易地进行重用。模型和视图可以在不同场景或不同应用中重用，而控制器可以处理不同的用户输入，从而减少了重复编写代码的情况。</li>
+<li><strong>可维护性</strong> ：由于模块化的设计，可以更容易定位和修复问题，以及进行功能扩展。</li>
+<li><strong>可扩展性</strong> ：MVC的分层结构使得应用程序更易于扩展。添加新的功能或模块时，可以通过增加模型、视图或控制器来实现，而不需要修改整个应用程序的代码。</li>
+<li><strong>团队协作</strong> ：MVC将应用程序拆分成三个部分，使得不同的团队成员可以独立地并行开发和测试各自的组件。这样有利于团队协作，提高项目的开发效率。</li>
+<li><strong>易于测试</strong> ：MVC架构使得应用程序的不同部分可以更容易地进行单元测试。因为模型、视图和控制器的职责分离，测试可以更加集中和专注。</li>
+</ul>
+<h3 id="Unity项目中的MVC思想"><a href="#Unity项目中的MVC思想" class="headerlink" title="Unity项目中的MVC思想"></a>Unity项目中的MVC思想</h3><p><strong>注意，Unity项目开发中的MVC可能并不是严格的传统MVC模式，而是一种变种或简化的方式，因为游戏开发不像网站开发那样，Model，View，Controller在游戏这个领域里还没有很清晰的定义，不同游戏类型本身的软件架构可以相差很远，而且游戏的Object之间有大量的交互，所以纯粹的MVC并不适用，我们这里讲的主要是一种逻辑分离的思想，具体运用需要根据项目的需求和复杂性进行调整。</strong></p>
+<p>在Unity开发中，MVC思想可以用于分离游戏的数据、用户界面和控制逻辑，以提高代码的可维护性和可读性。</p>
+<ul>
+<li><strong>Model（模型）</strong> ：在Unity中，模型可以是代表游戏中的各种数据和业务逻辑的脚本类。例如，角色属性、游戏状态、游戏规则、关卡数据、道具等数据和逻辑都可以被归类为模型。使用C#类来定义Model，这些类包含数据成员和方法来操作数据，但不包括Unity的MonoBehaviour。</li>
+<li><strong>View（视图）</strong> ：在Unity中，视图可以是代表游戏场景中的物体、UI元素或预制件，用于展示模型中的数据。Unity中的Canvas、UI元素、3D模型等可以作为View的一部分。View负责将Model的数据呈现给用户，并将用户输入传递给Controller。</li>
+<li><strong>Controller（控制器）</strong> ：在Unity中，控制器可以是脚本类，负责处理用户的输入，并根据输入来更新模型和视图，协调Model和View之间的交互，实施游戏逻辑。Controller可以处理用户输入，如鼠标点击、键盘输入等，然后更新Model中的数据或调用Model中的方法来执行游戏逻辑。它还可以更新View以反映Model的变化。</li>
+</ul>
+<p>此外，可以使用事件系统或委托来实现Model、View和Controller之间的通信。事件可以用于通知不同部分之间的状态变化，例如，当玩家得分时，Controller可以触发一个事件，View可以订阅该事件以更新分数显示。</p>
+<p>在Unity项目中采用MVC思想可以带来一些好处：</p>
+<ul>
+<li><strong>代码组织</strong> ：Unity项目通常会变得复杂，特别是在游戏开发中，有大量的游戏对象、脚本和交互逻辑。采用MVC思想可以帮助更好地组织代码，将模型、视图和控制器分离开来，使得代码结构更清晰，易于阅读和维护。</li>
+<li><strong>可维护性</strong> ：MVC的分层结构使得修改和扩展游戏功能变得更加容易。如果需要更改游戏逻辑或UI展示，只需要关注对应的控制器或视图，而不需要影响整个游戏代码。</li>
+<li><strong>UI管理</strong> ：在Unity中，UI通常是一个重要的部分，MVC思想可以帮助将UI和逻辑分离开来。通过采用MVC，我们可以更好地管理UI的展示和交互逻辑。当需要添加新功能或修改UI显示时，只需修改对应的模型、视图或控制器类，不会影响其他部分的代码。</li>
+<li><strong>数据共享</strong> ：在Unity中，MVC可以帮助我们实现数据的共享和重用。通过将数据逻辑放在模型中，并在不同的场景或游戏对象中共享模型，可以使得数据在整个游戏中保持一致性。</li>
+<li><strong>耦合性低</strong> ：角色的数据和行为被封装在模型中，视图和控制器只负责显示和交互，降低了代码耦合度，增加了代码复用性和扩展性。</li>
+</ul>
+<p>总的来说，MVC思想在Unity项目中可以提供更好的代码组织、可维护性和扩展性，使得项目开发更加高效和有条理。但要根据项目的规模和需求来选择是否采用MVC，对于小型项目可能并不需要过度划分MVC架构，而在大型或复杂项目中，采用MVC可以带来更多的好处。</p>
+<h2 id="MVP架构"><a href="#MVP架构" class="headerlink" title="MVP架构"></a>MVP架构</h2><h3 id="MVP架构简介"><a href="#MVP架构简介" class="headerlink" title="MVP架构简介"></a>MVP架构简介</h3><p>MVP（Model-View-Presenter）是从MVC演变而来的一种架构模式。在MVC的基础上，MVP强调Model与View之间的隔离，两者互不感知，P占据主导地位，充当M和V之间的桥梁。MVP模式的主要组成部分如下：</p>
+<ul>
+<li>Model（模型）：<ul>
+<li>Model代表应用程序的数据和业务逻辑。</li>
+<li>Model包含数据的存储、检索、更新和应用程序的核心业务逻辑。</li>
+<li>Model不直接与用户界面交互，通常是一个独立的数据层。</li>
+</ul>
+</li>
+<li>View（视图）：<ul>
+<li>View负责呈现数据给用户，并接受用户输入。</li>
+<li>View通常包括用户界面元素，如窗口、按钮、文本框等。</li>
+<li>View是用户界面的可视表示，但不包含与数据处理或业务逻辑相关的代码。</li>
+</ul>
+</li>
+<li>Presenter（主持人）：<ul>
+<li>Presenter充当Model和View之间的中介，负责协调用户界面逻辑，将Model的数据呈现给View，并处理用户输入。</li>
+<li>Presenter包括以下方面的工作：<ul>
+<li>从Model检索数据并准备数据以便呈现在View上。</li>
+<li>接受用户输入并将其传递给Model以执行相应的操作。</li>
+<li>处理用户界面逻辑，例如数据格式验证、格式转换、用户输入提示等。</li>
+</ul>
+</li>
+<li>Presenter不应包含任何与用户界面视觉表示相关的代码。</li>
+</ul>
+</li>
+</ul>
+<h3 id="MVP工作流程"><a href="#MVP工作流程" class="headerlink" title="MVP工作流程"></a>MVP工作流程</h3><p>MVP模式的工作流程通常如下：<br><img src="/../../images/pic7/MVP.jpg" alt="MVP"></p>
+<ul>
+<li>用户对界面进行操作，例如点击按钮或输入文本，触发View的相关事件。</li>
+<li>View感知到这些事件之后，通过特定的接口或回调方法，通知Presenter进行处理。这是View与Presenter之间的通信。</li>
+<li>Presenter接收到来自View的事件通知后，开始处理业务逻辑。这可能涉及从Model中检索数据、执行特定操作，验证数据，或进行其他业务相关的任务。</li>
+<li>如果Presenter需要更新数据，它将通过Model的接口来对数据进行更新或请求必要的数据。</li>
+<li>当Model中的数据发生变化时，Model会通知Presenter，通常通过观察者模式或其他通知机制。</li>
+<li>Presenter收到Model数据变化通知后，调用View暴露的接口更新用户界面，使用户能够看到数据的变化。</li>
+</ul>
+<h3 id="MVP的优点"><a href="#MVP的优点" class="headerlink" title="MVP的优点"></a>MVP的优点</h3><p>MVP模式具备MVC模式的优点，且相比于传统的MVC模式引入了一些额外的优点：</p>
+<ul>
+<li>松耦合度的增加：在MVP中，View和Model之间不直接通信，而是通过Presenter进行协调。这降低了View和Model之间的耦合度，使它们可以独立开发和维护。这使得更容易替换View或Model，而不会影响整个应用程序的结构。</li>
+<li>更好的分离关注点：MVC常常会因为V和M的耦合性太强而渐渐产生问题，导致C渐渐失去作用，但MVP模式视图和模型完全分离。</li>
+<li>更容易实现多视图：MVP模式使得更容易实现多个不同的视图，共享相同的Presenter。这可以在不重复编写业务逻辑的情况下创建多个用户界面，从而提高了代码的复用性。</li>
+<li>逻辑的集中管理：在MVP中，Presenter充当了中央控制器，负责管理用户界面逻辑和业务逻辑。这样，所有与用户界面相关的逻辑都集中在一个地方，而不分散在控制器和视图之间。这有助于更好地组织代码和降低复杂性。</li>
+<li>提高用户界面的可定制性：由于MVP模式将用户界面和业务逻辑分开，更容易调整和自定义用户界面的外观和行为，而不需要修改底层逻辑。</li>
+<li>Model设计更灵活：所有交互都在P中实现，M的设计可以更加灵活，有利于M的高效使用。</li>
+</ul>
+<h2 id="MVVM架构"><a href="#MVVM架构" class="headerlink" title="MVVM架构"></a>MVVM架构</h2><h3 id="MVVM架构简介"><a href="#MVVM架构简介" class="headerlink" title="MVVM架构简介"></a>MVVM架构简介</h3><p>MVVM（Model-View-ViewModel）也是MVC的演变而来，由微软公司提出并在WPF上大量应用，通常用于构建用户界面（UI）驱动的应用程序。它在传统的MVC模式基础上将Controller层变成了ViewModel层，MVVM代表Model-View-ViewModel。MVVM强调数据绑定，从而省去了模型数据改变后通知数据更新的步骤。MVVM模式由以下三个主要组成部分组成：</p>
+<ul>
+<li><strong>Model（模型）</strong>：<ul>
+<li>Model代表应用程序的数据和业务逻辑。</li>
+<li>Model包含数据和方法，用于处理数据的存储、检索、更新和应用程序的核心业务逻辑。</li>
+<li>Model通常不直接与用户界面交互，而是为ViewModel提供数据。</li>
+</ul>
+</li>
+<li><strong>View（视图）</strong>：<ul>
+<li>View负责呈现数据给用户并接受用户输入。</li>
+<li>View通常包括用户界面元素，如窗口、按钮、文本框等。</li>
+<li>View通过数据绑定将自己与ViewModel连接，ViewModel可以提供数据和逻辑，以便View进行呈现。</li>
+</ul>
+</li>
+<li><strong>ViewModel（视图模型）</strong>：<ul>
+<li>ViewModel充当Model和View之间的中介，负责处理用户界面逻辑，将Model的数据呈现给View，并处理用户输入。</li>
+<li>ViewModel包括以下方面的工作：<ul>
+<li>数据绑定：ViewModel提供要在View中显示的数据，并与View建立数据绑定。这样，当Model中的数据更改时，View会自动更新。</li>
+<li>命令处理：ViewModel包含命令，例如按钮点击事件，以执行与用户交互相关的操作。</li>
+<li>数据验证：ViewModel可以包括验证逻辑，以确保用户输入的有效性。</li>
+<li>与Model的交互：ViewModel与Model交互，检索、更新或操作数据。</li>
+<li>处理用户输入：ViewModel接受用户输入，执行相应的操作，例如更新Model中的数据或触发特定的命令。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="MVVM工作流程"><a href="#MVVM工作流程" class="headerlink" title="MVVM工作流程"></a>MVVM工作流程</h3><p>MVVM模式的工作流程通常如下：<br><img src="/../../images/pic7/MVVM.jpg" alt="MVVM"></p>
+<ul>
+<li>界面渲染完毕后，ViewModel会将View和Model按照开发时声明的方式进行双向绑定。</li>
+<li>用户对界面进行操作，触发View中的相关事件。</li>
+<li>View接收用户输入，并将其传递给ViewModel。</li>
+<li>ViewModel调用Model的接口处理业务逻辑。</li>
+<li>Model数据发生变化后，View通过数据绑定将更新后的数据呈现给用户，以反映最新的数据状态。所以Model内容改变后，用户界面会立即更新，无需额外操作。</li>
+</ul>
+<h3 id="MVVM的优点"><a href="#MVVM的优点" class="headerlink" title="MVVM的优点"></a>MVVM的优点</h3>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/05/Unity/MVC%E3%80%81MVP%E3%80%81MVVM%E6%9E%B6%E6%9E%84/" rel="prev" title="MVC、MVP、MVVM架构">
+                  <i class="fa fa-angle-left"></i> MVC、MVP、MVVM架构
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">81k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:13</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

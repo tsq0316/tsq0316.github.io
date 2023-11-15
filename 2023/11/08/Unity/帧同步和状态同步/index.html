@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在网络游戏开发中，同步是一个很重要的概念。什么是同步？同步就是多个客户端表现一致。举例来说，例如王者荣耀的一局游戏里，十个玩家在游戏里看到的表现应该是相同的，玩家A在某一时刻朝某个方向释放了一个技能，产生了一定效果，剩下的九个人也应该在同一时刻看到玩家A释放技能，产生效果。又或者一个大型的 MMORPG 游戏游戏中，某个玩家朝 boss 释放技能，造成 boss 血量减少，场景内剩余的玩家也应该能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="详解帧同步和状态同步">
+<meta property="og:url" content="http://tsq0316.github.io/2023/11/08/Unity/%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="在网络游戏开发中，同步是一个很重要的概念。什么是同步？同步就是多个客户端表现一致。举例来说，例如王者荣耀的一局游戏里，十个玩家在游戏里看到的表现应该是相同的，玩家A在某一时刻朝某个方向释放了一个技能，产生了一定效果，剩下的九个人也应该在同一时刻看到玩家A释放技能，产生效果。又或者一个大型的 MMORPG 游戏游戏中，某个玩家朝 boss 释放技能，造成 boss 血量减少，场景内剩余的玩家也应该能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://tsq0316.github.io/images/pic9/pic1.jpg">
+<meta property="article:published_time" content="2023-11-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-15T12:36:10.263Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://tsq0316.github.io/images/pic9/pic1.jpg">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/11/08/Unity/%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/11/08/Unity/%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/","path":"2023/11/08/Unity/帧同步和状态同步/","title":"详解帧同步和状态同步"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>详解帧同步和状态同步 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">帧同步和状态同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E5%90%8C%E6%AD%A5"><span class="nav-number">1.1.</span> <span class="nav-text">帧同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5"><span class="nav-number">1.2.</span> <span class="nav-text">状态同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5%E6%AF%94%E8%BE%83"><span class="nav-number">2.</span> <span class="nav-text">帧同步和状态同步比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">帧同步和状态同步的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A7%E5%90%8C%E6%AD%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">帧同步的优化方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E5%B8%A7%E9%94%81%E5%AE%9A"><span class="nav-number">4.1.</span> <span class="nav-text">乐观帧锁定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%92%8C%E6%98%BE%E7%A4%BA%E5%88%86%E7%A6%BB"><span class="nav-number">4.2.</span> <span class="nav-text">逻辑和显示分离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E9%A2%84%E6%B5%8B"><span class="nav-number">4.3.</span> <span class="nav-text">帧预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A7%E5%9B%9E%E6%BB%9A"><span class="nav-number">4.4.</span> <span class="nav-text">帧回滚</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/11/08/Unity/%E5%B8%A7%E5%90%8C%E6%AD%A5%E5%92%8C%E7%8A%B6%E6%80%81%E5%90%8C%E6%AD%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="详解帧同步和状态同步 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          详解帧同步和状态同步
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-08 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-08T00:00:00+08:00">2023-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-15 20:36:10" itemprop="dateModified" datetime="2023-11-15T20:36:10+08:00">2023-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在网络游戏开发中，同步是一个很重要的概念。什么是同步？同步就是多个客户端表现一致。举例来说，例如王者荣耀的一局游戏里，十个玩家在游戏里看到的表现应该是相同的，玩家A在某一时刻朝某个方向释放了一个技能，产生了一定效果，剩下的九个人也应该在同一时刻看到玩家A释放技能，产生效果。又或者一个大型的 MMORPG 游戏游戏中，某个玩家朝 boss 释放技能，造成 boss 血量减少，场景内剩余的玩家也应该能看到技能的释放和 boss 血量的减少。这就是网络同步，同步的目标就是时刻保证多台设备的表现相同。甚至在某些时候，不止需要不同客户端的表现一致，客户端和服务端的数据也应该是一致的。由此可见，同步是一个网络游戏中的概念。网络同步通常可以分为两大类：状态同步和帧同步，这两种方法在多人在线游戏中用于确保不同玩家之间的数据和状态保持一致性。</p>
+<span id="more"></span>
+<h2 id="帧同步和状态同步"><a href="#帧同步和状态同步" class="headerlink" title="帧同步和状态同步"></a>帧同步和状态同步</h2><h3 id="帧同步"><a href="#帧同步" class="headerlink" title="帧同步"></a>帧同步</h3><p>帧同步是一种基于时间的同步方法，其核心思想是确保游戏中的逻辑在不同客户端上按照相同的时间步骤进行。游戏世界被分为一系列固定的时间帧，所有玩家在每一帧中执行相同的游戏逻辑。每一帧都具有确定性，玩家在相同的输入情况下将产生相同的结果，这有助于确保玩家之间的游戏状态一致。<br>帧同步的具体实现方式是：客户端按照一定的帧速率去上传当前的操作指令，服务端将操作指令广播给所有客户端，当客户端收到来自服务器的广播指令之后，本地执行逻辑运算。如果输入的指令是一致的，计算过程也是一致的，那么所有客户端某一时刻得到的结果一定是一致的，这就是帧同步。</p>
+<blockquote>
+<p>Tips:帧同步是游戏逻辑和时间线的同步，而不是画面的同步，帧是指逻辑帧，不是渲染帧。为了让运行结果不与硬件的运行速度关联，不能用unity中的Time.deltaTime，而是使用固定的时间片段差值，无论两帧之间的真实时间间隔是多少，游戏逻辑的执行次数都是恒定的）。渲染帧是实际在屏幕上显示的帧，由于图形渲染需要一定的时间，因此在两个逻辑帧之间可能会有多个渲染帧。为了实现平滑的显示，通常使用插值技术，将两个逻辑帧之间的状态进行平滑过渡，从而在屏幕上呈现出流畅的动画效果，所以渲染帧是逼近逻辑帧的。如果硬件的运行速率跟不上逻辑帧，可能会出现多次逻辑帧后才执行一次渲染的情况，此时画面就会有卡顿和丢帧。<br>举个例子来说，游戏内有 ABC 三个玩家，某一帧内角色 A 执行了攻击，角色 B 执行了移动，都会向服务器发送对应指令，服务器把角色 A 的攻击和角色 B 的移动指令广播给 ABC 三个客户端，ABC 都执行 A 的攻击，B 的移动，ABC 三个客户端的表现就是一致的。<br>总而言之，帧同步将逻辑放在客户端去做，服务器只负责转发操作，不做任何逻辑处理。<strong>相同的输入+相同的时机 &#x3D; 相同的显示，发送的是操作，接收的也是操作</strong>。</p>
+</blockquote>
+<h3 id="状态同步"><a href="#状态同步" class="headerlink" title="状态同步"></a>状态同步</h3><p>状态同步是一种基于事件和状态的同步方法，确保所有玩家在共享的虚拟游戏世界中看到相同的游戏状态和事件。与帧同步不同，状态同步不要求将游戏逻辑绑定到特定的时间帧上，而是侧重于在发生事件或状态变化时广播这些变化，以确保所有参与者在同一时间线上。<br>状态同步的具体实现方式是：服务器掌握场景内所有的实体情况，客户端已知的所有属性都是由服务器传给客户端的，例如自己的血量，队友的血量，boss的血量等。当事件发生时，客户端向服务器发送指令，服务器经过计算后，把改变后的状态和属性广播给所有客户端。例如 Boss 战时，玩家 A 释放了一个技能攻击 boss，服务器收到 A 释放技能的指令后，需要验证攻击是否生效，计算玩家 A 的剩余蓝量，Boss的血量等，然后把计算后的这些状态广播给 ABC 客户端，客户端再进行相关的显示。又比如在匹配房间中，房主交换两个玩家的位置，会向服务器发送一个指令，服务器验证更换是否生效，生效则把更新后的位置信息发送给每一个客户端，客户端收到位置信息后更新客户端显示，保证每个客户端看到的效果是一致的。<br>总而言之，状态同步就是将逻辑放在服务器去做，并且在服务器进行校验，然后把计算结果发送给客户端，客户端再进行显示。<strong>发送的是操作，接收的是状态</strong>。</p>
+<h2 id="帧同步和状态同步比较"><a href="#帧同步和状态同步比较" class="headerlink" title="帧同步和状态同步比较"></a>帧同步和状态同步比较</h2><p>帧同步和状态同步的主要区别就是核心逻辑写在哪里。帧同步的核心逻辑在客户端，状态同步的核心逻辑在服务器。</p>
+<ul>
+<li><strong>客户端代码复杂程度</strong><ul>
+<li>帧同步：帧同步的客户端代码编写复杂程度比状态同步复杂的多，因为核心逻辑在客户端进行计算。由于需要保证每个客户端的计算结果完全一致，一些会产生随机结果的数据结构和算法就不能直接使用。而且在一些情况下，需要避免使用无序的数据结构，例如字典，因为在不同的客户端上，数据结构的遍历顺序可能不同。在这种情况下，可以考虑使用有序的数据结构，或者在同步时明确定义数据的顺序。</li>
+<li>状态同步：状态同步的客户端代码实现起来很简单，因为计算逻辑发生在服务器，客户端主要只进行展示，只要保证服务器发给每个客户端的结果都是一致的就行。</li>
+</ul>
+</li>
+<li><strong>服务器代码复杂程度</strong><ul>
+<li>帧同步：帧同步的服务器代码编写相对来说比较简单，因为服务器只负责转发数据。</li>
+<li>状态同步：状态同步的服务器代码比较复杂，因为状态同步的大量逻辑运算都是在服务器上进行的，服务器需要负责计算、校验、广播等工作。</li>
+</ul>
+</li>
+<li><strong>开发效率</strong><br>一般来说帧同步的开发效率会比较高，因为战斗逻辑都写在客户端，服务端只负责转发操作消息，双端开发的时候不需要做额外的对接工作。</li>
+<li><strong>流量消耗</strong><br>状态同步的流量消耗高于帧同步，因为帧同步只转发操作，而状态同步需要转发大量的状态信息，流量消耗更大，例如一个英雄可能有100多条属性，每次改变都要同步一次属性，流量消耗很大。而且因为同步数据量比较大，所以状态同步对服务器带宽要求比较高。</li>
+<li><strong>客户端体验</strong><br>帧同步的逻辑运算是在本地进行的，服务器只转发操作，速度更快，时间更短，所以它的反应更加灵敏，打击感更强，细节反馈更好，而状态同步的延迟要相对高一些。</li>
+<li><strong>网络影响</strong><br>在传统帧同步方案中，网络条件较差的客户端会影响其他玩家的游戏体验。（优化方案：乐观帧锁定、渲染与逻辑帧分离、客户端预执行、指令流水线化、操作回滚等）帧同步要求较低的延迟，而状态同步对网络延迟的适应性较高。</li>
+<li><strong>断线重连</strong><ul>
+<li>帧同步：帧同步的断线重连比较复杂，在断线重连的时候，需要执行追帧操作，服务器一次性发送缺失的帧数据，客户端加速播放服务器同步的帧数据来快速跟上游戏。例如客户端在战斗开始的第10秒断线了，第15秒连回来了，服务器需要把第10秒到第15秒之间5秒内的所有消息一次性发给客户端，客户端加速整个游戏的核心逻辑运行速度，直到追上现有进度。想象一下王者荣耀掉线之后，再进入游戏，需要加速播放一段游戏进程来追赶上现在的游戏进度。</li>
+<li>状态同步：状态同步的断线重连非常简单，因为服务器持有所有对象的状态数据，断线重连之后服务器直接下发数据，客户端创建对象，同步信息即可。</li>
+</ul>
+</li>
+<li><strong>回放</strong><ul>
+<li>帧同步：帧同步的离线回放比较简单，因为只需要保存一局游戏内每一帧的操作即可，然后把每帧的操作信息播放一遍即可。但帧同步的实时回放比较困难，因为需要本地对全场数据进行序列化，才能回到目标时间，回放完后还要追上实时游戏状态。</li>
+<li>状态同步：状态同步支持离线回放，但是需要不断记录状态信息，回放时读取合适时间的信息，回放文件一般很大。实现实时播放比较容易，因为可以方便的记录快照信息，并按照录制内容随时播放。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>实时回放：实时回放允许玩家在游戏进行的同时观看录像。这意味着玩家可以随时切换到回放模式，查看游戏的实时进展。<br>离线回放：离线回放允许在游戏结束后或在不同时间点观看录像。玩家可以选择特定的游戏回合、关卡或时间点进行回放。</p>
+</blockquote>
+<ul>
+<li><strong>安全性&#x2F;反作弊</strong><ul>
+<li>帧同步：安全性较差，因为帧同步战斗逻辑都发生在客户端，服务器没有验证，容易产生外挂（加速、透视、自动瞄准、数据修改等）。引入服务器校验（对比各个客户端的结果）可以解决一些常规外挂，但是解决不了透视、全图视野之类的外挂。</li>
+<li>状态同步：状态同步安全性较高，因为核心逻辑计算发生在服务器，服务器对数据具有权威性，而攻击服务器远比修改客户端复杂，所以状态同步比较容易实现反作弊。但是仍然解决不了透视，全图视野之类的问题。</li>
+</ul>
+</li>
+<li><strong>跨平台</strong><ul>
+<li>帧同步：不适合跨平台，因为对结果一致性的要求严格，需要考虑浮点数修正等问题。</li>
+<li>状态同步：适合跨平台，因为服务器服务器实时传输权威数据，微小误差影响不大。</li>
+</ul>
+</li>
+<li><strong>性能开销</strong><ul>
+<li>帧同步：帧同步客户端性能开销大，服务器性能开销较低。</li>
+<li>状态同步：状态同步客户端性能开销较低，服务器性能开销较大。</li>
+</ul>
+</li>
+<li><strong>物理系统</strong><br>Unity的物理系统一般是基于浮点数计算的，即使是相同的输入，计算结果也可能具有不确定性。即使每一帧计算的结果相差很小，但成千上万帧之后，计算结果的误差也可能变得很大，导致不同客户端出现不同的表现。所以使用帧同步一般需要实现一套确定的物理计算，使用定点数来代替浮点数，确保计算结果的一致性。而状态同步则没有这个问题，因为服务器持有权威数据，误差会在下一次被覆盖掉，确保每一个客户端的表现一致。</li>
+</ul>
+<h2 id="帧同步和状态同步的应用场景"><a href="#帧同步和状态同步的应用场景" class="headerlink" title="帧同步和状态同步的应用场景"></a>帧同步和状态同步的应用场景</h2><p>状态同步基本上适合绝大部分的游戏，包括帧同步擅长的领域，用状态同步也能有较好的实现。而帧同步的局限性就更大一些，但在合适的情况下能有比状态同步更好的表现。<br>那么什么情况下更适合用帧同步，什么情况下更适合用状态同步呢？</p>
+<ul>
+<li>一般情况下，少量玩家，游戏时间较短，每一局游戏中不允许其他玩家中途加入，这种游戏更适合采用帧同步，能获得更及时的反馈和更好的打击感和操作手感，如王者荣耀5v5, 守望先锋等。</li>
+<li>而 MMORPG 等基本都是采用状态同步，因为场景数据计算量巨大，例如要持有并计算场景上1000个对象的状态，客户端性能达不到，而且安全性要求更高，需要服务器进行更多的数据校验。</li>
+<li>在状态同步和帧同步都适用的一些场景，往往需要考虑其他因素，例如网络波动比较厉害的环境，比如地铁上手机信号不好，传输大量数据往往会造成数据的延迟，影响游戏体验，这时可以考虑帧同步。<br><img src="/../../images/pic9/pic1.jpg" alt="帧同步"></li>
+</ul>
+<h2 id="帧同步的优化方案"><a href="#帧同步的优化方案" class="headerlink" title="帧同步的优化方案"></a>帧同步的优化方案</h2><h3 id="乐观帧锁定"><a href="#乐观帧锁定" class="headerlink" title="乐观帧锁定"></a>乐观帧锁定</h3><p>传统严格帧锁定算法中，要求客户端定时发送指令，服务器必须等待收集到所有客户端的包之后再下发，每个时间切片服务器只有收到所有客户端传过来的消息后，才会统一广播给所有客户，网速慢的客户端会卡住网速快的客户端，出现“一人卡机全员等待”的问题。实践中可以采用乐观帧锁定，即<strong>定时不等待</strong>的方式，无论服务器是否收到客户端的信息，都将目前为止收集到的指令封装并下发，客户端发现自己的指令丢失之后应该将指令重传。这样所有客户端不会因为某个客户端的卡顿而卡顿。具体实现是：服务端每一秒，固定下发一定帧数的逻辑帧到客户端（视具体项目而定），不需要等待全部客户端发送指令，客户端对于每一个逻辑帧，补充几个渲染帧。如果客户端没有update数据了，就等待新的数据到来。如果一下收到很多连续的update，那就快进播放。</p>
+<h3 id="逻辑和显示分离"><a href="#逻辑和显示分离" class="headerlink" title="逻辑和显示分离"></a>逻辑和显示分离</h3><p>在帧同步中，游戏逻辑不依赖于具体的显示层，而是基于独立的逻辑帧进行处理。这样的设计允许在没有加载角色模型的情况下运行游戏逻辑，支持服务器端验证，提高跨平台和版本兼容性。</p>
+<h3 id="帧预测"><a href="#帧预测" class="headerlink" title="帧预测"></a>帧预测</h3><p>帧预测是一种优化技术，通过客户端预测下一个时间切片的游戏状态，减少与服务器的通信量，提高游戏响应速度。实现帧预测的步骤包括①客户端记录当前状态和指令；②客户端根据当前的游戏状态和输入指令，预测出下一个时间切片的游戏状态，并在本地进行渲染；③发送输入指令至服务器；④服务器计算下一时间切片的状态并返回给所有客户端；⑤客户端比较并进行帧回滚。帧预测能有效减少通信量，但也带来一些问题，如预测误差和帧回滚。</p>
+<h3 id="帧回滚"><a href="#帧回滚" class="headerlink" title="帧回滚"></a>帧回滚</h3><p>帧回滚是一种帧同步中的纠错机制，用于修正客户端预测的游戏状态与服务器实际状态不一致的情况。实现帧回滚的过程涉及记录、预测、通信、服务器计算、比较和修正等步骤。帧回滚的实现需要考虑预测误差、网络延迟和帧率波动等因素。尽管帧回滚可以确保各客户端游戏状态一致，但也会引入一定的延迟和卡顿，因此在选择帧同步方案时需要综合考虑游戏性质和网络条件。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Unity/" rel="tag"># Unity</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/05/Unity/MVC%E3%80%81MVP%E3%80%81MVVM%E6%9E%B6%E6%9E%84/" rel="prev" title="MVC、MVP、MVVM架构">
+                  <i class="fa fa-angle-left"></i> MVC、MVP、MVVM架构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/14/LeetCode/LeetCode28.%E6%89%BE%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8C%B9%E9%85%8D%E9%A1%B9%E7%9A%84%E4%B8%8B%E6%A0%87/" rel="next" title="LeetCode28.找出字符串中第一个匹配项的下标">
+                  LeetCode28.找出字符串中第一个匹配项的下标 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">83k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:16</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

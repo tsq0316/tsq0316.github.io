@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tsq0316.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":{"utterances":{"order":-1}},"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="XLua 是一个用于在 Unity 游戏开发引擎中绑定 Lua 编程语言的框架，它旨在提供快速、高效的 Lua 和 C# 之间的桥梁。绑定过程经过优化，以最小化性能开销，适用于资源密集型的游戏开发。它提供了简单直观的 API，用于将 C# 函数和对象绑定到 Lua，实现两种语言之间的无缝通信。XLua 设计用于在 Unity 支持的各种平台上工作，包括 Windows、macOS、iOS、Andr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C#与XLua通信">
+<meta property="og:url" content="http://tsq0316.github.io/2023/11/12/Lua/C#%E4%B8%8EXLua%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="tsq的博客">
+<meta property="og:description" content="XLua 是一个用于在 Unity 游戏开发引擎中绑定 Lua 编程语言的框架，它旨在提供快速、高效的 Lua 和 C# 之间的桥梁。绑定过程经过优化，以最小化性能开销，适用于资源密集型的游戏开发。它提供了简单直观的 API，用于将 C# 函数和对象绑定到 Lua，实现两种语言之间的无缝通信。XLua 设计用于在 Unity 支持的各种平台上工作，包括 Windows、macOS、iOS、Andr">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-18T20:16:54.201Z">
+<meta property="article:author" content="TongShuqi">
+<meta property="article:tag" content="Lua">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://tsq0316.github.io/2023/11/12/Lua/C#%E4%B8%8EXLua%E9%80%9A%E4%BF%A1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://tsq0316.github.io/2023/11/12/Lua/C#%E4%B8%8EXLua%E9%80%9A%E4%BF%A1/","path":"2023/11/12/Lua/C#与XLua通信/","title":"C#与XLua通信"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C#与XLua通信 | tsq的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tsq的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lua"><span class="nav-number">1.</span> <span class="nav-text">Lua</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSharp"><span class="nav-number">2.</span> <span class="nav-text">CSharp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88C-%E5%92%8CLua%E5%8F%AF%E4%BB%A5%E9%80%9A%E4%BF%A1"><span class="nav-number">3.</span> <span class="nav-text">为什么C#和Lua可以通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%92%8CLua%E4%BA%A4%E4%BA%92%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">C#和Lua交互方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XLua%E7%AE%80%E4%BB%8B"><span class="nav-number">5.</span> <span class="nav-text">XLua简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XLua%E5%85%B3%E9%94%AE%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">XLua关键类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LuaEnv"><span class="nav-number">6.1.</span> <span class="nav-text">LuaEnv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LuaFunction"><span class="nav-number">6.2.</span> <span class="nav-text">LuaFunction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LuaTable"><span class="nav-number">6.3.</span> <span class="nav-text">LuaTable</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%92%8C-Lua-%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">C# 和 Lua 相互调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-%E8%B0%83%E7%94%A8-Lua-%E8%84%9A%E6%9C%AC%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.</span> <span class="nav-text">C# 调用 Lua 脚本的三种方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C-%E8%B0%83%E7%94%A8-Lua-%E7%A4%BA%E4%BE%8B"><span class="nav-number">7.2.</span> <span class="nav-text">C# 调用 Lua 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E8%AE%BF%E9%97%AElua%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">7.2.1.</span> <span class="nav-text">C#访问lua基本数据类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E8%AE%BF%E9%97%AElua-function"><span class="nav-number">7.2.2.</span> <span class="nav-text">C#访问lua function</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%88%B0delegate%EF%BC%88%E6%8E%A8%E8%8D%90%E6%96%B9%E6%B3%95%EF%BC%89"><span class="nav-number">7.2.2.1.</span> <span class="nav-text">映射到delegate（推荐方法）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%88%B0LuaFunction"><span class="nav-number">7.2.2.2.</span> <span class="nav-text">映射到LuaFunction</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E8%AE%BF%E9%97%AEtable"><span class="nav-number">7.2.3.</span> <span class="nav-text">C#访问table</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%88%B0class%E6%88%96%E8%80%85struct"><span class="nav-number">7.2.3.1.</span> <span class="nav-text">映射到class或者struct</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%88%B0%E4%B8%80%E4%B8%AAinterface%EF%BC%88%E5%BC%95%E7%94%A8%E6%96%B9%E5%BC%8F%EF%BC%89"><span class="nav-number">7.2.3.2.</span> <span class="nav-text">映射到一个interface（引用方式）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%88%B0Dictionary-lt-gt-%EF%BC%8CList-lt-gt"><span class="nav-number">7.2.3.3.</span> <span class="nav-text">映射到Dictionary&lt;&gt;，List&lt;&gt;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%98%A0%E5%B0%84%E5%88%B0LuaTable%E7%B1%BB"><span class="nav-number">7.2.3.4.</span> <span class="nav-text">映射到LuaTable类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE"><span class="nav-number">7.2.4.</span> <span class="nav-text">使用建议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lua-%E8%B0%83%E7%94%A8-C-%E7%A4%BA%E4%BE%8B"><span class="nav-number">7.3.</span> <span class="nav-text">Lua 调用 C# 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E8%AE%BF%E9%97%AE-C-%E5%AE%9E%E4%BE%8B"><span class="nav-number">7.3.1.</span> <span class="nav-text">创建和访问 C# 实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE-C-%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-x2F-%E5%B1%9E%E6%80%A7"><span class="nav-number">7.3.2.</span> <span class="nav-text">访问 C# 静态方法&#x2F;属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lua-%E9%87%8D%E8%BD%BD"><span class="nav-number">7.3.3.</span> <span class="nav-text">lua 重载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%96%B9%E6%B3%95"><span class="nav-number">7.3.4.</span> <span class="nav-text">可变参数方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Extension-methods"><span class="nav-number">7.3.5.</span> <span class="nav-text">使用Extension methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%9B%E5%8C%96%EF%BC%88%E6%A8%A1%E7%89%88%EF%BC%89%E6%96%B9%E6%B3%95"><span class="nav-number">7.3.6.</span> <span class="nav-text">泛化（模版）方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B"><span class="nav-number">7.3.7.</span> <span class="nav-text">枚举类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#delegate%E4%BD%BF%E7%94%A8%EF%BC%88%E8%B0%83%E7%94%A8%EF%BC%8C-%EF%BC%8C-%EF%BC%89"><span class="nav-number">7.3.8.</span> <span class="nav-text">delegate使用（调用，+，-）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#event"><span class="nav-number">7.3.9.</span> <span class="nav-text">event</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E7%B1%BB%E5%9E%8B"><span class="nav-number">7.3.10.</span> <span class="nav-text">复杂类型</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="TongShuqi"
+      src="/images/headPic.jpg">
+  <p class="site-author-name" itemprop="name">TongShuqi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tsq0316" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tsq0316" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://tsq0316.github.io/2023/11/12/Lua/C#%E4%B8%8EXLua%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headPic.jpg">
+      <meta itemprop="name" content="TongShuqi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C#与XLua通信 | tsq的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C#与XLua通信
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-12 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-12T00:00:00+08:00">2023-11-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-19 04:16:54" itemprop="dateModified" datetime="2023-11-19T04:16:54+08:00">2023-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Lua/" itemprop="url" rel="index"><span itemprop="name">Lua</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>27k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>XLua 是一个用于在 Unity 游戏开发引擎中绑定 Lua 编程语言的框架，它旨在提供快速、高效的 Lua 和 C# 之间的桥梁。绑定过程经过优化，以最小化性能开销，适用于资源密集型的游戏开发。它提供了简单直观的 API，用于将 C# 函数和对象绑定到 Lua，实现两种语言之间的无缝通信。XLua 设计用于在 Unity 支持的各种平台上工作，包括 Windows、macOS、iOS、Android 等，这使得它成为在不同设备上进行游戏开发的多用途选择。这篇文章就介绍一下 Xlua 和 C# 之间是如何通信的。</p>
+<span id="more"></span>
+<h2 id="Lua"><a href="#Lua" class="headerlink" title="Lua"></a>Lua</h2><p>Lua 是一种轻量级、高效的脚本语言，由巴西计算机科学家Roberto Ierusalimschy、Waldemar Celes 和 Luiz Henrique de Figueiredo于1993年创建。Lua 的设计目标是成为一个<strong>嵌入式脚本语言</strong>，通常用于游戏开发、嵌入式系统、脚本扩展等领域。它具有简单的语法、动态类型、自动内存管理等特性，使其易于学习和使用。</p>
+<p>关键特点包括：</p>
+<ul>
+<li><p>轻量级：Lua 的设计使其成为一种轻量级语言，适合嵌入到其他应用程序中。</p>
+</li>
+<li><p>动态类型：Lua 是一种动态类型语言，变量无需声明类型，可以在运行时改变其类型。</p>
+</li>
+<li><p>自动内存管理：Lua 具有垃圾回收机制，开发者无需手动管理内存。</p>
+</li>
+<li><p>可扩展性：Lua 具有强大的扩展性，允许通过C语言编写的模块扩展其功能。</p>
+</li>
+</ul>
+<h2 id="CSharp"><a href="#CSharp" class="headerlink" title="CSharp"></a>CSharp</h2><p>C#(CSharp) 是由微软开发的一种面向对象的编程语言。它是 .NET 平台的一部分，旨在提供一种现代、安全、高性能的编程语言。C#最初由Anders Hejlsberg和他的团队在Microsoft于2000年发布，它结合了C++的强大性能和Java的简单性。</p>
+<p>关键特点包括：</p>
+<ul>
+<li><p>面向对象：C# 是一种面向对象的编程语言，支持封装、继承和多态等面向对象的概念。</p>
+</li>
+<li><p>类型安全：C# 是一种静态类型语言，编译时会进行类型检查，有助于减少运行时错误。</p>
+</li>
+<li><p>直观语法：C# 的语法设计旨在简化开发者的工作，提供直观、清晰的语法结构。</p>
+</li>
+<li><p>强大的标准库：C# 配有丰富的标准库和 .NET 框架，提供了许多现成的类和功能，使开发更加高效。</p>
+</li>
+<li><p>跨平台：C# 在近年来通过 .NET Core 和 .NET 5 的推动实现了跨平台支持，使得它不仅限于 Windows 平台。</p>
+</li>
+</ul>
+<h2 id="为什么C-和Lua可以通信"><a href="#为什么C-和Lua可以通信" class="headerlink" title="为什么C#和Lua可以通信"></a>为什么C#和Lua可以通信</h2><p>C# 和 Lua之间的相互调用通常是通过桥接工具或中间件实现的。这些工具提供了一种机制，使得 C# 和 Lua 两种语言能够在同一项目中进行交互。其中，XLua是一个典型的桥接工具。</p>
+<ul>
+<li>绑定框架：工具如 XLua 提供了一个绑定框架，使得 C# 和 Lua 之间的函数调用和数据传递变得更加容易。这些框架允许将 C# 对象和函数绑定到 Lua，以及从 Lua 中调用 C# 的对象和函数。</li>
+<li>中间层：这些工具创建了一个中间层，将 C# 和 Lua 之间的交互进行了封装。这个中间层负责处理两种语言之间的数据转换、函数调用和其他细节，从而使得开发者可以更方便地在两种语言之间传递信息。</li>
+<li>类型映射：桥接工具通常提供了一种类型映射机制，使得 C# 的数据类型能够与 Lua 的数据类型进行对应。这种映射是关键，因为 C# 和 Lua 在类型系统上有一些差异，比如 C# 是强类型语言，而 Lua 是动态类型语言。</li>
+<li>Lua 的可扩展性：Lua 本身是一种高度可扩展的语言，可以通过 C 语言编写的模块进行扩展。这使得在 Lua 中调用 C# 函数和对象变得更加容易，因为可以通过 C 编写中间层，实现 C# 和 Lua 之间的交互。</li>
+<li>Lua 的嵌入性：Lua是一种嵌入式语言，这意味着它可以被轻松地嵌入到其他应用程序中。Lua 解释器是一个相对轻量级、独立的库，可以很容易地集成到 C# 等宿主应用程序中，允许在 C# 代码中调用 Lua 脚本。Lua 提供了用于在 C 类代码中注册函数和数据结构的 API，使得 C# 可以调用通过 Lua 编写的函数。</li>
+<li>C# 的托管调用：C# 是一种托管语言，运行在.NET运行时中。在 C# 中，可以通过 P&#x2F;Invoke（Platform Invocation Services） 或使用专门的库（如NLua、LuaInterface等）来调用本地（非托管）代码，这就为 C# 与 C 语言进行交互提供了便利的手段，而 Lua 正是通过这种方式在 C# 中被调用。</li>
+</ul>
+<h2 id="C-和Lua交互方式"><a href="#C-和Lua交互方式" class="headerlink" title="C#和Lua交互方式"></a>C#和Lua交互方式</h2><ul>
+<li><p>C#调用Lua：</p>
+<ul>
+<li>一般方式：在通常的情况下，C# 调用 Lua 是通过调用 Lua 解释器的底层 DLL 库来实现的。这种方式涉及到与 Lua 解释器的交互，通常使用 Lua 的 CLR package 或其他插件提供的机制。</li>
+<li>XLua方式：在 XLua 中，是使用 C# 调用 XLua 库的接口来实现 C# 与 Lua 的交互，而不是通过 DLL 方式。</li>
+</ul>
+</li>
+<li><p>Lua调用C#：</p>
+<ul>
+<li>一般方式：在通常的情况下，Lua 调用 C# 需要使用 Lua 的 CLR package 或其他 Lua 插件提供的机制。这包括将 C# 对象注册到 Lua 环境中，以便 Lua 可以直接调用 C# 对象的方法。</li>
+<li>XLua 方式：在 XLua 中，有两种主要的方式来实现 Lua 调用 C#：</li>
+<li>Wrap 方式：在 XLua 中，通过生成 Wrap 文件，该文件包含对 C# 类和方法的封装。Lua 文件调用 Wrap 文件，然后 Wrap 文件再调用 C# 文件。这种方式需要在运行前生成 Wrap 文件，但它提供了更高的性能和类型安全。</li>
+<li>反射方式：当处理系统 API、DLL 或第三方库等情况时，可能无法提前生成静态映射关系。在这种情况下，可以通过动态反射调用 C# 方法的方式来实现 Lua 对 C# 的调用。这种方式灵活，但执行效率相对较低。</li>
+</ul>
+</li>
+</ul>
+<p>Lua 中使用反射调用 C# 方法:</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> myClassType = typeof(CS.MyClass)  <span class="comment">-- 获取 C# 类型信息</span></span><br><span class="line"><span class="keyword">local</span> myInstance = myClassType:New()  <span class="comment">-- 创建 C# 对象实例</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> myMethod = myClassType:GetMethod(<span class="string">&quot;MyMethod&quot;</span>)  <span class="comment">-- 获取 C# 方法信息</span></span><br><span class="line">myMethod:Invoke(myInstance, <span class="literal">nil</span>)  <span class="comment">-- 调用 C# 方法</span></span><br></pre></td></tr></table></figure>
+
+<p>这里 typeof 是 XLua 提供的一个接口，用于获取 C# 类型信息，而 GetMethod 和 Invoke 则是常见的反射操作。需要注意的是，每次调用都要动态获取类型信息，因此效率相对较低。在性能要求较高的场景中，建议考虑其他方式，如使用 Wrap 或其他生成工具。</p>
+<h2 id="XLua简介"><a href="#XLua简介" class="headerlink" title="XLua简介"></a>XLua简介</h2><p><a target="_blank" rel="noopener" href="https://github.com/Tencent/xLua">xlua github下载地址</a><br>XLua 是一个用于在 C# 和 Lua 之间进行交互的库，它提供了一种强大而灵活的方式，使 C# 和 Lua 能够无缝地通信。它提供了一种高效的方式，让开发者能够使用 Lua 脚本来扩展和定制 Unity 应用程序。以下是 XLua 的一些主要特点和功能：</p>
+<ul>
+<li><p>高性能：XLua 采用了一系列优化策略，包括 IL 运行时代码生成，JIT 编译等，以保证在运行时的性能表现。这使得 XLua 适用于对性能要求较高的游戏开发场景。</p>
+</li>
+<li><p>自动化 Wrap 生成：XLua 能够自动生成 C# 和 Lua 之间的 Wrap 代码，无需手动编写繁琐的映射代码。通过使用自动生成的 Wrap 文件，XLua 能够实现对 C# 类和方法的直接调用。</p>
+</li>
+<li><p>无 GC 垃圾回收：XLua 的设计考虑了垃圾回收的性能问题，并尽量避免了不必要的 GC 开销。这有助于在运行时减少垃圾回收的频率，提高性能。</p>
+</li>
+<li><p>支持 Unity 热更新：XLua 能够实现对 Lua 脚本的热更新，这意味着你可以在不重新编译和重新打包应用的情况下，动态更新游戏逻辑。这对于快速迭代和修复问题非常有用。</p>
+</li>
+<li><p>支持 Unity 事件和协程：XLua 能够直接处理 Unity 的事件系统（比如 MonoBehaviour 的 Awake、Update等方法）和协程，使得 Lua 脚本能够更方便地与 Unity 引擎进行交互。</p>
+</li>
+<li><p>支持异步调用：XLua 支持异步调用，能够更好地处理异步操作，比如 Unity 的异步加载场景、异步下载等。</p>
+</li>
+<li><p>丰富的扩展功能：XLua 提供了一系列的扩展功能，包括导出自定义类、委托、泛型支持等，使得XLua更加灵活和易用。</p>
+</li>
+</ul>
+<p>总体来说，XLua 为 Unity 开发者提供了一种灵活、高性能的 Lua 脚本集成方式，让开发者能够在 Unity 中更加方便地利用 Lua 进行快速开发和定制。</p>
+<h2 id="XLua关键类"><a href="#XLua关键类" class="headerlink" title="XLua关键类"></a>XLua关键类</h2><h3 id="LuaEnv"><a href="#LuaEnv" class="headerlink" title="LuaEnv"></a>LuaEnv</h3><p>LuaEnv 是 XLua 中的一个核心类，用于管理 Lua 环境和 Lua 执行引擎，负责管理整个 Lua 环境的创建、执行和资源释放。它充当了 Lua 解释器和执行环境的角色。在 Unity 中，它通常在游戏启动时被创建，用于初始化 Lua 环境，执行 Lua 启动脚本，管理 Lua 全局变量、以及处理 Lua 脚本的热更新等操作。</p>
+<ul>
+<li><p>创建 Lua 环境：在使用 XLua 时，通常需要创建一个 LuaEnv 的实例。这个实例负责管理整个 Lua 环境，包括加载和执行 Lua 脚本。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> XLua;</span><br><span class="line"></span><br><span class="line">LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行 Lua 代码：LuaEnv 可以执行 Lua 代码字符串或 Lua 文件。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">luaEnv.DoString(<span class="string">&quot;print(&#x27;Hello from Lua!&#x27;)&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注册 C# 对象到 Lua 环境：通过 Global 属性可以注册 C# 对象到 Lua 环境中，使得 Lua 脚本可以直接访问和调用这些 C# 对象。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">luaEnv.Global.Set(<span class="string">&quot;myCSharpObject&quot;</span>, <span class="keyword">new</span> MyCSharpClass());</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置全局变量：</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">luaEnv.Global:Set(<span class="string">&quot;myGlobalVar&quot;</span>, <span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取全局变量：</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">local <span class="keyword">value</span> = luaEnv.Global:Get&lt;number&gt;(<span class="string">&quot;myGlobalVar&quot;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行 Lua 函数：LuaEnv 通过 DoString 或 DoFile 执行 Lua 代码，也可以通过 Get 方法获取 Lua 函数并执行。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LuaFunction myLuaFunction = luaEnv.Global.Get&lt;LuaFunction&gt;(<span class="string">&quot;myLuaFunction&quot;</span>);</span><br><span class="line">myLuaFunction.Call();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>资源释放：在使用完 LuaEnv 后，需要确保及时释放资源，避免内存泄漏。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">luaEnv.Dispose();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自定义加载器：AddLoader 允许注册自定义的 Lua 脚本加载器，这样就可以在 Lua 脚本中使用自定义的加载逻辑。这对于管理和加载不同文件夹中的 Lua 文件或使用特殊加载逻辑的场景非常有用。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 LuaEnv 实例</span></span><br><span class="line">LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加自定义加载器</span></span><br><span class="line">luaEnv.AddLoader((<span class="keyword">ref</span> <span class="built_in">string</span> filename) =&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 自定义加载逻辑，返回 Lua 文件内容的字节数组</span></span><br><span class="line">    <span class="built_in">byte</span>[] luaContent = <span class="comment">// ... your loading logic here ...</span></span><br><span class="line">    <span class="keyword">return</span> luaContent;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 执行 Lua 脚本</span></span><br><span class="line">luaEnv.DoString(<span class="string">&quot;require &#x27;myCustomScript&#x27;&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放 LuaEnv 资源</span></span><br><span class="line">luaEnv.Dispose();</span><br></pre></td></tr></table></figure>
+
+<p>  在这个例子中，AddLoader 接受一个函数，该函数用于定义自定义加载逻辑。可以在这个函数中根据传入的文件名加载相应的 Lua 文件内容，然后返回该内容的字节数组。</p>
+</li>
+<li><p>创建一个新的 Lua 用户数据：NewUserData 方法用于在 Lua 环境中创建一个新的 Lua 用户数据。用户数据是一种特殊类型，允许将 C# 对象传递给 Lua，并在 Lua 中使用它。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 LuaEnv 实例</span></span><br><span class="line">LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个新的 Lua 用户数据</span></span><br><span class="line"><span class="built_in">object</span> myUserData = luaEnv.NewUserData(<span class="keyword">new</span> MyClass());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 Lua 脚本中使用该用户数据</span></span><br><span class="line">luaEnv.DoString(<span class="string">&quot;print(myUserData.myProperty)&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放 LuaEnv 资源</span></span><br><span class="line">luaEnv.Dispose();</span><br></pre></td></tr></table></figure>
+
+<p>  在这个例子中，NewUserData 创建了一个包装了 MyClass 对象的 Lua 用户数据。在 Lua 脚本中，可以通过 myUserData 访问该对象的属性和方法。</p>
+</li>
+</ul>
+<h3 id="LuaFunction"><a href="#LuaFunction" class="headerlink" title="LuaFunction"></a>LuaFunction</h3><p>LuaFunction 是 XLua 中用于表示 Lua 函数的类型。通过 LuaFunction，可以在 C# 中调用 Lua 中定义的函数。</p>
+<ul>
+<li><p>获取 LuaFunction 对象：可以通过 LuaEnv 或者从 LuaTable 中获取 Lua 函数。通常，这个对象会被保存在 C# 中以便后续调用。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">luaEnv.DoString(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">    function myLuaFunction(message)</span></span><br><span class="line"><span class="string">        print(&#x27;Lua method called with message: &#x27; .. message)</span></span><br><span class="line"><span class="string">    end</span></span><br><span class="line"><span class="string">&quot;</span>);</span><br><span class="line"><span class="comment">// 获取名为 &quot;myLuaFunction&quot; 的 Lua 函数</span></span><br><span class="line">LuaFunction myLuaFunction = luaEnv.Global.Get&lt;LuaFunction&gt;(<span class="string">&quot;myLuaFunction&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用 Lua 函数： 一旦获取了 LuaFunction 对象，你可以使用 Call 方法来调用 Lua 函数，也可以传递参数给 Lua 函数。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用 Lua 函数</span></span><br><span class="line">myLuaFunction.Call();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传递参数给 Lua 函数</span></span><br><span class="line">myLuaFunction.Call(<span class="string">&quot;Hello&quot;</span>); <span class="comment">//Hello</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取返回值：如果 Lua 函数有返回值，可以通过 Call 的返回值来获取。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用 Lua 函数并获取返回值</span></span><br><span class="line"><span class="keyword">var</span> result = myLuaFunction.Call();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>错误处理：调用 Lua 函数时，应该注意处理可能发生的错误。可以通过检查 LuaEnv 的 LastException 属性来获取最后一次执行时产生的异常信息。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    myLuaFunction.Call();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception e)</span><br><span class="line">&#123;</span><br><span class="line">    Debug.LogError(<span class="string">$&quot;Lua function call error: <span class="subst">&#123;e.Message&#125;</span>&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>释放资源：在不再需要 LuaFunction 时，应该及时释放资源，以防止内存泄漏。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myLuaFunction.Dispose();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>总体来说，LuaFunction 提供了在 C# 中调用 Lua 函数的接口。在与 Lua 交互的过程中，可能会频繁使用这个类型来执行 Lua 中的函数，并根据需要处理返回值和错误。</p>
+<h3 id="LuaTable"><a href="#LuaTable" class="headerlink" title="LuaTable"></a>LuaTable</h3><p>LuaTable 是在 XLua 中用于在 C# 中表示 Lua 表（table）的类型。Lua 表是一种类似于数组或字典的数据结构，可在 Lua 中用于存储和组织数据。在 C# 中，LuaTable 类型允许在 C# 代码中操作 Lua 表。</p>
+<ul>
+<li><p>创建新表：NewTable 方法用于在 Lua 环境中创建一个新的 Lua 表。这是一种存储数据的数据结构，类似于数组或字典。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 LuaEnv 实例</span></span><br><span class="line">LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个新的 Lua 表</span></span><br><span class="line">LuaTable myTable = luaEnv.NewTable();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>向 Lua 表中添加元素：使用 Set 方法向表中添加元素。这里的键可以是字符串或整数，值可以是任意类型。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 向表中添加数据</span></span><br><span class="line">myTable.Set(<span class="string">&quot;key1&quot;</span>, <span class="string">&quot;value1&quot;</span>);</span><br><span class="line">myTable.Set(<span class="string">&quot;key2&quot;</span>, <span class="number">42</span>);</span><br><span class="line">myTable.Set(<span class="number">1</span>, <span class="string">&quot;item1&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将 Lua 表注册到 Lua 环境中：在默认情况下，DoString 方法执行的 Lua 代码与 C# 中的变量并不共享。要在 Lua 脚本中使用 C# 中的变量，需要将这些变量传递到 Lua 环境中。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将 Lua 表注册到 Lua 环境中</span></span><br><span class="line">luaEnv.Global.Set(<span class="string">&quot;myTable&quot;</span>, myTable);</span><br><span class="line"><span class="comment">// 在 Lua 脚本中使用该表</span></span><br><span class="line">luaEnv.DoString(<span class="string">@&quot;</span></span><br><span class="line"><span class="string">    print(myTable.key1)</span></span><br><span class="line"><span class="string">    print(myTable.key2)</span></span><br><span class="line"><span class="string">&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从 Lua 表中获取元素：使用 Get 方法从表中获取元素。根据键的类型，可以返回不同类型的值。</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> value1 = myTable.Get&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;key1&quot;</span>);</span><br><span class="line"><span class="built_in">int</span> value2 = myTable.Get&lt;<span class="built_in">int</span>&gt;(<span class="string">&quot;key2&quot;</span>);</span><br><span class="line"><span class="built_in">string</span> item1 = myTable.Get&lt;<span class="built_in">string</span>&gt;(<span class="number">1</span>);</span><br><span class="line">Debug.Log(value1); <span class="comment">//输出value1</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>迭代LuaTable：使用 ForEach 方法可以迭代 Lua 表中的元素。注意在 XLua 中，LuaTable.ForEach() 方法的类型参数不是可以自动推断的，因此在使用时需要显式指定类型参数，只会迭代 key 为当前指定类型的表元素。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">myTable.ForEach&lt;<span class="built_in">string</span>, <span class="built_in">object</span>&gt;((key, <span class="keyword">value</span>) =&gt; &#123;</span><br><span class="line">    Debug.Log(<span class="string">$&quot;string Key: <span class="subst">&#123;key&#125;</span>, Value: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span>&quot;</span>); <span class="comment">// value1 42</span></span><br><span class="line">&#125;);</span><br><span class="line">myTable.ForEach&lt;<span class="built_in">int</span>, <span class="built_in">object</span>&gt;((key, <span class="keyword">value</span>) =&gt; &#123;</span><br><span class="line">    Debug.Log(<span class="string">$&quot;int Key: <span class="subst">&#123;key&#125;</span>, Value: <span class="subst">&#123;<span class="keyword">value</span>&#125;</span>&quot;</span>); <span class="comment">// item1</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="C-和-Lua-相互调用"><a href="#C-和-Lua-相互调用" class="headerlink" title="C# 和 Lua 相互调用"></a>C# 和 Lua 相互调用</h2><p>在 Lua 和 C# 之间进行调用通常有两个主要的方向：Lua 调用 C#（Lua Call C#）和 C# 调用 Lua（C# Call Lua）。</p>
+<h3 id="C-调用-Lua-脚本的三种方法"><a href="#C-调用-Lua-脚本的三种方法" class="headerlink" title="C# 调用 Lua 脚本的三种方法"></a>C# 调用 Lua 脚本的三种方法</h3><ul>
+<li><p>直接运行代码：</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line">luaEnv.DoString(<span class="string">&quot;print(&#x27;Hello from Lua!&#x27;)&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行Resources目录下的 lua 脚本</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// xlua默认的脚本寻找路径是在Resources文件夹中，但是由于unity并不能识别Lua文件，所以直接加载时会报错的。解决方案是将lua后缀多加一个txt，将其转换为文本文件</span></span><br><span class="line">LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line"><span class="comment">// 加载 Resources 目录下的 Lua 脚本文本</span></span><br><span class="line">luaEnv.DoString(<span class="string">&quot;require(&#x27;LuaTest&#x27;)&quot;</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行任意目录下的lua脚本</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line">    <span class="comment">//加载脚本loader</span></span><br><span class="line">    luaEnv.AddLoader(MyCustomLoader);</span><br><span class="line">    <span class="comment">// 相对路径或绝对路径，这里示例使用相对路径</span></span><br><span class="line">    <span class="built_in">string</span> luaScriptPath = <span class="string">&quot;Assets/Scripts/LuaTest&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 执行 Lua 脚本</span></span><br><span class="line">        luaEnv.DoString(<span class="built_in">string</span>.Format(<span class="string">&quot;require &#x27;&#123;0&#125;&#x27;&quot;</span>, luaScriptPath));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (System.Exception e)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.LogError(<span class="string">&quot;Lua Error: &quot;</span> + e.Message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义 Lua 文件加载器</span></span><br><span class="line"><span class="function"><span class="built_in">byte</span>[] <span class="title">MyCustomLoader</span>(<span class="params"><span class="keyword">ref</span> <span class="built_in">string</span> filepath</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 构建完整路径</span></span><br><span class="line">    <span class="built_in">string</span> fullFilePath = Path.Combine(Application.dataPath, filepath + <span class="string">&quot;.lua&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取 Lua 脚本内容</span></span><br><span class="line">    <span class="keyword">if</span> (File.Exists(fullFilePath))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> File.ReadAllBytes(fullFilePath);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="C-调用-Lua-示例"><a href="#C-调用-Lua-示例" class="headerlink" title="C# 调用 Lua 示例"></a>C# 调用 Lua 示例</h3><h4 id="C-访问lua基本数据类型"><a href="#C-访问lua基本数据类型" class="headerlink" title="C#访问lua基本数据类型"></a>C#访问lua基本数据类型</h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Lua 脚本</span></span><br><span class="line">testNumber = <span class="number">1</span></span><br><span class="line">testBool = <span class="literal">true</span></span><br><span class="line">testFloat = <span class="number">1.3</span></span><br><span class="line">testString = <span class="string">&quot;13&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#脚本</span></span><br><span class="line"><span class="built_in">int</span> i = luaEnv.Global.Get&lt;<span class="built_in">int</span>&gt;(<span class="string">&quot;testNumber&quot;</span>);</span><br><span class="line"><span class="built_in">bool</span> b = luaEnv.Global.Get&lt;<span class="built_in">bool</span>&gt;(<span class="string">&quot;testBool&quot;</span>);</span><br><span class="line"><span class="built_in">float</span> f = luaEnv.Global.Get&lt;<span class="built_in">float</span>&gt;(<span class="string">&quot;testFloat&quot;</span>);</span><br><span class="line"><span class="built_in">string</span> s = luaEnv.Global.Get&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;testString&quot;</span>);</span><br><span class="line">Debug.Log(i + <span class="string">&quot; &quot;</span> + b + <span class="string">&quot; &quot;</span> + f + <span class="string">&quot; &quot;</span> + s); <span class="comment">// 1 true 1.3 13</span></span><br></pre></td></tr></table></figure>
+
+<p>这些简单类型是值拷贝，即使给新的变量赋值，比如 i &#x3D; 13，也不会影响到 lua 文件里的变量；除非用 set 方法，才会改变 lua 文件里的简单类型变量，例如：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">luaEnv.Global.Set(<span class="string">&quot;testNumber&quot;</span>, <span class="number">13</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="C-访问lua-function"><a href="#C-访问lua-function" class="headerlink" title="C#访问lua function"></a>C#访问lua function</h4><h5 id="映射到delegate（推荐方法）"><a href="#映射到delegate（推荐方法）" class="headerlink" title="映射到delegate（推荐方法）"></a>映射到delegate（推荐方法）</h5><p>在 XLua 中，将 Lua 函数映射到 C# 的委托类型（delegate）是一种性能较好、类型安全的方式。缺点是需要生成代码（如果没生成代码会抛 InvalidCastException 异常）。</p>
+<ul>
+<li>delegate 怎样声明：对于 function 的每个参数就声明一个输入类型的参数。</li>
+<li>多返回值要怎么处理：从左往右映射到 c# 的输出参数，输出参数包括返回值，out 参数，ref 参数。</li>
+<li>参数、返回值支持哪些类型：支持各种复杂类型，out，ref 修饰的，甚至可以返回另外一个delegate。</li>
+</ul>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua表方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Func</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;hello world!&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FuncWithSingleParam</span><span class="params">(value)</span></span></span><br><span class="line">    <span class="built_in">print</span>(value)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FuncWithMulParam</span><span class="params">(age, name, isWoman)</span></span></span><br><span class="line">    <span class="built_in">print</span>(age..<span class="string">&quot; &quot;</span>..name..<span class="string">&quot; &quot;</span>..<span class="built_in">tostring</span>(isWoman))</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FuncWithSingleReturn</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FuncWithMulReturn</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>, <span class="string">&quot;value1&quot;</span>, <span class="literal">true</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FuncWithMulReturnAndParams</span><span class="params">(age, name, isWoman)</span></span></span><br><span class="line">    <span class="keyword">return</span> age, name, isWoman</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 映射到C#委托</span></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">FuncDelegate</span>()</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">FuncWithSingleParamDelegate</span>(<span class="params"><span class="built_in">string</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">FuncWithMulParamDelegate</span>(<span class="params"><span class="built_in">int</span> age, <span class="built_in">string</span> name, <span class="built_in">bool</span> isWoman</span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">FuncWithSingleReturnDelegate</span>()</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">FuncWithMulReturnDelegate</span>(<span class="params"><span class="keyword">out</span> <span class="built_in">string</span> result1, <span class="keyword">out</span> <span class="built_in">bool</span> result2</span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="built_in">int</span> <span class="title">FuncWithMulReturnAndParamsDelegate</span>(<span class="params"><span class="built_in">int</span> age, <span class="built_in">string</span> name, <span class="built_in">bool</span> isWoman, <span class="keyword">out</span> <span class="built_in">string</span> result1, <span class="keyword">out</span> <span class="built_in">bool</span> result2</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    ……</span><br><span class="line">    FuncDelegate func = luaEnv.Global.Get&lt;FuncDelegate&gt;(<span class="string">&quot;Func&quot;</span>);</span><br><span class="line">    func(); <span class="comment">//hello world!</span></span><br><span class="line"></span><br><span class="line">    FuncWithSingleParamDelegate funcWithSingleParam = luaEnv.Global.Get&lt;FuncWithSingleParamDelegate&gt;(<span class="string">&quot;FuncWithSingleParam&quot;</span>);</span><br><span class="line">    funcWithSingleParam(<span class="string">&quot;Hello&quot;</span>); <span class="comment">//Hello</span></span><br><span class="line"></span><br><span class="line">    FuncWithMulParamDelegate funcWithMulParam = luaEnv.Global.Get&lt;FuncWithMulParamDelegate&gt;(<span class="string">&quot;FuncWithMulParam&quot;</span>);</span><br><span class="line">    funcWithMulParam(<span class="number">25</span>, <span class="string">&quot;Alice&quot;</span>, <span class="literal">true</span>); <span class="comment">//25 Alice true</span></span><br><span class="line"></span><br><span class="line">    FuncWithSingleReturnDelegate funcWithSingleReturn = luaEnv.Global.Get&lt;FuncWithSingleReturnDelegate&gt;(<span class="string">&quot;FuncWithSingleReturn&quot;</span>);</span><br><span class="line">    <span class="built_in">int</span> singleReturnValue = funcWithSingleReturn();</span><br><span class="line">    Debug.Log(<span class="string">$&quot;FuncWithSingleReturn Result: <span class="subst">&#123;singleReturnValue&#125;</span>&quot;</span>); <span class="comment">//FuncWithSingleReturn Result: 0</span></span><br><span class="line"></span><br><span class="line">    FuncWithMulReturnDelegate funcWithMulReturn = luaEnv.Global.Get&lt;FuncWithMulReturnDelegate&gt;(<span class="string">&quot;FuncWithMulReturn&quot;</span>);</span><br><span class="line">    <span class="built_in">string</span> result1;</span><br><span class="line">    <span class="built_in">bool</span> result2;</span><br><span class="line">    <span class="built_in">int</span> result0 = funcWithMulReturn(<span class="keyword">out</span> result1, <span class="keyword">out</span> result2);</span><br><span class="line">    Debug.Log(<span class="string">$&quot;FuncWithMulReturn Result: <span class="subst">&#123;result0&#125;</span>, <span class="subst">&#123;result1&#125;</span>, <span class="subst">&#123;result2&#125;</span>&quot;</span>); <span class="comment">//FuncWithMulReturn Result: 0, value1, True</span></span><br><span class="line"></span><br><span class="line">    FuncWithMulReturnAndParamsDelegate funcWithMulReturnAndParams = luaEnv.Global.Get&lt;FuncWithMulReturnAndParamsDelegate&gt;(<span class="string">&quot;FuncWithMulReturnAndParams&quot;</span>);</span><br><span class="line">    result0 = funcWithMulReturnAndParams(<span class="number">23</span>, <span class="string">&quot;Anne&quot;</span>, <span class="literal">true</span>, <span class="keyword">out</span> result1, <span class="keyword">out</span> result2);</span><br><span class="line">    Debug.Log(<span class="string">$&quot;FuncWithMulReturnAndParams Result: <span class="subst">&#123;result0&#125;</span>, <span class="subst">&#123;result1&#125;</span>, <span class="subst">&#123;result2&#125;</span>&quot;</span>); <span class="comment">//FuncWithMulReturnAndParams Result: 23, Anne, True</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="映射到LuaFunction"><a href="#映射到LuaFunction" class="headerlink" title="映射到LuaFunction"></a>映射到LuaFunction</h5><p>这种方式的优缺点刚好和第一种相反。使用起来很简单，LuaFunction 有一个变参的 Call 函数，可以传任意类型，任意个数的参数，返回值是 object 的数组，对应于 lua 的多返回值。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LuaFunction luaFunction = luaEnv.Global.Get&lt;LuaFunction&gt;(<span class="string">&quot;FuncWithMulReturnAndParams&quot;</span>);</span><br><span class="line"><span class="built_in">object</span>[] objects = luaFunction.Call(<span class="string">&quot;Bob&quot;</span>, <span class="number">22</span>, <span class="literal">false</span>);</span><br><span class="line">Debug.Log(<span class="string">$&quot;FuncWithMulReturnAndParams Result: <span class="subst">&#123;objects[<span class="number">0</span>]&#125;</span>, <span class="subst">&#123;objects[<span class="number">1</span>]&#125;</span>, <span class="subst">&#123;objects[<span class="number">2</span>]&#125;</span>&quot;</span>); <span class="comment">//FuncWithMulReturnAndParams Result: Bob, 22, False</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="C-访问table"><a href="#C-访问table" class="headerlink" title="C#访问table"></a>C#访问table</h4><h5 id="映射到class或者struct"><a href="#映射到class或者struct" class="headerlink" title="映射到class或者struct"></a>映射到class或者struct</h5><p>table 的属性可以多于或者少于 class 的属性，可以嵌套其它复杂类型，过程是值拷贝（深拷贝），改变一端的值不会改变另外一端。直接将 Lua 表中的函数映射到 C# 类的字段或属性上是有限制的。通常，这种映射的能力比较有限，而且 XLua 不直接支持在 C# 中定义 Lua 函数。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 定义lua全局表</span></span><br><span class="line">GlobalTable = &#123;</span><br><span class="line">    Name = <span class="string">&quot;Lua&quot;</span>,</span><br><span class="line">    Age = <span class="number">3</span>,</span><br><span class="line">    TableFunc = <span class="function"><span class="keyword">function</span><span class="params">(name)</span></span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Name: &quot;</span>..name</span><br><span class="line">    <span class="keyword">end</span>,</span><br><span class="line">    SubTable = &#123;</span><br><span class="line">        SubName = <span class="string">&quot;SubLua&quot;</span>,</span><br><span class="line">        PrintInfo = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">            <span class="built_in">print</span>(GlobalTable.SubTable.SubName)</span><br><span class="line">        <span class="keyword">end</span>,</span><br><span class="line">        ReturnInfo = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">            <span class="keyword">return</span> GlobalTable.SubTable.SubName</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#映射类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> Name;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Age;</span><br><span class="line">    <span class="keyword">public</span> Func&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; TableFunc;</span><br><span class="line">    <span class="keyword">public</span> MySubCSharpClass SubTable;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MySubCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> SubName;</span><br><span class="line">    <span class="keyword">public</span> UnityAction PrintInfo;</span><br><span class="line">    <span class="keyword">public</span> Func&lt;<span class="built_in">string</span>&gt; ReturnInfo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//C#执行脚本</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CSharpCallLuaRunner</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        LuaEnv luaEnv = <span class="keyword">new</span> LuaEnv();</span><br><span class="line">        <span class="comment">//加载脚本loader</span></span><br><span class="line">        luaEnv.AddLoader(MyCustomLoader);</span><br><span class="line">        <span class="comment">// 相对路径或绝对路径，这里示例使用相对路径</span></span><br><span class="line">        <span class="built_in">string</span> luaScriptPath = <span class="string">&quot;Assets/Scripts/MyLuaTable&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 执行 Lua 脚本</span></span><br><span class="line">            luaEnv.DoString(<span class="built_in">string</span>.Format(<span class="string">&quot;require &#x27;&#123;0&#125;&#x27;&quot;</span>, luaScriptPath));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (System.Exception e)</span><br><span class="line">        &#123;</span><br><span class="line">            Debug.LogError(<span class="string">&quot;Lua Error: &quot;</span> + e.Message);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//注意用这种方式还是深拷贝，改变这里的内容，不会改变lua表里的内容</span></span><br><span class="line">        MyCSharpClass myClass = luaEnv.Global.Get&lt;MyCSharpClass&gt;(<span class="string">&quot;GlobalTable&quot;</span>);</span><br><span class="line">        <span class="comment">// 直接访问 Lua 表中的变量</span></span><br><span class="line">        Debug.Log(<span class="string">$&quot;Name: <span class="subst">&#123;myClass.Name&#125;</span>, Age: <span class="subst">&#123;myClass.Age&#125;</span>&quot;</span>); <span class="comment">// Name: Lua, Age: 3</span></span><br><span class="line">        <span class="comment">// 直接调用 Lua 表中的方法</span></span><br><span class="line">        <span class="built_in">string</span> result = myClass.TableFunc(myClass.Name);</span><br><span class="line">        Debug.Log(<span class="string">$&quot;Result of TableFunc: <span class="subst">&#123;result&#125;</span>&quot;</span>); <span class="comment">// Result of TableFunc: Name: Lua</span></span><br><span class="line">        <span class="comment">// 访问子表中的变量</span></span><br><span class="line">        Debug.Log(<span class="string">$&quot;SubName: <span class="subst">&#123;myClass.SubTable.SubName&#125;</span>&quot;</span>); <span class="comment">// SubName: SubLua</span></span><br><span class="line">        <span class="comment">// 访问子表中的方法</span></span><br><span class="line">        myClass.SubTable.PrintInfo(); <span class="comment">//LUA: SubLua</span></span><br><span class="line">        <span class="built_in">string</span> resultSub = myClass.SubTable.ReturnInfo();</span><br><span class="line">        Debug.Log(<span class="string">$&quot;Result of SubTableFunc: <span class="subst">&#123;resultSub&#125;</span>&quot;</span>); <span class="comment">// Result of SubTableFunc: SubLua</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 自定义 Lua 文件加载器</span></span><br><span class="line">    <span class="function"><span class="built_in">byte</span>[] <span class="title">MyCustomLoader</span>(<span class="params"><span class="keyword">ref</span> <span class="built_in">string</span> filepath</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 构建完整路径</span></span><br><span class="line">        <span class="built_in">string</span> fullFilePath = Path.Combine(Application.dataPath, filepath + <span class="string">&quot;.lua&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 读取 Lua 脚本内容</span></span><br><span class="line">        <span class="keyword">if</span> (File.Exists(fullFilePath))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> File.ReadAllBytes(fullFilePath);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="映射到一个interface（引用方式）"><a href="#映射到一个interface（引用方式）" class="headerlink" title="映射到一个interface（引用方式）"></a>映射到一个interface（引用方式）</h5><p>使用代码生成器生成接口的实例是推荐的方式。这种方式依赖于生成代码（如果没生成代码会抛 InvalidCastException 异常），代码生成器会生成这个 interface 的实例，如果 get 一个属性，生成代码会 get 对应的 table 字段，如果 set 属性也会设置对应的字段。甚至可以通过 interface 的方法访问 lua 的函数。这样的方式可以在一定程度上提高代码的类型安全性，并减少手动编写映射代码的工作。在 XLua 中，可以使用工具来生成代码以实现接口映射。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua表</span></span><br><span class="line">Person = &#123;</span><br><span class="line">    name = <span class="string">&quot;fex&quot;</span>,</span><br><span class="line">    age = <span class="number">22</span>,</span><br><span class="line">    eatWithParam = <span class="function"><span class="keyword">function</span><span class="params">(self, a, b)</span></span></span><br><span class="line">        <span class="built_in">print</span>(a + b)</span><br><span class="line">    <span class="keyword">end</span>,</span><br><span class="line">    eatWithReturn = <span class="function"><span class="keyword">function</span><span class="params">(self, a, b)</span></span></span><br><span class="line">        <span class="keyword">return</span> a + b</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#接口，必须打上[CSharpCallLua]标签</span></span><br><span class="line">[<span class="meta">CSharpCallLua</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IPersonInterface</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> name &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="built_in">int</span> age &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125; </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eatWithParam</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span>;</span><br><span class="line">    <span class="function"><span class="built_in">int</span> <span class="title">eatWithReturn</span>(<span class="params"><span class="built_in">int</span> a, <span class="built_in">int</span> b</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，定义接口以后需要执行 XLua-Generate Code。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//浅拷贝，引用方式，在C#中可以修改lua表的值    </span></span><br><span class="line">IPersonInterface p = luaEnv.Global.Get&lt;IPersonInterface&gt;(<span class="string">&quot;Person&quot;</span>);</span><br><span class="line">Debug.Log(p.name); <span class="comment">//fex</span></span><br><span class="line">Debug.Log(p.age); <span class="comment">//22</span></span><br><span class="line">p.name = <span class="string">&quot;hello fex&quot;</span>;</span><br><span class="line">Debug.Log(p.name); <span class="comment">//hello fex</span></span><br><span class="line">p.eatWithParam(<span class="number">1</span>, <span class="number">2</span>); <span class="comment">//3</span></span><br><span class="line"><span class="built_in">int</span> result = p.eatWithReturn(<span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">Debug.Log(<span class="string">$&quot;Result of Func: <span class="subst">&#123;result&#125;</span>&quot;</span>); <span class="comment">//Result of Func: 5</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="映射到Dictionary-lt-gt-，List-lt-gt"><a href="#映射到Dictionary-lt-gt-，List-lt-gt" class="headerlink" title="映射到Dictionary&lt;&gt;，List&lt;&gt;"></a>映射到Dictionary&lt;&gt;，List&lt;&gt;</h5><p>一种更轻量级的值拷贝方式，一般只用于映射静态数据。对于表中的键值对元素，可以映射到字典，对于表中的列表元素，可以映射到列表。由于映射到字典或列表时，value 的值的类型不一定相同，所以可以使用 <strong>object</strong> 类型。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua表数据</span></span><br><span class="line">Data = &#123;</span><br><span class="line">    name = <span class="string">&quot;fex&quot;</span>,</span><br><span class="line">    age = <span class="number">22</span>,</span><br><span class="line">    <span class="literal">true</span>,</span><br><span class="line">    <span class="number">1</span>,</span><br><span class="line">    <span class="number">1.5</span>,</span><br><span class="line">    <span class="string">&quot;item1&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line">Data[<span class="number">5</span>] = <span class="string">&quot;item2&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#映射到字典</span></span><br><span class="line">Dictionary&lt;<span class="built_in">object</span>, <span class="built_in">object</span>&gt; dicData = luaEnv.Global.Get&lt;Dictionary&lt;<span class="built_in">object</span>, <span class="built_in">object</span>&gt;&gt;(<span class="string">&quot;Data&quot;</span>);</span><br><span class="line"><span class="keyword">foreach</span>(<span class="keyword">var</span> key <span class="keyword">in</span> dicData.Keys)</span><br><span class="line">&#123;</span><br><span class="line">    print(<span class="string">&quot;Key：&quot;</span> + key + <span class="string">&quot; value：&quot;</span> + dicData[key]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Key：1 value：True</span></span><br><span class="line"><span class="comment">// Key：2 value：1</span></span><br><span class="line"><span class="comment">// Key：3 value：1.5</span></span><br><span class="line"><span class="comment">// Key：4 value：item1</span></span><br><span class="line"><span class="comment">// Key：5 value：item2</span></span><br><span class="line"><span class="comment">// Key：name value：fex</span></span><br><span class="line"><span class="comment">// Key：age value：22</span></span><br></pre></td></tr></table></figure>
+
+<p>如果将字典的键类型设置为某一种数据类型，例如 int，那么只会返回表中键类型为 int 的字典。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#映射到列表</span></span><br><span class="line">List&lt;<span class="built_in">object</span>&gt; list = luaEnv.Global.Get&lt;List&lt;<span class="built_in">object</span>&gt;&gt;(<span class="string">&quot;Data&quot;</span>);</span><br><span class="line"><span class="keyword">foreach</span>(<span class="keyword">var</span> <span class="keyword">value</span> <span class="keyword">in</span> list)</span><br><span class="line">&#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;value:&quot;</span> + <span class="keyword">value</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// value: True</span></span><br><span class="line"><span class="comment">// value: 1</span></span><br><span class="line"><span class="comment">// value: 1.5</span></span><br><span class="line"><span class="comment">// value: item1</span></span><br><span class="line"><span class="comment">// value: item2</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="映射到LuaTable类"><a href="#映射到LuaTable类" class="headerlink" title="映射到LuaTable类"></a>映射到LuaTable类</h5><p>一种更轻量级的引用方式，映射到 LuaTable 类，一般不推荐使用。这种方式好处是不需要生成代码，但也有一些潜在的问题和限制，比如效率低，比方式2要慢一个数量级，没有类型检查等。而且如果 LuaTable 不用了需要释放 Dispose ，不然会产生垃圾。这种方式更适合用在一些比较复杂且使用频率很低的情况。这种方式是浅拷贝的。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua表数据</span></span><br><span class="line">GlobalTable = &#123;</span><br><span class="line">    Name = <span class="string">&quot;Lua&quot;</span>,</span><br><span class="line">    Age = <span class="number">3</span>,</span><br><span class="line">    TableFunc = <span class="function"><span class="keyword">function</span><span class="params">(name)</span></span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Name: &quot;</span>..name</span><br><span class="line">    <span class="keyword">end</span>,</span><br><span class="line">    SubTable = &#123;</span><br><span class="line">        SubName = <span class="string">&quot;SubLua&quot;</span>,</span><br><span class="line">        PrintInfo = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">            <span class="built_in">print</span>(GlobalTable.SubTable.SubName)</span><br><span class="line">        <span class="keyword">end</span>,</span><br><span class="line">        ReturnInfo = <span class="function"><span class="keyword">function</span><span class="params">(name)</span></span></span><br><span class="line">            <span class="keyword">return</span> name</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 映射到LuaTable</span></span><br><span class="line">LuaTable t = luaEnv.Global.Get&lt;LuaTable&gt;(<span class="string">&quot;GlobalTable&quot;</span>);</span><br><span class="line"><span class="comment">//访问表元素</span></span><br><span class="line"><span class="built_in">string</span> name = t.Get&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;Name&quot;</span>);</span><br><span class="line">Debug.Log(name); <span class="comment">// Lua</span></span><br><span class="line"><span class="comment">//访问表方法</span></span><br><span class="line">LuaFunction tableFunc = t.Get&lt;LuaFunction&gt;(<span class="string">&quot;TableFunc&quot;</span>);</span><br><span class="line"><span class="built_in">object</span>[] result = tableFunc.Call(<span class="string">&quot;John&quot;</span>);</span><br><span class="line">Debug.Log(<span class="string">$&quot;TableFunc Result: <span class="subst">&#123;result[<span class="number">0</span>]&#125;</span>&quot;</span>); <span class="comment">// TableFunc Result: Name: John</span></span><br><span class="line"><span class="comment">//访问子表</span></span><br><span class="line">LuaTable subt = t.Get&lt;LuaTable&gt;(<span class="string">&quot;SubTable&quot;</span>);</span><br><span class="line"><span class="comment">//设置子表元素</span></span><br><span class="line">subt.Set(<span class="string">&quot;SubName&quot;</span>, <span class="string">&quot;Elsa&quot;</span>);</span><br><span class="line"><span class="comment">//访问子表方法</span></span><br><span class="line">subt.Get&lt;LuaFunction&gt;(<span class="string">&quot;PrintInfo&quot;</span>).Call(); <span class="comment">// Elsa</span></span><br><span class="line"><span class="built_in">object</span>[] subResult = subt.Get&lt;LuaFunction&gt;(<span class="string">&quot;ReturnInfo&quot;</span>).Call(<span class="string">&quot;Amma&quot;</span>); </span><br><span class="line">Debug.Log(<span class="string">$&quot;SubTableFunc Result: <span class="subst">&#123;subResult[<span class="number">0</span>]&#125;</span>&quot;</span>); <span class="comment">// SubTableFunc Result: Amma</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h4><ul>
+<li><p>限制全局访问：访问 Lua 全局数据的代价相对较高，尤其是对 table 和 function。建议在初始化时将要调用的 Lua function 获取一次（映射到 delegate），然后保存下来，以后直接调用该 delegate，以减小性能开销。</p>
+</li>
+<li><p>解耦与 Lua 的关系：如果 Lua 侧的实现部分都以 delegate 和 interface 的方式提供，使用方可以完全与 XLua 解耦。可以有一个专门的模块负责 XLua 的初始化以及 delegate、interface 的映射，然后将这些 delegate 和 interface 设置到需要使用它们的地方。</p>
+</li>
+<li><p>管理 LuaFunction 的生命周期：如果你使用 LuaFunction，要注意管理它们的生命周期。确保在不再需要时适当地进行清理，以防止内存泄漏。</p>
+</li>
+<li><p>避免频繁的 Lua 与 C# 交互：避免在短时间内频繁进行 Lua 与 C# 的交互，因为这可能会导致性能问题。尽量将交互的操作集中在一起，减少交互的次数。</p>
+</li>
+</ul>
+<h3 id="Lua-调用-C-示例"><a href="#Lua-调用-C-示例" class="headerlink" title="Lua 调用 C# 示例"></a>Lua 调用 C# 示例</h3><h4 id="创建和访问-C-实例"><a href="#创建和访问-C-实例" class="headerlink" title="创建和访问 C# 实例"></a>创建和访问 C# 实例</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C# 类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> MyProperty &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MyMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(MyProperty);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建 C# 对象实例</span></span><br><span class="line">myInstance = CS.MyCSharpClass()</span><br><span class="line"><span class="comment">-- 设置属性值</span></span><br><span class="line">myInstance.MyProperty = <span class="number">42</span></span><br><span class="line"><span class="comment">-- 调用方法</span></span><br><span class="line">myInstance:MyMethod() <span class="comment">--42</span></span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> newGameObj = CS.UnityEngine.GameObject(<span class="string">&quot;Empty&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的点是：</p>
+<ul>
+<li><p>lua里没有new关键字；</p>
+</li>
+<li><p>C#相关代码都放在CS下；</p>
+</li>
+<li><p>lua支持重载；</p>
+</li>
+</ul>
+<h4 id="访问-C-静态方法-x2F-属性"><a href="#访问-C-静态方法-x2F-属性" class="headerlink" title="访问 C# 静态方法&#x2F;属性"></a>访问 C# 静态方法&#x2F;属性</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> MyProperty &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> MyStaticProperty &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MyMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(MyProperty);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">MyStaticMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(MyStaticProperty);   </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">MyStaticClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> MyProperty &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">MyMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(MyProperty);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 获取 C# 类型信息</span></span><br><span class="line"><span class="comment">-- 创建C#对象实例</span></span><br><span class="line"><span class="keyword">local</span> myInstance = CS.MyCSharpClass()</span><br><span class="line"><span class="comment">-- 访问对象的属性和方法</span></span><br><span class="line">myInstance.MyProperty = <span class="number">42</span></span><br><span class="line">myInstance:MyMethod() <span class="comment">--42</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 访问非静态类的静态属性和方法</span></span><br><span class="line"><span class="keyword">local</span> myClass = CS.MyCSharpClass</span><br><span class="line">myClass.MyStaticProperty = <span class="number">50</span></span><br><span class="line">myClass:MyStaticMethod() <span class="comment">--50</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 访问静态类属性和方法</span></span><br><span class="line"><span class="keyword">local</span> myStaticClass = CS.MyStaticClass</span><br><span class="line">myStaticClass.MyProperty = <span class="number">60</span></span><br><span class="line">myStaticClass:MyMethod() <span class="comment">--60</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="lua-重载"><a href="#lua-重载" class="headerlink" title="lua 重载"></a>lua 重载</h4><p>直接通过不同参数类型进行重载，示例：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFunc</span>(<span class="params"><span class="built_in">int</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;TestFunc(int): &quot;</span> + <span class="keyword">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFunc</span>(<span class="params"><span class="built_in">float</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;TestFunc(float): &quot;</span> + <span class="keyword">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestFunc</span>(<span class="params"><span class="built_in">string</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;TestFunc(string): &quot;</span> + <span class="keyword">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- TestFunc 被重载了，xLua 需要明确传递参数类型</span></span><br><span class="line">CS.MyCSharpClass.TestFunc(<span class="number">42</span>)          <span class="comment">-- 调用参数为整数的重载</span></span><br><span class="line">CS.MyCSharpClass.TestFunc(<span class="number">1.5</span>)          <span class="comment">-- 不会调用参数为float的重载，而是调用参数为整数的重载，并且value变成0</span></span><br><span class="line">CS.MyCSharpClass.TestFunc(<span class="string">&quot;hello&quot;</span>)  <span class="comment">-- 调用参数为字符串的重载</span></span><br></pre></td></tr></table></figure>
+
+<p>但需要注意的是， xlua 只一定程度上支持重载函数的调用，因为 lua 的类型远远不如 C# 丰富，存在一对多的情况，比如 C# 的 int，float，double 都对应于 lua 的 number，如果有这些重载参数，第一行将无法区分开来，只能调用到其中一个（生成代码中排前面的那个）。</p>
+<h4 id="可变参数方法"><a href="#可变参数方法" class="headerlink" title="可变参数方法"></a>可变参数方法</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">VariableParamsFunc</span>(<span class="params"><span class="built_in">int</span> a, <span class="keyword">params</span> <span class="built_in">object</span>[] arg</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Argument_a: &quot;</span> + a);</span><br><span class="line">        Debug.Log(<span class="string">&quot;Argument_var: &quot;</span> + <span class="built_in">string</span>.Join(<span class="string">&quot;, &quot;</span>, arg));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua端调用示例</span></span><br><span class="line">CS.MyCSharpClass:VariableParamsFunc(<span class="number">5</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">true</span>, <span class="number">42</span>, <span class="number">3.14</span>)   </span><br></pre></td></tr></table></figure>
+
+<h4 id="使用Extension-methods"><a href="#使用Extension-methods" class="headerlink" title="使用Extension methods"></a>使用Extension methods</h4><p>在 C# 里定义了，lua 里就能直接使用。</p>
+<blockquote>
+<p>注：使用 <strong>Extension methods</strong> 可以在已有的类型（types）中添加方法（Methods），而无需通过增加一种新的类型或修改已有的类型。比如说，想要给 string 类型增加一个 PrintStrLength() 方法，打印出字符串的长度。使用 Extension methods 可以不需要去修改 string 类型而实现这一方法。</p>
+</blockquote>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">LuaCallCSharp</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyClass</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">LuaCallCSharp</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">MyClassExtensions</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">PrintLen</span>(<span class="params"><span class="keyword">this</span> MyClass myClass, <span class="built_in">string</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">$&quot;length of \&quot;<span class="subst">&#123;<span class="keyword">value</span>&#125;</span>\&quot; is <span class="subst">&#123;<span class="keyword">value</span>.Length&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua端调用拓展方法</span></span><br><span class="line">myClass = CS.MyClass()</span><br><span class="line">myClass:PrintLen(<span class="string">&quot;Hello world!&quot;</span>) <span class="comment">-- length of &quot;Hello world!&quot; is 12</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：</p>
+<ul>
+<li>Extension methods 扩展方法必须定义在一个静态类中</li>
+<li>Extension methods 是一种特殊的静态方法，在被扩展的类型调用时要像实例方法一样调用：<code>&quot;hello&quot;.PrintStrLength();</code></li>
+<li>扩展方法的声明：使用 this 关键字，后面跟着要操作的对象类型</li>
+<li>扩展方法的使用：使用扩展方法时需先使用 using 导入扩展方法所在的名字空间</li>
+<li>C#不能扩展静态类(如 System.Convert)</li>
+</ul>
+</blockquote>
+<h4 id="泛化（模版）方法"><a href="#泛化（模版）方法" class="headerlink" title="泛化（模版）方法"></a>泛化（模版）方法</h4><p>不直接支持，可以通过 Extension methods 功能进行封装后调用。</p>
+<ul>
+<li><p>使用泛型为参数的方法</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C# </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyCSharpClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//定义一个具有泛型为参数的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Method</span>(<span class="params">List&lt;<span class="built_in">string</span>&gt; strArray</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="built_in">string</span>.Join(<span class="string">&quot; &quot;</span>, strArray));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua</span></span><br><span class="line">myClass = CS.MyCSharpClass()</span><br><span class="line">myTable = &#123;<span class="string">&quot;lua&quot;</span>, <span class="string">&quot;C#&quot;</span>, <span class="string">&quot;C++&quot;</span>&#125;</span><br><span class="line">myClass:Method(myTable) <span class="comment">-- lua C# C++</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用C#中的泛型方法</p>
+  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#</span></span><br><span class="line">[<span class="meta">LuaCallCSharp</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Print</span>&lt;<span class="title">T</span>&gt;(<span class="params">T <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="keyword">value</span>);   </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">LuaCallCSharp</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">MyClassExtensions</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">LuaPrint</span>(<span class="params"><span class="keyword">this</span> MyClass myClass, <span class="built_in">int</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        myClass.Print(<span class="keyword">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">LuaPrint</span>(<span class="params"><span class="keyword">this</span> MyClass myClass, <span class="built_in">string</span> <span class="keyword">value</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        myClass.Print(<span class="keyword">value</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua</span></span><br><span class="line">myClass = CS.MyClass()</span><br><span class="line">myClass:LuaPrint(<span class="number">42</span>) <span class="comment">--42</span></span><br><span class="line">myClass:LuaPrint(<span class="string">&quot;Hello&quot;</span>) <span class="comment">--Hello</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="枚举类型"><a href="#枚举类型" class="headerlink" title="枚举类型"></a>枚举类型</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">enum</span> Language</span><br><span class="line">&#123;</span><br><span class="line">    PHP,</span><br><span class="line">    Charp,</span><br><span class="line">    Python,</span><br><span class="line">    C,</span><br><span class="line">    Java</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">LuaCallCSharp</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ChooseLanguage</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetLanguage</span>(<span class="params">Language lang</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">switch</span> (lang)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> Language.PHP:</span><br><span class="line">                Debug.Log(<span class="string">&quot;选择了PHP语言&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Language.Charp:</span><br><span class="line">                Debug.Log(<span class="string">&quot;选择了Charp语言&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Language.Python:</span><br><span class="line">                Debug.Log(<span class="string">&quot;选择了Python语言&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Language.C:</span><br><span class="line">                Debug.Log(<span class="string">&quot;选择了C语言&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Language.Java:</span><br><span class="line">                Debug.Log(<span class="string">&quot;选择了Java语言&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua端访问</span></span><br><span class="line">Language = CS.Language</span><br><span class="line">choose = CS.ChooseLanguage()</span><br><span class="line">choose:GetLanguage(Language.PHP)</span><br><span class="line">choose:GetLanguage(Language.__CastFrom(<span class="number">1</span>)) <span class="comment">--索引从0开始</span></span><br><span class="line">choose:GetLanguage(Language.__CastFrom(<span class="string">&#x27;Python&#x27;</span>))</span><br><span class="line">choose:GetLanguage(<span class="number">3</span>)</span><br><span class="line">choose:GetLanguage(<span class="string">&#x27;Java&#x27;</span>)</span><br><span class="line"><span class="comment">-- 选择了PHP语言</span></span><br><span class="line"><span class="comment">-- 选择了Charp语言</span></span><br><span class="line"><span class="comment">-- 选择了Python语言</span></span><br><span class="line"><span class="comment">-- 选择了C语言</span></span><br><span class="line"><span class="comment">-- 选择了Java语言</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="delegate使用（调用，-，-）"><a href="#delegate使用（调用，-，-）" class="headerlink" title="delegate使用（调用，+，-）"></a>delegate使用（调用，+，-）</h4><p>使用Lua代码访问 C# 委托时需要注意，访问委托类型的方式与访问静态变量的方式相同，访问（静态&#x2F;非静态）委托的变量的方式与访问（静态&#x2F;非静态）成员变量的方式相同。由于在 Lua 中没有 “+&#x3D;” 和 “-&#x3D;” 操作符，<strong>在改变委托链的时候只能使用”+“和”-“操作符。</strong></p>
+<p><code>+</code> 操作符：对应 C# 的 + 操作符，把两个调用串成一个调用链，右操作数可以是同类型的 C# delegate 或者是 lua 函数。</p>
+<p><code>-</code> 操作符：对应 C# 的 - 操作符，把一个 delegate 从调用链中移除。</p>
+<p>注：<strong>delegate 属性可以用一个 LuaFunction 来赋值</strong>。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">DelegateExample</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 定义一个简单的委托类型</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">MyDelegate</span>(<span class="params"><span class="built_in">string</span> message</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 一个委托属性</span></span><br><span class="line">    <span class="keyword">public</span> MyDelegate myDelegateProperty;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 一个接受委托参数的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">InvokeDelegate</span>(<span class="params">MyDelegate myDelegate, <span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        myDelegate?.Invoke(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 一个普通成员方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MemberMethod</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;MemberMethod called with message: &quot;</span> + message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 一个静态方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StaticMethod</span>(<span class="params"><span class="built_in">string</span> message</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;StaticMethod called with message: &quot;</span> + message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua端调用</span></span><br><span class="line"><span class="keyword">local</span> delegateExample = CS.DelegateExample()</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建 Lua 函数</span></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">LuaFunction</span><span class="params">(message)</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Lua function called with message: &quot;</span> .. message)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建 C# 委托实例</span></span><br><span class="line"><span class="keyword">local</span> myDelegate = CS.DelegateExample.MyDelegate(LuaFunction)</span><br><span class="line"></span><br><span class="line">delegateExample.myDelegateProperty = myDelegate</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 调用 C# 方法，触发委托链</span></span><br><span class="line">delegateExample:InvokeDelegate(delegateExample.myDelegateProperty, <span class="string">&quot;Hello from Lua&quot;</span>)</span><br><span class="line"><span class="comment">-- Lua function called with message: Hello from Lua</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--添加一个成员方法</span></span><br><span class="line">delegateExample.myDelegateProperty = delegateExample.myDelegateProperty + <span class="function"><span class="keyword">function</span><span class="params">(message)</span></span></span><br><span class="line">    delegateExample:MemberMethod(message)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">delegateExample:InvokeDelegate(delegateExample.myDelegateProperty, <span class="string">&quot;Hello from Lua after add MemberMethod&quot;</span>)</span><br><span class="line"><span class="comment">-- Lua function called with message: Hello from Lua after add MemberMethod</span></span><br><span class="line"><span class="comment">-- MemberMethod called with message: Hello from Lua after add MemberMethod</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--移除Lua方法</span></span><br><span class="line">delegateExample.myDelegateProperty = delegateExample.myDelegateProperty - myDelegate</span><br><span class="line"></span><br><span class="line"><span class="comment">--添加静态方法</span></span><br><span class="line">delegateExample.myDelegateProperty = delegateExample.myDelegateProperty + <span class="function"><span class="keyword">function</span><span class="params">(message)</span></span></span><br><span class="line">    CS.DelegateExample.StaticMethod(message)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">delegateExample:InvokeDelegate(delegateExample.myDelegateProperty, <span class="string">&quot;Hello from Lua after remove and add&quot;</span>)</span><br><span class="line"><span class="comment">-- MemberMethod called with message: Hello from Lua after remove and add</span></span><br><span class="line"><span class="comment">-- StaticMethod called with message: Hello from Lua after remove and add</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="event"><a href="#event" class="headerlink" title="event"></a>event</h4><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventClass</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">TestDelegate</span>()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> TestDelegate Events;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> TestDelegate action1 = () =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;触发了action1&quot;</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> TestDelegate action2 = () =&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;触发了action2&quot;</span>);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TriggerEvent</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Events();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> eventClass = CS.EventClass()</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">luaFunction</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;触发了lua function&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">eventClass:Events(<span class="string">&quot;+&quot;</span>, eventClass.action1)</span><br><span class="line">eventClass:Events(<span class="string">&quot;+&quot;</span>, luaFunction)</span><br><span class="line"><span class="comment">--注意在Lua中不能通过以下方式来触发事件eventClass:Events()</span></span><br><span class="line">eventClass:TriggerEvent()</span><br><span class="line"><span class="comment">-- 触发了action1</span></span><br><span class="line"><span class="comment">-- 触发了lua function</span></span><br><span class="line"></span><br><span class="line">eventClass:Events(<span class="string">&quot;-&quot;</span>, eventClass.action1)</span><br><span class="line">eventClass:Events(<span class="string">&quot;+&quot;</span>, eventClass.action2)</span><br><span class="line">eventClass:TriggerEvent()</span><br><span class="line"><span class="comment">-- 触发了lua function</span></span><br><span class="line"><span class="comment">-- 触发了action2</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="复杂类型"><a href="#复杂类型" class="headerlink" title="复杂类型"></a>复杂类型</h4><p>对于一个有无参构造函数的 C# 复杂类型，在 lua 侧可以直接用一个 table 来代替，该 table 对应复杂类型的 public 字段有相应字段即可，支持函数参数传递，属性赋值等，例如：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C#</span></span><br><span class="line">[<span class="meta">LuaCallCSharp</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyClass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 属性</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> MyProperty &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 成员方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MyMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;MyMethod called&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 静态方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">StaticMethod</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;StaticMethod called&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 嵌套类</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">NestedClass</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">NestedMethod</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Debug.Log(<span class="string">&quot;NestedMethod called&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- lua</span></span><br><span class="line"><span class="keyword">local</span> MyClass = CS.MyClass</span><br><span class="line"><span class="comment">-- 创建 C# 类实例</span></span><br><span class="line"><span class="keyword">local</span> myObject = MyClass()</span><br><span class="line"><span class="comment">-- 将 C# 类映射到 Lua table</span></span><br><span class="line"><span class="keyword">local</span> myTable = &#123;</span><br><span class="line">    MyProperty = myObject.MyProperty,</span><br><span class="line">    MyMethod = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">        myObject:MyMethod()</span><br><span class="line">    <span class="keyword">end</span>,</span><br><span class="line">    StaticMethod = <span class="function"><span class="keyword">function</span><span class="params">()</span></span></span><br><span class="line">        CS.MyClass.StaticMethod()</span><br><span class="line">    <span class="keyword">end</span>,</span><br><span class="line">    NestedClass = &#123;</span><br><span class="line">        NestedMethod = <span class="function"><span class="keyword">function</span><span class="params">(self)</span></span></span><br><span class="line">            <span class="keyword">local</span> nestedObject = CS.MyClass.NestedClass()</span><br><span class="line">            nestedObject:NestedMethod()</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用 Lua table</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;MyProperty value:&quot;</span>, myTable.MyProperty)</span><br><span class="line">myTable.MyMethod()</span><br><span class="line">myTable.StaticMethod()</span><br><span class="line">myTable.NestedClass:NestedMethod()</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>感谢投喂！₍ᐢ.ˬ.⑅ᐢ₎</div>
+  <button>
+    打赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/reward.jpg" alt="TongShuqi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Lua/" rel="tag"># Lua</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/10/CSharp/%E8%A3%85%E7%AE%B1%E4%B8%8E%E6%8B%86%E7%AE%B1/" rel="prev" title="C#装箱与拆箱">
+                  <i class="fa fa-angle-left"></i> C#装箱与拆箱
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/14/LeetCode/LeetCode28.%E6%89%BE%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8C%B9%E9%85%8D%E9%A1%B9%E7%9A%84%E4%B8%8B%E6%A0%87/" rel="next" title="LeetCode28.找出字符串中第一个匹配项的下标">
+                  LeetCode28.找出字符串中第一个匹配项的下标 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">TongShuqi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">113k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:42</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/tsq0316" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tsq0316/blog-comments","issue_term":"title","theme":"github-light","label":"utteranc"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -233,111 +233,6 @@
       </tags>
   </entry>
   <entry>
-    <title>面向对象的三大特点</title>
-    <url>/2023/10/23/CSharp/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E5%A4%A7%E7%89%B9%E7%82%B9/</url>
-    <content><![CDATA[<p>C#是一种面向对象的编程语言，广泛用于开发各类应用程序。同时，C#作为一种多范式语言，也支持面向过程编程。面向对象的特点我们耳熟能详，但新手可能会说不清楚，为什么要这样设计。今天我们就对面向对象的三大核心特点：封装，继承，多态来进行超详细讲解。</p>
-<span id="more"></span>
-<blockquote>
-<p><strong>面向对象编程</strong>是一种以对象为中心的编程范式，它将数据和操作数据的方法组合成对象。在面向对象编程中，程序被组织成一组相互作用的对象，这些对象通过彼此发送消息来传递数据。<br><strong>面向过程编程</strong>是一种以过程为中心的编程范式，它主要关注解决问题时所需要执行的步骤。在面向过程编程中，程序被组织成一系列的函数或方法，这些函数或方法按照特定的顺序被调用来完成任务。</p>
-</blockquote>
-<h2 id="封装（Encapsulation）"><a href="#封装（Encapsulation）" class="headerlink" title="封装（Encapsulation）"></a>封装（Encapsulation）</h2><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithoutEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">decimal</span> Balance; <span class="comment">// 公开的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance -= amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>举一个简单的小例子，假设一种场景，有一个银行账户类，包括余额和存取款方法等。如果直接将余额设为public，其他类能直接从外部访问账户类的余额信息，这种设计存在一些问题：</p>
-<ul>
-<li>数据不受限制：外部代码可以随意修改Balance字段，而没有任何限制，这可能导致不合法的操作，如负数余额。</li>
-<li>无法实施验证：无法在存款或取款方法中实施验证，以确保金额不为负数或其他不合法值。</li>
-<li>缺乏安全性：敏感的账户余额可以在外部被直接访问，而不受任何控制。</li>
-</ul>
-<p>这种设计明显是不合理的，那么应该怎样修改呢？我们可以试着将Balance声明为private，添加一个public方法来访问Balance，外部代码无法直接访问它，而必须使用公共方法来与余额进行交互，这样就解决了上述问题。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">decimal</span> balance; <span class="comment">// 私有的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">decimal</span> <span class="title">GetBalance</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> balance; <span class="comment">// 通过公共方法返回余额</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            balance += amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span> &amp;&amp; balance &gt;= amount)</span><br><span class="line">        &#123;</span><br><span class="line">            balance -= amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这就是一个简单的运用了封装的例子，体现了封装的数据隐藏和安全性。<br>那么具体什么是封装呢？封装其实就是一种将数据（属性）和操作数据的方法（方法）组合成一个单元，并且把这些内部细节隐藏起来，只暴露必要的公共接口供其他对象访问的机制。封装的主要目标是隔离对象的内部实现，以提高代码的可维护性、安全性和可重用性。封装的关键概念包括：</p>
-<ul>
-<li><p>数据隐藏：封装将对象的数据（通常是字段或属性）设为私有或受限访问，使其不能直接被外部对象访问，从而防止外部对象直接修改或破坏对象的内部状态。</p>
-</li>
-<li><p>公共接口：封装通过提供公共方法或属性，允许其他对象与封装对象进行交互。这些公共接口定义了外部对象可以如何与对象互动，并提供了访问对象数据和执行对象操作的途径。</p>
-</li>
-<li><p>数据验证和保护：通过封装，可以在公共接口中添加数据验证逻辑，以确保数据的合法性，防止不合法的访问和修改。</p>
-</li>
-<li><p>隐藏实现细节：封装允许对象内部的实现细节保持私有，外部对象不需要了解对象的内部工作原理，只需要知道如何与对象互动。</p>
-</li>
-<li><p>安全性：封装提高了数据的安全性，因为外部对象无法直接访问和修改对象的私有数据。</p>
-</li>
-</ul>
-<p>通过封装，面向对象编程能够将复杂性管理在对象内部，提供了清晰、简化的公共接口，使代码更易于理解、维护和扩展，有助于构建模块化、可靠和可维护的应用程序。</p>
-<h2 id="继承（Inheritance）"><a href="#继承（Inheritance）" class="headerlink" title="继承（Inheritance）"></a>继承（Inheritance）</h2><p>继续假设这样一个场景，我们想做一个动物管理系统，涉及到很多个动物种类，假如直接为每一种动物都写一个类，那么每一个类都要包含名称，种类，科属等字段，并且每一个类都会有一些相同的方法，例如吃饭，休息等。这样写下来代码就会有非常大的重复和冗余。那么该怎样改进呢？<br>我们可以将这些动物的共同属性和方法提取出来，放在一个类中，提供一个基础的框架，以定义动物的基本属性和行为。在这个框架的基础上，每个动物类都可以添加自己独有的属性和方法，例如”Cat”类可以添加属性”毛色”和方法”捉老鼠”，”Bird”类可以添加属性”翅膀长度”和方法”飞翔”。<br>这就是继承的思想。这个被提取出来的公共类就叫做基类，在这个框架的基础上进行拓展的类就叫做派生类。继承允许我们构建层次化结构，其中基类定义了共享特征，而派生类继承这些特征并添加特定于自身的内容，从而实现了代码重用和抽象化，这有助于更清晰地表示现实世界中的关系和层次结构。继承的好处非常多，例如：</p>
-<ul>
-<li>代码重用：继承允许子类（派生类）继承父类（基类）的属性和方法，从而避免了重复编写相同的代码。这促进了代码的重用，减少了代码冗余。</li>
-<li>抽象化和通用性：基类可以定义通用的属性和方法，捕获多个子类之间共享的特性。这种抽象化有助于更好地建模现实世界的关系，并提供通用性。</li>
-<li>层次化组织：继承允许创建层次结构，通过将相关的类组织在一起，更清晰地表示它们之间的关系。这有助于代码的结构和理解。</li>
-<li>可扩展性：新的子类可以轻松地添加到继承层次结构中，而无需修改现有的代码。这提高了应用程序的可扩展性，使其能够适应新的需求。</li>
-<li>维护性：继承有助于代码的维护，因为通用代码只需在一个地方维护，而不需要在每个子类中进行修改。这降低了维护的成本。<br>-多态性：继承是多态性的基础。多态性允许不同的子类对象对相同的方法进行不同的实现，从而提高了代码的灵活性和可扩展性。</li>
-<li>封装实现细节：基类可以封装实现细节，隐藏其内部工作原理，允许子类专注于其独特的功能。</li>
-<li>重用已有类：继承允许在现有类的基础上构建新的类，以便重用已有类的功能，并添加新的功能。</li>
-</ul>
-<p>总之，继承是面向对象编程中的重要概念，它提供了许多好处，包括代码重用、抽象化、层次化组织、可扩展性、维护性和灵活性，这使得继承成为构建复杂应用程序的强大工具。</p>
-<blockquote>
-<p>继承的传递性：传递机制 a-&gt;b，b-&gt;c，c具有a的特性。<br>继承的单根性：在C#中一个类只能继承一个父类，不能有多个父类。</p>
-</blockquote>
-<h2 id="多态（Polymorphism）"><a href="#多态（Polymorphism）" class="headerlink" title="多态（Polymorphism）"></a>多态（Polymorphism）</h2><p>多态是个比较抽象的概念，我们可以继续通过一个小例子来理解多态的概念。回合制游戏中，往往有这样一种场景：场上有一组不同类型的怪物，例如巨魔，巫师，恶龙，怪物依次对玩家进行攻击。假设没有继承和多态，需要为每种类型的怪物都设置一个列表，巨魔列表，恶龙列表，狼人列表，依次遍历所有列表，调用对应怪物类的Attack方法来对玩家进行攻击。<br>再有了继承的概念之后，我们可以将所有怪物的共同属性和方法提取出来，变成一个Monster基类，不同怪物类都可以继承Monster类，这样就只需要一个<code>List&lt;Monster&gt;</code>就能管理所有怪物，不需要多个列表。<br>但这样依然会有一个问题，在遍历这个列表的过程中，我们需要依次判断列表元素对应的怪物种类是什么，然后再执行对应怪物子类的攻击方法，这样做依然很不方便，需要大量的switch和if语句，这时候，就引入了多态的概念。<br>多态是什么呢？多态顾名思义，就是<strong>对象的多种状态</strong>。它表示在不同的对象上可以执行相同的操作，但这些操作可以根据对象的实际类型而具有不同的行为。多态性的核心思想是：在同一个方法或属性被不同类的对象调用时，可以根据对象的实际类型来执行不同的操作。<br>多态性有两种主要形式：</p>
-<ul>
-<li>编译时多态性（静态多态性）：这是方法的重载和方法的重写，它们在编译时确定方法调用的方式。方法的重载是指在同一个类中有多个方法，但它们具有相同的名称，但不同的参数列表。方法的重写是指派生类可以覆盖基类中的方法，以提供自己的实现。</li>
-<li>运行时多态性（动态多态性）：这是多态性的经典形式，它允许在运行时根据对象的实际类型来确定方法调用的方式。这通常涉及到继承和方法覆盖。在运行时，基于对象的实际类型，可以调用适当的方法实现。</li>
-</ul>
-<p>落到这个例子上，多态是如何实现的呢？首先我们定义一个Moster基类，包含一个virtual修饰的Attack方法，其他怪物子类继承这个基类，在子类中重写（覆盖）这个Attack方法。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;怪物攻击了！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Troll</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巨魔挥舞着大棒攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Wizard</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巫师发射了火球攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Dragon</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;恶龙喷射火焰攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>假设场上的怪物都用<code>List&lt;Monster&gt; monsters</code>来存储，我们遍历这个列表，调用Attack方法时，根据每个怪物的实际类型，会自动执行对应的攻击方式。</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (Monster monster <span class="keyword">in</span> monsters)</span><br><span class="line">&#123;</span><br><span class="line">    monster.Attack();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>多态性的优势在于可以将不同类型的对象当作通用的基类对象处理，从而提高代码的可重用性、可维护性和可扩展性。多态性使代码更具灵活性，能够处理不同情况下的相同方法调用，从而更好地模拟现实世界的复杂性。<br>多态的优点主要有：</p>
-<ul>
-<li>提高代码的灵活性和通用性：多态性允许将不同类型的对象视为其共同的基类对象，从而编写通用代码，可以处理多种不同类型的对象。这提高了代码的通用性和灵活性。</li>
-<li>简化代码：使用多态性可以减少重复的代码，因为可以将通用的操作应用于多个对象，而不需要为每个对象编写特定的操作。</li>
-<li>支持动态绑定：多态性允许在运行时动态地选择要调用的方法，而不需要在编译时知道对象的具体类型。这提供了更大的灵活性，适应不同的运行时条件。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总之，封装、继承和多态性有助于构建更安全、可维护、可扩展和通用的软件系统。它们提供了一种有效的方式来管理复杂性，降低代码的复杂性，从而更好地满足现实世界问题的需求。</p>
-]]></content>
-      <categories>
-        <category>C#</category>
-      </categories>
-      <tags>
-        <tag>C#</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode117.填充每个节点的下一个右侧节点指针 II</title>
-    <url>/2023/11/03/LeetCode/LeetCode117.%20%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88%20II/</url>
-    <content><![CDATA[<p>LeetCode117.填充每个节点的下一个右侧节点指针 II【medium】。</p>
-<span id="more"></span>
-<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个二叉树:</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> Node &#123;</span><br><span class="line">  <span class="built_in">int</span> val;</span><br><span class="line">  Node *left;</span><br><span class="line">  Node *right;</span><br><span class="line">  Node *next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL 。<br>初始状态下，所有 next 指针都被设置为 NULL 。</p>
-<h2 id="输入输出示例"><a href="#输入输出示例" class="headerlink" title="输入输出示例"></a>输入输出示例</h2><p>示例 1：<br><img src="/../../images/pic6/117_sample.png" alt="117示例"><br>输入：root &#x3D; [1,2,3,4,5,null,7]<br>输出：[1,#,2,3,#,4,5,7,#]<br>解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。序列化输出按层序遍历顺序（由 next 指针连接），’#’ 表示每层的末尾。</p>
-<p>示例 2：<br>输入：root &#x3D; []<br>输出：[]</p>
-<blockquote>
-<p>提示：</p>
-<ul>
-<li>树中的节点数在范围 [0, 6000] 内</li>
-<li>-100 &lt;&#x3D; Node.val &lt;&#x3D; 100</li>
-</ul>
-</blockquote>
-<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><h3 id="方法一：层序遍历"><a href="#方法一：层序遍历" class="headerlink" title="方法一：层序遍历"></a>方法一：层序遍历</h3><p>由图示可知，每一个节点的 next 指的就是和节点处于同一层的下一个节点，我们很容易想到二叉树的层序遍历。二叉树常规的层序遍历方式是使用一个 Queue，首先把二叉树的根节点入队，然后当队列数目不为空时，将队头元素出队，然后将出队元素的左右孩子入队（如果存在的话），直到 Queue 数目为0结束循环。<br>但依照题意，我们想要的是将某一层的节点全部相连，而普通层序遍历时，Queue 中的元素某一时刻并不一定是同一层的，所以我们可以在层序遍历的基础上稍微进行一些修改，找到属于同一层的所有节点。具体的方式就是在一次 while 循环开启的时候，记录下当前 Queue 中的数目元素 n，然后通过 for 循环进行 n 次出队操作，这样就能保证每一次循环出队列的元素都是同一层的，while 结束后的 Queue 元素都是下一层的。</p>
-<h3 id="方法二：使用已建立的-next-指针"><a href="#方法二：使用已建立的-next-指针" class="headerlink" title="方法二：使用已建立的 next 指针"></a>方法二：使用已建立的 next 指针</h3><p>方法一使用了层序遍历，需要额外的空间。由于必须遍历所有节点，所以无法降低时间复杂度，但可以考虑如何降低空间复杂度。我们由题意可以知道，当我们遍历某一层节点时，由于我们已知每一个节点的 left 和 right，所以其实对于下一层的构造，我们也可以确定。对于每一层，只要知道最左边的节点，就可以遍历该层了。所以从根节点开始，我们可以建立下一层的 next，然后遍历下一层，再建立下下层的 next，以此类推，就不需要使用额外空间了。</p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="题解一：层序遍历"><a href="#题解一：层序遍历" class="headerlink" title="题解一：层序遍历"></a>题解一：层序遍历</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// Definition for a Node.</span></span><br><span class="line"><span class="comment">public class Node &#123;</span></span><br><span class="line"><span class="comment">    public int val;</span></span><br><span class="line"><span class="comment">    public Node left;</span></span><br><span class="line"><span class="comment">    public Node right;</span></span><br><span class="line"><span class="comment">    public Node next;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node() &#123;&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val, Node _left, Node _right, Node _next) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">        left = _left;</span></span><br><span class="line"><span class="comment">        right = _right;</span></span><br><span class="line"><span class="comment">        next = _next;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Solution</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">Connect</span>(<span class="params">Node root</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Queue&lt;Node&gt; queue = <span class="keyword">new</span> Queue&lt;Node&gt;();</span><br><span class="line">        Node last = <span class="literal">null</span>; <span class="comment">//last代表上一次访问的节点</span></span><br><span class="line">        queue.Enqueue(root);</span><br><span class="line">        <span class="keyword">while</span>(queue.Count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            last = <span class="literal">null</span>; <span class="comment">//每一层和上一层无需串联，对于每一层的循环，需要把last置空</span></span><br><span class="line">            <span class="built_in">int</span> n = queue.Count; <span class="comment">//n不能在循环里获取，因为count数目会发生变化</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">                Node temp = queue.Dequeue();</span><br><span class="line">                <span class="keyword">if</span>(temp.left != <span class="literal">null</span>) &#123;</span><br><span class="line">                    queue.Enqueue(temp.left);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(temp.right != <span class="literal">null</span>) &#123;</span><br><span class="line">                    queue.Enqueue(temp.right);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//如果当前节点不是首节点，那么就将当前节点作为上一次节点的next</span></span><br><span class="line">                <span class="keyword">if</span>(i != <span class="number">1</span>) &#123;</span><br><span class="line">                    last.next = temp;</span><br><span class="line">                &#125;</span><br><span class="line">                last = temp; <span class="comment">//更新last节点</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="题解二：使用已建立的-next-指针"><a href="#题解二：使用已建立的-next-指针" class="headerlink" title="题解二：使用已建立的 next 指针"></a>题解二：使用已建立的 next 指针</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// Definition for a Node.</span></span><br><span class="line"><span class="comment">public class Node &#123;</span></span><br><span class="line"><span class="comment">    public int val;</span></span><br><span class="line"><span class="comment">    public Node left;</span></span><br><span class="line"><span class="comment">    public Node right;</span></span><br><span class="line"><span class="comment">    public Node next;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node() &#123;&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val, Node _left, Node _right, Node _next) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">        left = _left;</span></span><br><span class="line"><span class="comment">        right = _right;</span></span><br><span class="line"><span class="comment">        next = _next;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Solution</span> &#123;</span><br><span class="line">    Node last = <span class="literal">null</span>, nextStart = <span class="literal">null</span>; <span class="comment">//last代表上一次访问的节点，nextStart代表下一层开始的节点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">Connect</span>(<span class="params">Node root</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Node start = root; <span class="comment">//start代表本层开始的节点</span></span><br><span class="line">        <span class="keyword">while</span>(start != <span class="literal">null</span>) &#123;</span><br><span class="line">            Node temp = start; <span class="comment">//temp代表当前遍历到的节点</span></span><br><span class="line">            last = <span class="literal">null</span>; <span class="comment">// 对于每次循环，都要置空last和nextStart</span></span><br><span class="line">            nextStart = <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">while</span>(temp != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">//根据当前节点的left和right建立next连接</span></span><br><span class="line">                <span class="keyword">if</span>(temp.left != <span class="literal">null</span>) &#123;</span><br><span class="line">                    Handle(temp.left);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(temp.right != <span class="literal">null</span>) &#123;</span><br><span class="line">                    Handle(temp.right);</span><br><span class="line">                &#125;</span><br><span class="line">                temp = temp.next; <span class="comment">//更新temp节点</span></span><br><span class="line">            &#125;</span><br><span class="line">            start = nextStart; <span class="comment">//遍历完当前层后更新start</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Handle</span>(<span class="params">Node p</span>)</span> &#123;</span><br><span class="line">        <span class="comment">// 上一次节点不为空，说明本层有前边的节点，将p设为last的next</span></span><br><span class="line">        <span class="keyword">if</span>(last != <span class="literal">null</span>) &#123;</span><br><span class="line">            last.next = p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//nextstart为空，说明某次循环刚开始，p是某一层的首节点</span></span><br><span class="line">        <span class="keyword">if</span>(nextStart == <span class="literal">null</span>) &#123;</span><br><span class="line">            nextStart = p;</span><br><span class="line">        &#125;</span><br><span class="line">        last = p; <span class="comment">//更新last</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>二叉树</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>LeetCode1155.掷骰子等于目标和的方法数</title>
     <url>/2023/10/21/LeetCode/LeetCode1155.%E6%8E%B7%E9%AA%B0%E5%AD%90%E7%AD%89%E4%BA%8E%E7%9B%AE%E6%A0%87%E5%92%8C%E7%9A%84%E6%96%B9%E6%B3%95%E6%95%B0/</url>
     <content><![CDATA[<p>LeetCode1155.掷骰子等于目标和的方法数【medium】。</p>
@@ -505,6 +400,111 @@
       </tags>
   </entry>
   <entry>
+    <title>面向对象的三大特点</title>
+    <url>/2023/10/23/CSharp/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E5%A4%A7%E7%89%B9%E7%82%B9/</url>
+    <content><![CDATA[<p>C#是一种面向对象的编程语言，广泛用于开发各类应用程序。同时，C#作为一种多范式语言，也支持面向过程编程。面向对象的特点我们耳熟能详，但新手可能会说不清楚，为什么要这样设计。今天我们就对面向对象的三大核心特点：封装，继承，多态来进行超详细讲解。</p>
+<span id="more"></span>
+<blockquote>
+<p><strong>面向对象编程</strong>是一种以对象为中心的编程范式，它将数据和操作数据的方法组合成对象。在面向对象编程中，程序被组织成一组相互作用的对象，这些对象通过彼此发送消息来传递数据。<br><strong>面向过程编程</strong>是一种以过程为中心的编程范式，它主要关注解决问题时所需要执行的步骤。在面向过程编程中，程序被组织成一系列的函数或方法，这些函数或方法按照特定的顺序被调用来完成任务。</p>
+</blockquote>
+<h2 id="封装（Encapsulation）"><a href="#封装（Encapsulation）" class="headerlink" title="封装（Encapsulation）"></a>封装（Encapsulation）</h2><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithoutEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">decimal</span> Balance; <span class="comment">// 公开的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Balance -= amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举一个简单的小例子，假设一种场景，有一个银行账户类，包括余额和存取款方法等。如果直接将余额设为public，其他类能直接从外部访问账户类的余额信息，这种设计存在一些问题：</p>
+<ul>
+<li>数据不受限制：外部代码可以随意修改Balance字段，而没有任何限制，这可能导致不合法的操作，如负数余额。</li>
+<li>无法实施验证：无法在存款或取款方法中实施验证，以确保金额不为负数或其他不合法值。</li>
+<li>缺乏安全性：敏感的账户余额可以在外部被直接访问，而不受任何控制。</li>
+</ul>
+<p>这种设计明显是不合理的，那么应该怎样修改呢？我们可以试着将Balance声明为private，添加一个public方法来访问Balance，外部代码无法直接访问它，而必须使用公共方法来与余额进行交互，这样就解决了上述问题。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BankAccountWithEncapsulation</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">decimal</span> balance; <span class="comment">// 私有的余额字段</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">decimal</span> <span class="title">GetBalance</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> balance; <span class="comment">// 通过公共方法返回余额</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Deposit</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            balance += amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Withdraw</span>(<span class="params"><span class="built_in">decimal</span> amount</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (amount &gt; <span class="number">0</span> &amp;&amp; balance &gt;= amount)</span><br><span class="line">        &#123;</span><br><span class="line">            balance -= amount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这就是一个简单的运用了封装的例子，体现了封装的数据隐藏和安全性。<br>那么具体什么是封装呢？封装其实就是一种将数据（属性）和操作数据的方法（方法）组合成一个单元，并且把这些内部细节隐藏起来，只暴露必要的公共接口供其他对象访问的机制。封装的主要目标是隔离对象的内部实现，以提高代码的可维护性、安全性和可重用性。封装的关键概念包括：</p>
+<ul>
+<li><p>数据隐藏：封装将对象的数据（通常是字段或属性）设为私有或受限访问，使其不能直接被外部对象访问，从而防止外部对象直接修改或破坏对象的内部状态。</p>
+</li>
+<li><p>公共接口：封装通过提供公共方法或属性，允许其他对象与封装对象进行交互。这些公共接口定义了外部对象可以如何与对象互动，并提供了访问对象数据和执行对象操作的途径。</p>
+</li>
+<li><p>数据验证和保护：通过封装，可以在公共接口中添加数据验证逻辑，以确保数据的合法性，防止不合法的访问和修改。</p>
+</li>
+<li><p>隐藏实现细节：封装允许对象内部的实现细节保持私有，外部对象不需要了解对象的内部工作原理，只需要知道如何与对象互动。</p>
+</li>
+<li><p>安全性：封装提高了数据的安全性，因为外部对象无法直接访问和修改对象的私有数据。</p>
+</li>
+</ul>
+<p>通过封装，面向对象编程能够将复杂性管理在对象内部，提供了清晰、简化的公共接口，使代码更易于理解、维护和扩展，有助于构建模块化、可靠和可维护的应用程序。</p>
+<h2 id="继承（Inheritance）"><a href="#继承（Inheritance）" class="headerlink" title="继承（Inheritance）"></a>继承（Inheritance）</h2><p>继续假设这样一个场景，我们想做一个动物管理系统，涉及到很多个动物种类，假如直接为每一种动物都写一个类，那么每一个类都要包含名称，种类，科属等字段，并且每一个类都会有一些相同的方法，例如吃饭，休息等。这样写下来代码就会有非常大的重复和冗余。那么该怎样改进呢？<br>我们可以将这些动物的共同属性和方法提取出来，放在一个类中，提供一个基础的框架，以定义动物的基本属性和行为。在这个框架的基础上，每个动物类都可以添加自己独有的属性和方法，例如”Cat”类可以添加属性”毛色”和方法”捉老鼠”，”Bird”类可以添加属性”翅膀长度”和方法”飞翔”。<br>这就是继承的思想。这个被提取出来的公共类就叫做基类，在这个框架的基础上进行拓展的类就叫做派生类。继承允许我们构建层次化结构，其中基类定义了共享特征，而派生类继承这些特征并添加特定于自身的内容，从而实现了代码重用和抽象化，这有助于更清晰地表示现实世界中的关系和层次结构。继承的好处非常多，例如：</p>
+<ul>
+<li>代码重用：继承允许子类（派生类）继承父类（基类）的属性和方法，从而避免了重复编写相同的代码。这促进了代码的重用，减少了代码冗余。</li>
+<li>抽象化和通用性：基类可以定义通用的属性和方法，捕获多个子类之间共享的特性。这种抽象化有助于更好地建模现实世界的关系，并提供通用性。</li>
+<li>层次化组织：继承允许创建层次结构，通过将相关的类组织在一起，更清晰地表示它们之间的关系。这有助于代码的结构和理解。</li>
+<li>可扩展性：新的子类可以轻松地添加到继承层次结构中，而无需修改现有的代码。这提高了应用程序的可扩展性，使其能够适应新的需求。</li>
+<li>维护性：继承有助于代码的维护，因为通用代码只需在一个地方维护，而不需要在每个子类中进行修改。这降低了维护的成本。<br>-多态性：继承是多态性的基础。多态性允许不同的子类对象对相同的方法进行不同的实现，从而提高了代码的灵活性和可扩展性。</li>
+<li>封装实现细节：基类可以封装实现细节，隐藏其内部工作原理，允许子类专注于其独特的功能。</li>
+<li>重用已有类：继承允许在现有类的基础上构建新的类，以便重用已有类的功能，并添加新的功能。</li>
+</ul>
+<p>总之，继承是面向对象编程中的重要概念，它提供了许多好处，包括代码重用、抽象化、层次化组织、可扩展性、维护性和灵活性，这使得继承成为构建复杂应用程序的强大工具。</p>
+<blockquote>
+<p>继承的传递性：传递机制 a-&gt;b，b-&gt;c，c具有a的特性。<br>继承的单根性：在C#中一个类只能继承一个父类，不能有多个父类。</p>
+</blockquote>
+<h2 id="多态（Polymorphism）"><a href="#多态（Polymorphism）" class="headerlink" title="多态（Polymorphism）"></a>多态（Polymorphism）</h2><p>多态是个比较抽象的概念，我们可以继续通过一个小例子来理解多态的概念。回合制游戏中，往往有这样一种场景：场上有一组不同类型的怪物，例如巨魔，巫师，恶龙，怪物依次对玩家进行攻击。假设没有继承和多态，需要为每种类型的怪物都设置一个列表，巨魔列表，恶龙列表，狼人列表，依次遍历所有列表，调用对应怪物类的Attack方法来对玩家进行攻击。<br>再有了继承的概念之后，我们可以将所有怪物的共同属性和方法提取出来，变成一个Monster基类，不同怪物类都可以继承Monster类，这样就只需要一个<code>List&lt;Monster&gt;</code>就能管理所有怪物，不需要多个列表。<br>但这样依然会有一个问题，在遍历这个列表的过程中，我们需要依次判断列表元素对应的怪物种类是什么，然后再执行对应怪物子类的攻击方法，这样做依然很不方便，需要大量的switch和if语句，这时候，就引入了多态的概念。<br>多态是什么呢？多态顾名思义，就是<strong>对象的多种状态</strong>。它表示在不同的对象上可以执行相同的操作，但这些操作可以根据对象的实际类型而具有不同的行为。多态性的核心思想是：在同一个方法或属性被不同类的对象调用时，可以根据对象的实际类型来执行不同的操作。<br>多态性有两种主要形式：</p>
+<ul>
+<li>编译时多态性（静态多态性）：这是方法的重载和方法的重写，它们在编译时确定方法调用的方式。方法的重载是指在同一个类中有多个方法，但它们具有相同的名称，但不同的参数列表。方法的重写是指派生类可以覆盖基类中的方法，以提供自己的实现。</li>
+<li>运行时多态性（动态多态性）：这是多态性的经典形式，它允许在运行时根据对象的实际类型来确定方法调用的方式。这通常涉及到继承和方法覆盖。在运行时，基于对象的实际类型，可以调用适当的方法实现。</li>
+</ul>
+<p>落到这个例子上，多态是如何实现的呢？首先我们定义一个Moster基类，包含一个virtual修饰的Attack方法，其他怪物子类继承这个基类，在子类中重写（覆盖）这个Attack方法。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;怪物攻击了！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Troll</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巨魔挥舞着大棒攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Wizard</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;巫师发射了火球攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Dragon</span> : <span class="title">Monster</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Attack</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">$&quot;恶龙喷射火焰攻击！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设场上的怪物都用<code>List&lt;Monster&gt; monsters</code>来存储，我们遍历这个列表，调用Attack方法时，根据每个怪物的实际类型，会自动执行对应的攻击方式。</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (Monster monster <span class="keyword">in</span> monsters)</span><br><span class="line">&#123;</span><br><span class="line">    monster.Attack();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>多态性的优势在于可以将不同类型的对象当作通用的基类对象处理，从而提高代码的可重用性、可维护性和可扩展性。多态性使代码更具灵活性，能够处理不同情况下的相同方法调用，从而更好地模拟现实世界的复杂性。<br>多态的优点主要有：</p>
+<ul>
+<li>提高代码的灵活性和通用性：多态性允许将不同类型的对象视为其共同的基类对象，从而编写通用代码，可以处理多种不同类型的对象。这提高了代码的通用性和灵活性。</li>
+<li>简化代码：使用多态性可以减少重复的代码，因为可以将通用的操作应用于多个对象，而不需要为每个对象编写特定的操作。</li>
+<li>支持动态绑定：多态性允许在运行时动态地选择要调用的方法，而不需要在编译时知道对象的具体类型。这提供了更大的灵活性，适应不同的运行时条件。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总之，封装、继承和多态性有助于构建更安全、可维护、可扩展和通用的软件系统。它们提供了一种有效的方式来管理复杂性，降低代码的复杂性，从而更好地满足现实世界问题的需求。</p>
+]]></content>
+      <categories>
+        <category>C#</category>
+      </categories>
+      <tags>
+        <tag>C#</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LeetCode117.填充每个节点的下一个右侧节点指针 II</title>
+    <url>/2023/11/03/LeetCode/LeetCode117.%20%E5%A1%AB%E5%85%85%E6%AF%8F%E4%B8%AA%E8%8A%82%E7%82%B9%E7%9A%84%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8F%B3%E4%BE%A7%E8%8A%82%E7%82%B9%E6%8C%87%E9%92%88%20II/</url>
+    <content><![CDATA[<p>LeetCode117.填充每个节点的下一个右侧节点指针 II【medium】。</p>
+<span id="more"></span>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个二叉树:</p>
+<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> Node &#123;</span><br><span class="line">  <span class="built_in">int</span> val;</span><br><span class="line">  Node *left;</span><br><span class="line">  Node *right;</span><br><span class="line">  Node *next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL 。<br>初始状态下，所有 next 指针都被设置为 NULL 。</p>
+<h2 id="输入输出示例"><a href="#输入输出示例" class="headerlink" title="输入输出示例"></a>输入输出示例</h2><p>示例 1：<br><img src="/../../images/pic6/117_sample.png" alt="117示例"><br>输入：root &#x3D; [1,2,3,4,5,null,7]<br>输出：[1,#,2,3,#,4,5,7,#]<br>解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。序列化输出按层序遍历顺序（由 next 指针连接），’#’ 表示每层的末尾。</p>
+<p>示例 2：<br>输入：root &#x3D; []<br>输出：[]</p>
+<blockquote>
+<p>提示：</p>
+<ul>
+<li>树中的节点数在范围 [0, 6000] 内</li>
+<li>-100 &lt;&#x3D; Node.val &lt;&#x3D; 100</li>
+</ul>
+</blockquote>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><h3 id="方法一：层序遍历"><a href="#方法一：层序遍历" class="headerlink" title="方法一：层序遍历"></a>方法一：层序遍历</h3><p>由图示可知，每一个节点的 next 指的就是和节点处于同一层的下一个节点，我们很容易想到二叉树的层序遍历。二叉树常规的层序遍历方式是使用一个 Queue，首先把二叉树的根节点入队，然后当队列数目不为空时，将队头元素出队，然后将出队元素的左右孩子入队（如果存在的话），直到 Queue 数目为0结束循环。<br>但依照题意，我们想要的是将某一层的节点全部相连，而普通层序遍历时，Queue 中的元素某一时刻并不一定是同一层的，所以我们可以在层序遍历的基础上稍微进行一些修改，找到属于同一层的所有节点。具体的方式就是在一次 while 循环开启的时候，记录下当前 Queue 中的数目元素 n，然后通过 for 循环进行 n 次出队操作，这样就能保证每一次循环出队列的元素都是同一层的，while 结束后的 Queue 元素都是下一层的。</p>
+<h3 id="方法二：使用已建立的-next-指针"><a href="#方法二：使用已建立的-next-指针" class="headerlink" title="方法二：使用已建立的 next 指针"></a>方法二：使用已建立的 next 指针</h3><p>方法一使用了层序遍历，需要额外的空间。由于必须遍历所有节点，所以无法降低时间复杂度，但可以考虑如何降低空间复杂度。我们由题意可以知道，当我们遍历某一层节点时，由于我们已知每一个节点的 left 和 right，所以其实对于下一层的构造，我们也可以确定。对于每一层，只要知道最左边的节点，就可以遍历该层了。所以从根节点开始，我们可以建立下一层的 next，然后遍历下一层，再建立下下层的 next，以此类推，就不需要使用额外空间了。</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="题解一：层序遍历"><a href="#题解一：层序遍历" class="headerlink" title="题解一：层序遍历"></a>题解一：层序遍历</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// Definition for a Node.</span></span><br><span class="line"><span class="comment">public class Node &#123;</span></span><br><span class="line"><span class="comment">    public int val;</span></span><br><span class="line"><span class="comment">    public Node left;</span></span><br><span class="line"><span class="comment">    public Node right;</span></span><br><span class="line"><span class="comment">    public Node next;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node() &#123;&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val, Node _left, Node _right, Node _next) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">        left = _left;</span></span><br><span class="line"><span class="comment">        right = _right;</span></span><br><span class="line"><span class="comment">        next = _next;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Solution</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">Connect</span>(<span class="params">Node root</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Queue&lt;Node&gt; queue = <span class="keyword">new</span> Queue&lt;Node&gt;();</span><br><span class="line">        Node last = <span class="literal">null</span>; <span class="comment">//last代表上一次访问的节点</span></span><br><span class="line">        queue.Enqueue(root);</span><br><span class="line">        <span class="keyword">while</span>(queue.Count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            last = <span class="literal">null</span>; <span class="comment">//每一层和上一层无需串联，对于每一层的循环，需要把last置空</span></span><br><span class="line">            <span class="built_in">int</span> n = queue.Count; <span class="comment">//n不能在循环里获取，因为count数目会发生变化</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">                Node temp = queue.Dequeue();</span><br><span class="line">                <span class="keyword">if</span>(temp.left != <span class="literal">null</span>) &#123;</span><br><span class="line">                    queue.Enqueue(temp.left);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(temp.right != <span class="literal">null</span>) &#123;</span><br><span class="line">                    queue.Enqueue(temp.right);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//如果当前节点不是首节点，那么就将当前节点作为上一次节点的next</span></span><br><span class="line">                <span class="keyword">if</span>(i != <span class="number">1</span>) &#123;</span><br><span class="line">                    last.next = temp;</span><br><span class="line">                &#125;</span><br><span class="line">                last = temp; <span class="comment">//更新last节点</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="题解二：使用已建立的-next-指针"><a href="#题解二：使用已建立的-next-指针" class="headerlink" title="题解二：使用已建立的 next 指针"></a>题解二：使用已建立的 next 指针</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// Definition for a Node.</span></span><br><span class="line"><span class="comment">public class Node &#123;</span></span><br><span class="line"><span class="comment">    public int val;</span></span><br><span class="line"><span class="comment">    public Node left;</span></span><br><span class="line"><span class="comment">    public Node right;</span></span><br><span class="line"><span class="comment">    public Node next;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node() &#123;&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    public Node(int _val, Node _left, Node _right, Node _next) &#123;</span></span><br><span class="line"><span class="comment">        val = _val;</span></span><br><span class="line"><span class="comment">        left = _left;</span></span><br><span class="line"><span class="comment">        right = _right;</span></span><br><span class="line"><span class="comment">        next = _next;</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Solution</span> &#123;</span><br><span class="line">    Node last = <span class="literal">null</span>, nextStart = <span class="literal">null</span>; <span class="comment">//last代表上一次访问的节点，nextStart代表下一层开始的节点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">Connect</span>(<span class="params">Node root</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Node start = root; <span class="comment">//start代表本层开始的节点</span></span><br><span class="line">        <span class="keyword">while</span>(start != <span class="literal">null</span>) &#123;</span><br><span class="line">            Node temp = start; <span class="comment">//temp代表当前遍历到的节点</span></span><br><span class="line">            last = <span class="literal">null</span>; <span class="comment">// 对于每次循环，都要置空last和nextStart</span></span><br><span class="line">            nextStart = <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">while</span>(temp != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">//根据当前节点的left和right建立next连接</span></span><br><span class="line">                <span class="keyword">if</span>(temp.left != <span class="literal">null</span>) &#123;</span><br><span class="line">                    Handle(temp.left);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span>(temp.right != <span class="literal">null</span>) &#123;</span><br><span class="line">                    Handle(temp.right);</span><br><span class="line">                &#125;</span><br><span class="line">                temp = temp.next; <span class="comment">//更新temp节点</span></span><br><span class="line">            &#125;</span><br><span class="line">            start = nextStart; <span class="comment">//遍历完当前层后更新start</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Handle</span>(<span class="params">Node p</span>)</span> &#123;</span><br><span class="line">        <span class="comment">// 上一次节点不为空，说明本层有前边的节点，将p设为last的next</span></span><br><span class="line">        <span class="keyword">if</span>(last != <span class="literal">null</span>) &#123;</span><br><span class="line">            last.next = p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//nextstart为空，说明某次循环刚开始，p是某一层的首节点</span></span><br><span class="line">        <span class="keyword">if</span>(nextStart == <span class="literal">null</span>) &#123;</span><br><span class="line">            nextStart = p;</span><br><span class="line">        &#125;</span><br><span class="line">        last = p; <span class="comment">//更新last</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>二叉树</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>LeetCode274.H指数</title>
     <url>/2023/10/24/LeetCode/LeetCode274.H%E6%8C%87%E6%95%B0/</url>
     <content><![CDATA[<p>LeetCode274.H指数【medium】。</p>
@@ -537,309 +537,6 @@
         <tag>LeetCode</tag>
         <tag>排序</tag>
         <tag>二分</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>LeetCode28.找出字符串中第一个匹配项的下标</title>
-    <url>/2023/11/14/LeetCode/LeetCode28.%E6%89%BE%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8C%B9%E9%85%8D%E9%A1%B9%E7%9A%84%E4%B8%8B%E6%A0%87/</url>
-    <content><![CDATA[<p>LeetCode28.找出字符串中第一个匹配项的下标【easy】。本文参考 <a href="https://zhuanlan.zhihu.com/p/105629613">https://zhuanlan.zhihu.com/p/105629613</a>。</p>
-<span id="more"></span>
-<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果 needle 不是 haystack 的一部分，则返回  -1 。</p>
-<h2 id="输入输出示例"><a href="#输入输出示例" class="headerlink" title="输入输出示例"></a>输入输出示例</h2><p>示例 1：<br>输入：haystack &#x3D; “sadbutsad”, needle &#x3D; “sad”<br>输出：0<br>解释：”sad” 在下标 0 和 6 处匹配。<br>第一个匹配项的下标是 0 ，所以返回 0 。</p>
-<p>示例 2：<br>输入：haystack &#x3D; “leetcode”, needle &#x3D; “leeto”<br>输出：-1<br>解释：”leeto” 没有在 “leetcode” 中出现，所以返回 -1 。</p>
-<blockquote>
-<p>提示：</p>
-<ul>
-<li>1 &lt;&#x3D; haystack.length, needle.length &lt;&#x3D; 104</li>
-<li>haystack 和 needle 仅由小写英文字符组成</li>
-</ul>
-</blockquote>
-<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>字符串匹配，暴力方法就是使用两次 for 循环来进行比较，将 needle[0] 与 haystack[0] 左边对齐比较，如果相同就比较 needle[1] 与 haystack[1]，否则就将 needle 右移一位，比较 needle[0] 与 haystack[1]，以此类推，直到找到结果。这种方法最坏的结果就是每次比到最后一个才发现不对，又要从第一位开始对比，最坏的时间复杂度就是 O(m*n)。<br>优化这个算法，可以考虑 KMP，这是字符串匹配的常用算法。我们将被匹配的主串称为 txt，用于匹配的模式串称为 pat，i 是指向 txt 的指针，j 是指向 pat 的指针，KMP 的核心思想在于，<strong>不回退 txt 的指针 i（不会重复扫描 txt），而是借助储存的信息把 pat 移到正确的位置继续匹配</strong>，是一种以空间换时间的方法。在每一次匹配过程中，我们就能够判断后续几次匹配是否会成功，从而减少比较的次数。<br>例如，比较 txt: abababcabaa 和 pat: ababcabaa，如果采用暴力的方法，当比较到 txt[4] 和 pat[4] 时，a 和 c 不匹配，我们又要从 txt [1] 和 pat[0] 开始比较。但如果不进行回溯，即从 txt[4] 和 pat[0] 开始比较，又可能会漏掉一部分匹配。为了让 j 设置为一个合适的值，我们引入了 PMT（部分匹配表）。j 值应该被赋值为多少，只与模式串自身有关，每个模式串都对应着一张 PMT，用 p 代表模式串数组，pmt[i] 的值是<strong>子字符串 p[0:i] 的前缀集合与后缀集合的交集中最长元素的长度</strong>（如果字符串 A 和 B ，存在 A&#x3D;BS，其中 S 是任意的非空字符串，那就称 B 为 A 的前缀，例如字符串 “Hello”，其前缀集合就是 {“H”,”He”,”Hel”,”Hell”}）。<br>举例来说就是对于 ababcab，可以得到这样一张 pmt 表：<br><img src="/../../images/pic8/kmp.png" alt="KMP"><br>当我们匹配失败时，例如上述 txt[4] &#x3D; a 和 pat[4] &#x3D; c 不匹配，由 pmt 表我们可知，在 c 之前，有一个前缀 ab 和 txt 开头 ab 是匹配的（pmt[j - 1] &#x3D; 2），所以我们可以直接用 txt[4] 和 pat[2] 比较，所以令 j &#x3D; pmt[j - 1]，可以减少回退次数。当然，我们不一定能匹配成功，有可能 j 一路减到了0，但是 txt[i] 仍然不等于 pat[j]，这时，我们不再移动 j 指针，而是老老实实地从头开始比较。<br>由上可知，如果是在 j 位 失配，那么 j 指针回溯的位置的其实是第 j −1 位的 PMT 值。所以为了编程方便，我们往往会把 PMT 整体向右移一位，得到一个 next 数组，同时令 next[0]&#x3D;-1，表示在每一位匹配失败时应跳转到的索引。也就是说，匹配失败时按照 i -&gt; next[i] -&gt; next[next[i]] -&gt; …的顺序跳转。<br>那么问题就来了，PMT 怎么求？暴力求法时间复杂度是 O(n^2)，但我们可以通过一种精妙的方式来解决。我们可以在错开一位后，让 p 自己匹配自己，在这个过程中记录 j 值，更新 pmt。为什么可以这样做呢？我们可以思考一下。<br><a href="https://www.zhihu.com/question/21923021/answer/281346746">https://www.zhihu.com/question/21923021/answer/281346746</a>一文有一个很好的解释和示例：求 next 数组的过程，其实就可以看成一个字符串匹配的过程。我们以模式字符串为主串，以模式字符串的前缀为匹配串，一旦匹配成功，那么当前的 next 值就是匹配成功的子字符串的长度，即我们从模式字符串的第一位开始（不包括第0位），与自己进行匹配，在任一位置能匹配的最长长度就是当前位置的 next 值。<br><img src="/../../images/pic8/next_a.png" alt="next_a"><br><img src="/../../images/pic8/next_b.png" alt="next_b"><br><img src="/../../images/pic8/next_c.png" alt="next_c"><br><img src="/../../images/pic8/next_d.png" alt="next_d"><br><img src="/../../images/pic8/next_e.png" alt="next_e"></p>
-<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="题解一：暴力"><a href="#题解一：暴力" class="headerlink" title="题解一：暴力"></a>题解一：暴力</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">StrStr</span>(<span class="params"><span class="built_in">string</span> haystack, <span class="built_in">string</span> needle</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">int</span> n = haystack.Length, m = needle.Length;</span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>; i &lt;= n - m; i++) &#123;</span><br><span class="line">        <span class="built_in">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(haystack[i + j] != needle[j]) &#123;</span><br><span class="line">                flag = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="题解二：KMP"><a href="#题解二：KMP" class="headerlink" title="题解二：KMP"></a>题解二：KMP</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">StrStr</span>(<span class="params"><span class="built_in">string</span> haystack, <span class="built_in">string</span> needle</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(needle.Length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">int</span> m = haystack.Length, n = needle.Length;</span><br><span class="line">    <span class="built_in">int</span>[] next = BuildNext(needle);</span><br><span class="line">    <span class="comment">//匹配haystack和needle</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span>(haystack[i] != needle[j] &amp;&amp; j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(haystack[i] == needle[j]) &#123;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(j == n) &#123;</span><br><span class="line">            <span class="keyword">return</span> i - n + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">int</span>[] <span class="title">BuildNext</span>(<span class="params"><span class="built_in">string</span> needle</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">int</span> n = needle.Length;</span><br><span class="line">    <span class="built_in">int</span>[] next = <span class="keyword">new</span> <span class="built_in">int</span>[n];</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">0</span>; <span class="comment">//初始值</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="comment">//一直往前找直到j = 0</span></span><br><span class="line">        <span class="keyword">while</span>(needle[j] != needle[i] &amp;&amp; j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(needle[i] == needle[j]) &#123;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        next[i] = j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo + github 博客搭建</title>
-    <url>/2023/10/18/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/Hexo+Github%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<p>记录使用Hexo+Github搭建博客的详细步骤，包含了环境安装、博客搭建、远程部署、主题更换四个部分的内容。</p>
-<span id="more"></span>
-
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li><p><strong>git：</strong> git是一个开源的<strong>分布式版本控制系统</strong>，用以有效、高速地处理从非常小到非常大的项目版本管理。</p>
-</li>
-<li><p><strong>github：</strong> 一个基于 Git 的代码托管平台，它提供了一种集中式和协作式的方式，让开发者能够存储、管理、追踪和协作开发软件项目。。</p>
-</li>
-<li><p><strong>Github Pages：</strong> GitHub 提供的一个免费静态网站托管服务，允许用户创建和托管个人、团队或项目的静态网站，支持HTML和MarkDown类型的静态文件。Github Pages三个特点：免费托管、自带主题、支持自制页面和Jekyll。</p>
-<p>GitHub Pages 的设计理念之一是提供一个用户友好的方式来展示项目或个人信息，以减轻新手在 GitHub 上阅读源码时的困难。通过自定义项目首页，用户可以为他们的项目创建简洁、易懂的网页，提供项目的概述、用法说明、示例、文档和其他有关信息。这有助于提高项目的可访问性，使其他开发者更容易理解和使用项目。</p>
-<p>GitHub Pages 还非常适合博客、个人网站和在线履历。许多开发者和创作者使用 GitHub Pages 来分享技术文章、个人作品和项目文档。由于它的简单性和集成性，GitHub Pages 成为了一个非常受欢迎的方式来托管静态内容，并将其与 GitHub 存储库集成在一起。</p>
-</li>
-<li><p><strong>为什么使用Github Pages：</strong><br>①搭建简单且免费；<br>②可以绑定自己的域名；<br>③支持静态脚本；<br>④DIY自由发挥，支持使用模板，git、markdown、bootstrap、jekyll等；<br>⑤方便使用git做版本管理。</p>
-</li>
-</ul>
-<blockquote>
-<p><strong>两种Pages类型</strong>  </p>
-<p><strong>1.User&#x2F;Organization Pages个人或公司站点</strong></p>
-<ul>
-<li>特点：这种模式通过创建一个与用户或组织名称相对应的仓库，然后在该仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。你的网站将可以通过 <a href="https://username.github.io/">https://username.github.io</a> 或 <a href="https://organizationname.github.io/">https://organizationname.github.io</a> 的方式访问，其中 username 是你的 GitHub 用户名，organizationname 是组织的名称。  </li>
-<li>用途：主要用于创建个人或组织的官方网站，或者用于展示与用户&#x2F;组织相关的项目和信息、博客、作品集等。</li>
-</ul>
-<p><strong>2.Project Pages项目站点</strong></p>
-<ul>
-<li>特点：这种模式通过在特定项目的仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。项目页面将通过 <a href="https://username.github.io/repositoryname">https://username.github.io/repositoryname</a> 访问，其中 username 是你的 GitHub 用户名，repositoryname 是项目的名称。</li>
-<li>用途：主要用于创建与项目相关的二级应用页面，用于项目文档、演示、展示和其他相关信息。每个 GitHub 仓库都可以启用此功能，使项目的文档和演示更容易分享和访问。</li>
-</ul>
-<p>这种组织方式允许将主站和项目页面进行有效分离，使用者可以专注于在主站上展示个人或组织信息，同时在项目页面上为不同的项目提供特定的文档或演示。这样的架构有助于保持项目之间的独立性和整洁性。</p>
-</blockquote>
-<h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><h4 id="下载git"><a href="#下载git" class="headerlink" title="下载git"></a>下载git</h4><p>官方地址：<a href="https://">https://git-scm.com/</a><br>访问官方地址，下载对应的安装包，进行安装即可（一直点击下一步）。</p>
-<h4 id="验证git"><a href="#验证git" class="headerlink" title="验证git"></a>验证git</h4><p>安装好之后，鼠标右键可以看到：Git Bash Here，点击后打开。输入 <code>git –-version</code>或<code>git -v</code>，出现版本号说明安装成功。</p>
-<p><img src="/../images/pic1/20221204_195202_pic1.png" alt="查看Git版本"></p>
-<h3 id="安装Node"><a href="#安装Node" class="headerlink" title="安装Node"></a>安装Node</h3><h4 id="下载Node"><a href="#下载Node" class="headerlink" title="下载Node"></a>下载Node</h4><p>官方地址：<a href="https://">https://nodejs.org/en/</a></p>
-<p>访问Node官网，下载适合自己windows的版本，安装过程中一直点下一步。在Custom Setup这一步的时候，选择Add to Path（有的时候这个选项是默认的）。</p>
-<h4 id="验证Node"><a href="#验证Node" class="headerlink" title="验证Node"></a>验证Node</h4><p>安装好以后，打开cmd命令窗口，输入 <code>npm –v</code>，出现版本号则说明安装成功且环境变量已经配置好了。</p>
-<p><img src="/../images/pic1/20221204_195900_pic2.png" alt="查看Node版本"></p>
-<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><h4 id="下载Hexo"><a href="#下载Hexo" class="headerlink" title="下载Hexo"></a>下载Hexo</h4><p>这一步可以使用git bash来安装，也可以直接使用cmd窗口，命令是一样的。官方地址：<a href="https://">https://nodejs.org/en</a></p>
-<p><code>npm install -g hexo-cli</code></p>
-<h4 id="验证Hexo"><a href="#验证Hexo" class="headerlink" title="验证Hexo"></a>验证Hexo</h4><p>安装完成后输入 <code>hexo –v</code>，出现一系列版本号就说明安装成功了。</p>
-<p><img src="/../images/pic1/20221204_200230_pic3.png" alt="查看Hexo版本"></p>
-<h2 id="创建个人站点"><a href="#创建个人站点" class="headerlink" title="创建个人站点"></a>创建个人站点</h2><h3 id="新建一个仓库"><a href="#新建一个仓库" class="headerlink" title="新建一个仓库"></a>新建一个仓库</h3><p><img src="/../images/pic1/20221204_202240_pic4.png" alt="新建仓库"></p>
-<p>仓库的名字填写username&lt;用户名&gt;.github.io，权限默认是public，所有人都可以访问我们的仓库；如果想要创建私人权限的仓库，选择“private”。</p>
-<p><img src="/../images/pic1/20221204_230931_pic19.png" alt="填写仓库名字"></p>
-<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><p>进入仓库，点击创建文件。</p>
-<p><img src="/../images/pic1/20221204_231416_pic6.png" alt="创建文件"></p>
-<p>创建一个新的文件，名字叫做index.html（必须叫这个，静态http文件托管服务的默认访问文件就是index.html）。<br>查看网址，选择“Settings”，找到“Pages”。</p>
-<p><img src="/../images/pic1/20221204_231854_pic18.png" alt="查看网址"></p>
-<h2 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h2><p>现在开始可以使用hexo来生成一个博客了。<br>在本地创建一个文件夹，用于存储博客的本地数据。<br>cd到这个文件夹下，运行命令 <code>hexo init</code>，hexo会将这个文件夹初始化成一个博客专用文件夹，这个过程会花费一些时间。</p>
-<p><img src="/../images/pic1/20221204_212425_pic10.png" alt="初始化博客文件夹"></p>
-<p>初始化完成后，可以在source文件夹中看到一个叫hello-world的默认文章，还会有一个默认主题。先生成博客看一下效果，运行命令：<br><code>hexo generate</code>或是简写成 <code>hexo g</code>。</p>
-<p><img src="/../images/pic1/20221204_212531_pic11.png" alt="查看效果"></p>
-<p>然后hexo会开始生成博客，生成结束后，原文件下多了一个public文件夹，这个文件夹是hexo生成的一个完整的静态网站，也就是我们的博客。网站生成好后，我们可以启动服务器来浏览博客，运行命令：<code>hexo server</code>。</p>
-<p><img src="/../images/pic1/20221204_213120_pic12.png" alt="浏览博客"></p>
-<p>打开浏览器，输入localhost:4000就可以浏览博客了。</p>
-<p><img src="/../images/pic1/20221204_213408_pic13.png" alt="本地浏览博客"></p>
-<blockquote>
-<p>Tips：如果出现页面加载不出来，可能是端口被占用了。Ctrl+C 关闭服务器，运行 <code>hexo server -p 5000</code> 更改端口号后重试。</p>
-<p>Hexo 博客文件夹目录结构如下：</p>
-<p><img src="/../images/pic1/20221204_213953_pic14.png" alt="Hexo博客文件夹目录"></p>
-</blockquote>
-<h2 id="远程部署"><a href="#远程部署" class="headerlink" title="远程部署"></a>远程部署</h2><p>此时运行的服务器，是我们的本地服务器，只有在本机上才可以访问。为了让别人能访问我们的博客，需要进行远程部署，将我们生成好的博客部署到远程仓库去。如果远程仓库支持pages服务，就可以通过这样的方法发布和更新博客。</p>
-<p>在博客文件夹内右键，点击Git Bash here。</p>
-<p>初始化git仓库。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-
-<p>配置github账户信息。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Github用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>继续输入以下命令来生成关联邮箱的密钥：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –t rsa –C <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>按git给出的路径，找到id_rsa.pub文件，并复制其中的内容（用记事本就可以打开）。<br>如果电脑上找不到.ssh文件，使用下边的命令来生成(<strong>记得再执行一次前一条命令</strong>)：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –o</span><br></pre></td></tr></table></figure>
-
-<p>进到仓库，点击右上角setting进入设置。Title随便写，Key的内容填刚才id_rsa.pub文件中复制的内容。</p>
-<p><img src="/../images/pic1/20221204_220509_pic15.png" alt="设置key"></p>
-<p>校验ssh key是否成功：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../images/pic1/20221205_000741_pic20.png" alt="校验key是否成功"></p>
-<p>修改博客目录配置文件（_congif.yml）中的deploy字段，如下：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git仓库地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>Git仓库地址</p>
-<p><img src="/../images/pic1/20221204_221355_pic16.png" alt="修改deploy字段"></p>
-</blockquote>
-<p>要使用远程部署，需要先安装 <code>hexo-deployer-git</code>，这是适用于git类型仓库的方法。cd到博客文件夹后运行命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save  <span class="comment">#安装部署工具</span></span><br></pre></td></tr></table></figure>
-
-<p>验证：在你的 Hexo 项目目录中，打开 package.json 文件。在这个文件中，你可以找到项目的依赖项列表，查看是否包含了 hexo-deployer-git。</p>
-<p>把本地仓库部署到云端：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<p><strong>如果成功部署到github，却访问不了网站，重启路由器。</strong></p>
-<h2 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h2><p>hexo主题网站：<a href="https://hexo.io/themes/index.html">https://hexo.io/themes/index.html</a><br>找到博客文件夹的themes文件夹，这是存放博客主题的文件夹。<br><img src="/../images/pic1/themes.png" alt="themes文件夹"><br>挑选一个喜欢的博客主题，进入到对应的git仓库，并下载到本地来（具体可以参考每个主题的README文档），也可以直接下载压缩包，解压到themes文件夹。<br><img src="/../images/pic1/zip.png" alt="zip下载">  </p>
-<blockquote>
-<p>Tips:</p>
-<ul>
-<li>在博客文件夹下打开git命令窗口，执行相关指令；</li>
-<li>按照README执行指令时，如果使用git clone命令时出现了<code> OpenSSL SSL_read: Connection was reset, errno 10054</code>报错，看下是否是README是否没更新https。</li>
-</ul>
-</blockquote>
-<p>确认已经下载好主题到themes文件夹后，打开博客文件夹下的_config.yml文件，修改theme为你所选主题的对应文件夹名，示例：<code>theme:next</code></p>
-<blockquote>
-<p>Tips:每个主题文件夹下也有一个_config.yml文件，这是该主题的配置文件，按照主题文档修改即可，不要和博客的_config.yml搞混了。</p>
-</blockquote>
-<p>然后执行以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean  <span class="comment">#清除缓存</span></span><br><span class="line">hexo g  <span class="comment">#生成静态界面</span></span><br><span class="line">hexo d  <span class="comment">#部署到github</span></span><br></pre></td></tr></table></figure>
-
-<p>再次打开对应站点应该就可以看到页面被更换为了新主题。也可以启动hexo服务器后访问<code>localhost:4000</code>本地查看后再部署。</p>
-]]></content>
-      <categories>
-        <category>博客搭建</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>NexT主题配置和优化</title>
-    <url>/2023/10/19/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BC%98%E5%8C%96/</url>
-    <content><![CDATA[<p>修改NexT主题的配置，并添加一些常见的功能，让博客页面更加美观，功能更加齐全。</p>
-<span id="more"></span>
-
-<h2 id="修改站点配置文件"><a href="#修改站点配置文件" class="headerlink" title="修改站点配置文件"></a>修改站点配置文件</h2><p>在站点配置文件_config.yml中修改博客的基本信息，如标题，副标题，描述，作者等。此时要执行<code>hexo g</code>和<code>hexo s</code>之后才能刷新在本地看到效果。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">title: tsq的博客</span><br><span class="line">subtitle: <span class="string">&#x27;&#x27;</span></span><br><span class="line">description: <span class="string">&#x27;&#x27;</span></span><br><span class="line">keywords: <span class="string">&quot;C#, C++, Lua, Unity, 数据结构, 算法&quot;</span></span><br><span class="line">author: TongShuqi</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: <span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="修改主题配置文件"><a href="#修改主题配置文件" class="headerlink" title="修改主题配置文件"></a>修改主题配置文件</h2><p>Next是常用的hexo主题，之前已经讲过如何使用新主题，今天说一下如何配置和优化NexT主题，修改配置需要修改NexT主题的_config.yml文件（区分于博客站点的配置文件，以下称为<strong>主题配置文件</strong>）。<br>查看配置修改效果只需要启动hexo服务器（在博客文件夹下打开git命令行，执行<code>hexo s</code>）,修改配置保存后通过<code>localhost:4000</code>刷新查看即可（部分内容需要重新hexo g生成静态文件才能看到效果）。  </p>
-<h3 id="修改Schemes"><a href="#修改Schemes" class="headerlink" title="修改Schemes"></a>修改Schemes</h3><p>Next有四种主题，通过修改<code>scheme</code>来进行修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scheme: Muse</span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line"><span class="comment">#scheme: Pisces</span></span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="设置站点icon"><a href="#设置站点icon" class="headerlink" title="设置站点icon"></a>设置站点icon</h3><p>一个常用的icon下载地址：<a href="https://www.iconfont.cn/">iconfont</a>。</p>
-<ul>
-<li>把下载好的icon图片放在 &#x2F;themes&#x2F;next&#x2F;source&#x2F;img&#x2F; 文件夹下。</li>
-<li>修改主题配置文件中<code>favicon</code>的内容，也可以直接替换图片。</li>
-</ul>
-<h3 id="设置菜单栏选项"><a href="#设置菜单栏选项" class="headerlink" title="设置菜单栏选项"></a>设置菜单栏选项</h3><p>修改<code>menu</code>中的内容，把需要的菜单栏取消注释即可。</p>
-<h3 id="创建页面"><a href="#创建页面" class="headerlink" title="创建页面"></a>创建页面</h3><p>菜单栏配置修改完后，需要分别创建菜单栏页面。</p>
-<ul>
-<li><p>在博客文件夹下打开git命令窗口，执行以下命令。</p>
-  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new page about</span><br><span class="line">hexo new page categories</span><br><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>以目录为例，执行命令后，成功会显示<code>INFO  Created: ~/Documents/blog/source/categories/index.md</code>，可以在source文件夹下看见这几个新生成的目录。</p>
-</li>
-<li><p>根据上面的路径，找到index.md这个文件，打开后默认内容是这样的：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: categories</span><br><span class="line"><span class="built_in">date</span>: 2023-10-20 22:55:09</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<p>添加<code>type</code>：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章分类</span><br><span class="line"><span class="built_in">date</span>: 2023-10-20 22:55:09</span><br><span class="line"><span class="built_in">type</span>: <span class="string">&quot;categories&quot;</span></span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<p>按这种方式为tags添加type。</p>
-</li>
-<li><p>同理，我们也可以自己创建菜单，使用以上命令，并在配置文件的<code>menu</code>中添加即可。</p>
-</li>
-</ul>
-<h3 id="修改博客头像"><a href="#修改博客头像" class="headerlink" title="修改博客头像"></a>修改博客头像</h3><p>保存图片到 &#x2F;themes&#x2F;next&#x2F;source&#x2F;img&#x2F; 文件夹下，在主题配置文件中修改<code>avatar</code>的内容，填写url路径即可。</p>
-<h3 id="添加搜索功能"><a href="#添加搜索功能" class="headerlink" title="添加搜索功能"></a>添加搜索功能</h3><p>当博客文章变多后，找到一篇文章就很困难。NexT支持为博客添加搜索功能，可以通过文章内容词汇快速搜索。</p>
-<ul>
-<li>在博客根目录打开黑窗口输入命令：</li>
-</ul>
-<p><code>npm install hexo-generator-search --save</code></p>
-<ul>
-<li><p>修改<strong>站点配置文件</strong>,加入以下内容（选项内容可适当修改）：</p>
-  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  <span class="built_in">limit</span>: 1000</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改<strong>主题配置文件</strong>：</p>
-  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">local_search:</span><br><span class="line"><span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="设置社交界面"><a href="#设置社交界面" class="headerlink" title="设置社交界面"></a>设置社交界面</h3><p>可以添加一些常用的社交链接，例如Github、Twitter、CSDN等，也可以自定义链接。</p>
-<ul>
-<li>在主题配置文件中修改<code>social</code>字段，把想要展示的内容取消注释。</li>
-<li>也可以自己添加，格式为:显示文本: 链接地址 || Front Awesome图标名称</li>
-</ul>
-<h3 id="添加阅读时间和字数提示"><a href="#添加阅读时间和字数提示" class="headerlink" title="添加阅读时间和字数提示"></a>添加阅读时间和字数提示</h3><p>Hexo支持添加单篇文章和全站点的阅读时间及字数提示。步骤如下：</p>
-<ul>
-<li><p>博客根目录黑窗口下载插件：<br><code>npm install hexo-symbols-count-time</code></p>
-</li>
-<li><p>在站点配置文件末尾加入如下内容：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">  symbols: <span class="literal">true</span></span><br><span class="line">  time: <span class="literal">true</span></span><br><span class="line">  total_symbols: <span class="literal">true</span></span><br><span class="line">  total_time: <span class="literal">true</span></span><br><span class="line">  exclude_codeblock: <span class="literal">false</span></span><br><span class="line">  awl: 2    </span><br><span class="line">  wpm: 275</span><br><span class="line">  suffix: <span class="string">&quot;mins.&quot;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">  separated_meta: <span class="literal">true</span></span><br><span class="line">  item_text_post: <span class="literal">true</span></span><br><span class="line">  item_text_total: <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="添加阅读人次统计"><a href="#添加阅读人次统计" class="headerlink" title="添加阅读人次统计"></a>添加阅读人次统计</h3><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">busuanzi_count:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="去掉网页Hexo自带底部信息"><a href="#去掉网页Hexo自带底部信息" class="headerlink" title="去掉网页Hexo自带底部信息"></a>去掉网页Hexo自带底部信息</h3><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">powered: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="右上角实现github按钮"><a href="#右上角实现github按钮" class="headerlink" title="右上角实现github按钮"></a>右上角实现github按钮</h3><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">github_banner:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  permalink: https://github.com/yourname</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置回到顶部按钮"><a href="#配置回到顶部按钮" class="headerlink" title="配置回到顶部按钮"></a>配置回到顶部按钮</h3><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">back2top:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<p>边栏和滚动百分比可以按照需求自行添加。</p>
-<h3 id="添加已读进度条"><a href="#添加已读进度条" class="headerlink" title="添加已读进度条"></a>添加已读进度条</h3><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">reading_progress:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<p>进度条的位置，颜色，高度等属性可以自行设置。</p>
-<h3 id="配置代码样式"><a href="#配置代码样式" class="headerlink" title="配置代码样式"></a>配置代码样式</h3><p>在主题配置文件中搜索<code>codeblock</code>，按需求进行样式修改即可。</p>
-<h3 id="更改背景图片"><a href="#更改背景图片" class="headerlink" title="更改背景图片"></a>更改背景图片</h3><ul>
-<li><p>在主题配置文件中找到<code>custom_file_path</code>，把<code>style</code>取消注释。</p>
-</li>
-<li><p>在博客根目录的 source 文件夹下新建 _data 文件夹（不是主题目文件夹的 source）。</p>
-</li>
-<li><p>文件夹里新建 styles.styl 文件。</p>
-</li>
-<li><p>styles 文件里加入如下内容，注意图片要放在next文件夹的next&#x2F;source&#x2F;images下:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">//背景图片设置</span><br><span class="line">body &#123;</span><br><span class="line">    background-image: url(/images/background.jpg); </span><br><span class="line">    background-repeat: no-repeat;</span><br><span class="line">    background-attachment: fixed;</span><br><span class="line">    background-size: 100% 100%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="设置边框圆角矩形"><a href="#设置边框圆角矩形" class="headerlink" title="设置边框圆角矩形"></a>设置边框圆角矩形</h3><ul>
-<li><p>在主题配置文件中找到<code>custom_file_path</code>，把<code>variable</code>取消注释。</p>
-</li>
-<li><p>主题文件夹的 source 文件夹里新建 variables.styl 文件。</p>
-</li>
-<li><p>variables 文件里加入如下内容:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">// 圆角设置</span><br><span class="line"><span class="variable">$border</span>-radius-inner     = 30px 30px 30px 30px;</span><br><span class="line"><span class="variable">$border</span>-radius           = 30px;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="打赏功能添加"><a href="#打赏功能添加" class="headerlink" title="打赏功能添加"></a>打赏功能添加</h3><ul>
-<li><p>首先需要有一个微信或支付宝的二维码图片，放在 &#x2F;next&#x2F;source&#x2F;images 下。</p>
-</li>
-<li><p>修改主题配置文件，会在每篇文章末尾生成一个打赏按钮，可以根据情况选择打赏方式：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">reward_settings:</span><br><span class="line"><span class="comment"># If true, a donate button will be displayed in every article by default.</span></span><br><span class="line"><span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">animation: <span class="literal">false</span></span><br><span class="line">comment: づ♡ど</span><br><span class="line"></span><br><span class="line">reward:</span><br><span class="line">  wechatpay: /images/wechatpay.png</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="评论功能添加"><a href="#评论功能添加" class="headerlink" title="评论功能添加"></a>评论功能添加</h3><p>NexT 主题支持多种评论系统，如Disqus、GitTalk等。<br>这里介绍使用 gitalk 和 utterances 来实现评论功能。</p>
-<h4 id="gitalk"><a href="#gitalk" class="headerlink" title="gitalk"></a>gitalk</h4><p>PS：官方服务器已炸，现在不能直接用了，建议使用别的评论系统，此时仅作记录，之后有时间再研究解决方案。</p>
-<ul>
-<li><p>在开始之前，你需要创建一个 GitHub OAuth App。这将用于 Gittalk 连接到你的 GitHub 仓库。<br>登陆到自己的GitHub账户，点击头像-Settings-Developer settings。</p>
-</li>
-<li><p>在 “Developer settings” 页面上，点击 “OAuth Apps” 选项卡，然后点击注册按钮。</p>
-</li>
-<li><p>在 “Register a new OAuth application” 页面上，填写 OAuth App 的详细信息:<br>Application name：应用名称，随便写。<br>Homepage URL：博客主页。<br>Application description：应用的简短描述。<br>Authorization callback URL：回调 URL，可以是博客主页。</p>
-</li>
-<li><p>获取 Client ID 和 Client Secret：<br>在成功创建 OAuth App 后，你会看到一个页面，其中包含你的 OAuth App 的详细信息，包括 “Client ID” 和 “Client Secret”。这些是你的 OAuth App 的凭证，将用于与 GitHub 进行授权。<br><img src="/../images/pic2/pic1.png" alt="OAuth"></p>
-</li>
-<li><p>在主题配置文件中，修改如下配置（NexT8内置了gittalk，无需安装）：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  github_id: <span class="comment"># GitHub 仓库的所有者（repo owner）的用户名</span></span><br><span class="line">  repo: <span class="comment"># 存储评论的 GitHub 仓库的名称</span></span><br><span class="line">  client_id: <span class="comment"># OAuth App 的 Client ID </span></span><br><span class="line">  client_secret: <span class="comment"># OAuth App 的 Client Secret</span></span><br><span class="line">  admin_user: <span class="comment"># 评论管理者的 GitHub 用户名，通常是你自己，以便你可以管理评论</span></span><br><span class="line">  distraction_free_mode: <span class="literal">true</span> <span class="comment"># Facebook-like</span></span><br><span class="line">  language: zh-CN</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">comments:</span><br><span class="line">  style: tabs</span><br><span class="line">  active: gitalk</span><br><span class="line">  storage: <span class="literal">true</span></span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  nav:</span><br><span class="line">    gitalk:</span><br><span class="line">    order: -1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>执行以下代码：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>部署完成后，登录博客，任一一篇博文下应该变成了<br><img src="/../images/pic2/pic2.png" alt="issue"></p>
-</li>
-<li><p>登录，验证。应该能看到评论了。假如出现：<br><img src="/../images/pic2/pic3.png" alt="issue"><br>查一下主题配置文件中gitalk的proxy是不是 <code>https://github.com/login/oauth/access_token</code> 。<br>如果是，改为 <code>https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token</code> 。</p>
-</li>
-</ul>
-<h4 id="utterances"><a href="#utterances" class="headerlink" title="utterances"></a>utterances</h4><p>同样是依托于 github 的 issue 做评论区，但是索取的权限更少，也不需要指定某个人来初始化，因此好用得多。较新版本的NexT已经集成了utterances，使用非常简单。</p>
-<ul>
-<li><p>新建一个仓库用于存储博客评论。</p>
-</li>
-<li><p>授权<a href="https://github.com/apps/utterances">utterances</a>，选择建立的仓库。</p>
-</li>
-<li><p>在主题配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">comments:</span><br><span class="line">  style: tabs</span><br><span class="line">  active: utterances <span class="comment">#激活utterances</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">utterances:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  repo: tsq0316/blog-comments <span class="comment"># Your Github repository owner and name</span></span><br><span class="line">  issue_term: title</span><br><span class="line">  label: utteranc</span><br><span class="line">  theme: github-light</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在站点配置文件中进行如下修改：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">url: http://tsq0316.github.io/ <span class="comment"># Your Github site</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>博客搭建</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-        <tag>NexT</tag>
       </tags>
   </entry>
   <entry>
@@ -1145,27 +842,187 @@
       </tags>
   </entry>
   <entry>
-    <title>博客文章发布流程</title>
-    <url>/2023/10/20/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0%E5%8F%91%E5%B8%83/</url>
-    <content><![CDATA[<p>简单介绍下将文章发布到博客，并且放到对应的目录下，同时添加相应标签的流程。</p>
+    <title>LeetCode28.找出字符串中第一个匹配项的下标</title>
+    <url>/2023/11/14/LeetCode/LeetCode28.%E6%89%BE%E5%87%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8C%B9%E9%85%8D%E9%A1%B9%E7%9A%84%E4%B8%8B%E6%A0%87/</url>
+    <content><![CDATA[<p>LeetCode28.找出字符串中第一个匹配项的下标【easy】。本文参考 <a href="https://zhuanlan.zhihu.com/p/105629613">https://zhuanlan.zhihu.com/p/105629613</a>。</p>
 <span id="more"></span>
-<h2 id="创建一篇新文章"><a href="#创建一篇新文章" class="headerlink" title="创建一篇新文章"></a>创建一篇新文章</h2><p>在hexo博客根目录，使用git bash创建一篇新文章<code>hexo new post &quot;your-article-title&quot;</code>，替换”your-article-title”为文章的标题。打开刚创建的 Markdown 文件，使用 Markdown 语法编写文章内容。<br>如果有已经写好的markdown文件，直接复制到 &#x2F;source&#x2F;_posts 文件夹下。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。如果 needle 不是 haystack 的一部分，则返回  -1 。</p>
+<h2 id="输入输出示例"><a href="#输入输出示例" class="headerlink" title="输入输出示例"></a>输入输出示例</h2><p>示例 1：<br>输入：haystack &#x3D; “sadbutsad”, needle &#x3D; “sad”<br>输出：0<br>解释：”sad” 在下标 0 和 6 处匹配。<br>第一个匹配项的下标是 0 ，所以返回 0 。</p>
+<p>示例 2：<br>输入：haystack &#x3D; “leetcode”, needle &#x3D; “leeto”<br>输出：-1<br>解释：”leeto” 没有在 “leetcode” 中出现，所以返回 -1 。</p>
 <blockquote>
-<p>注意：<br>如果直接复制的md文件引用了图片，记得把图片一并放到博客文件夹下，可以自己整理目录结构，例如在 source 文件夹下建立 images 文件夹，images 文件夹里又可以创建子文件夹，分别存储每篇博文的引用图片。<br>markdown文件里的图片引用地址也要替换为图片和博文的相对地址,例如..&#x2F;images&#x2F;blog1&#x2F;pic1.png。</p>
+<p>提示：</p>
+<ul>
+<li>1 &lt;&#x3D; haystack.length, needle.length &lt;&#x3D; 104</li>
+<li>haystack 和 needle 仅由小写英文字符组成</li>
+</ul>
 </blockquote>
-<h2 id="为文章添加标签和分类"><a href="#为文章添加标签和分类" class="headerlink" title="为文章添加标签和分类"></a>为文章添加标签和分类</h2><p>在博文最开头添加以下内容：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章标题</span><br><span class="line"><span class="built_in">date</span>: 发布时间</span><br><span class="line">description: 摘要。也可以不写，而是在文章中想要截断的地方加入 &lt;!-- more --&gt; ，这样首页就只会显示截断之前的内容，而不显示全文</span><br><span class="line">categories:</span><br><span class="line">  - 分类</span><br><span class="line">  - 子分类</span><br><span class="line">tags:</span><br><span class="line">  - 标签1</span><br><span class="line">  - 标签2</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<h2 id="题目分析"><a href="#题目分析" class="headerlink" title="题目分析"></a>题目分析</h2><p>字符串匹配，暴力方法就是使用两次 for 循环来进行比较，将 needle[0] 与 haystack[0] 左边对齐比较，如果相同就比较 needle[1] 与 haystack[1]，否则就将 needle 右移一位，比较 needle[0] 与 haystack[1]，以此类推，直到找到结果。这种方法最坏的结果就是每次比到最后一个才发现不对，又要从第一位开始对比，最坏的时间复杂度就是 O(m*n)。<br>优化这个算法，可以考虑 KMP，这是字符串匹配的常用算法。我们将被匹配的主串称为 txt，用于匹配的模式串称为 pat，i 是指向 txt 的指针，j 是指向 pat 的指针，KMP 的核心思想在于，<strong>不回退 txt 的指针 i（不会重复扫描 txt），而是借助储存的信息把 pat 移到正确的位置继续匹配</strong>，是一种以空间换时间的方法。在每一次匹配过程中，我们就能够判断后续几次匹配是否会成功，从而减少比较的次数。<br>例如，比较 txt: abababcabaa 和 pat: ababcabaa，如果采用暴力的方法，当比较到 txt[4] 和 pat[4] 时，a 和 c 不匹配，我们又要从 txt [1] 和 pat[0] 开始比较。但如果不进行回溯，即从 txt[4] 和 pat[0] 开始比较，又可能会漏掉一部分匹配。为了让 j 设置为一个合适的值，我们引入了 PMT（部分匹配表）。j 值应该被赋值为多少，只与模式串自身有关，每个模式串都对应着一张 PMT，用 p 代表模式串数组，pmt[i] 的值是<strong>子字符串 p[0:i] 的前缀集合与后缀集合的交集中最长元素的长度</strong>（如果字符串 A 和 B ，存在 A&#x3D;BS，其中 S 是任意的非空字符串，那就称 B 为 A 的前缀，例如字符串 “Hello”，其前缀集合就是 {“H”,”He”,”Hel”,”Hell”}）。<br>举例来说就是对于 ababcab，可以得到这样一张 pmt 表：<br><img src="/../../images/pic8/kmp.png" alt="KMP"><br>当我们匹配失败时，例如上述 txt[4] &#x3D; a 和 pat[4] &#x3D; c 不匹配，由 pmt 表我们可知，在 c 之前，有一个前缀 ab 和 txt 开头 ab 是匹配的（pmt[j - 1] &#x3D; 2），所以我们可以直接用 txt[4] 和 pat[2] 比较，所以令 j &#x3D; pmt[j - 1]，可以减少回退次数。当然，我们不一定能匹配成功，有可能 j 一路减到了0，但是 txt[i] 仍然不等于 pat[j]，这时，我们不再移动 j 指针，而是老老实实地从头开始比较。<br>由上可知，如果是在 j 位 失配，那么 j 指针回溯的位置的其实是第 j −1 位的 PMT 值。所以为了编程方便，我们往往会把 PMT 整体向右移一位，得到一个 next 数组，同时令 next[0]&#x3D;-1，表示在每一位匹配失败时应跳转到的索引。也就是说，匹配失败时按照 i -&gt; next[i] -&gt; next[next[i]] -&gt; …的顺序跳转。<br>那么问题就来了，PMT 怎么求？暴力求法时间复杂度是 O(n^2)，但我们可以通过一种精妙的方式来解决。我们可以在错开一位后，让 p 自己匹配自己，在这个过程中记录 j 值，更新 pmt。为什么可以这样做呢？我们可以思考一下。<br><a href="https://www.zhihu.com/question/21923021/answer/281346746">https://www.zhihu.com/question/21923021/answer/281346746</a>一文有一个很好的解释和示例：求 next 数组的过程，其实就可以看成一个字符串匹配的过程。我们以模式字符串为主串，以模式字符串的前缀为匹配串，一旦匹配成功，那么当前的 next 值就是匹配成功的子字符串的长度，即我们从模式字符串的第一位开始（不包括第0位），与自己进行匹配，在任一位置能匹配的最长长度就是当前位置的 next 值。<br><img src="/../../images/pic8/next_a.png" alt="next_a"><br><img src="/../../images/pic8/next_b.png" alt="next_b"><br><img src="/../../images/pic8/next_c.png" alt="next_c"><br><img src="/../../images/pic8/next_d.png" alt="next_d"><br><img src="/../../images/pic8/next_e.png" alt="next_e"></p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><h3 id="题解一：暴力"><a href="#题解一：暴力" class="headerlink" title="题解一：暴力"></a>题解一：暴力</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">StrStr</span>(<span class="params"><span class="built_in">string</span> haystack, <span class="built_in">string</span> needle</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">int</span> n = haystack.Length, m = needle.Length;</span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>; i &lt;= n - m; i++) &#123;</span><br><span class="line">        <span class="built_in">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; m; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(haystack[i + j] != needle[j]) &#123;</span><br><span class="line">                flag = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(flag) &#123;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>在博客根目录执行以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<p>博文就被推到博客相关的目录下了，并且已经加上了对应的标签。</p>
+<h3 id="题解二：KMP"><a href="#题解二：KMP" class="headerlink" title="题解二：KMP"></a>题解二：KMP</h3><figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">int</span> <span class="title">StrStr</span>(<span class="params"><span class="built_in">string</span> haystack, <span class="built_in">string</span> needle</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(needle.Length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">int</span> m = haystack.Length, n = needle.Length;</span><br><span class="line">    <span class="built_in">int</span>[] next = BuildNext(needle);</span><br><span class="line">    <span class="comment">//匹配haystack和needle</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span>(haystack[i] != needle[j] &amp;&amp; j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(haystack[i] == needle[j]) &#123;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(j == n) &#123;</span><br><span class="line">            <span class="keyword">return</span> i - n + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">int</span>[] <span class="title">BuildNext</span>(<span class="params"><span class="built_in">string</span> needle</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">int</span> n = needle.Length;</span><br><span class="line">    <span class="built_in">int</span>[] next = <span class="keyword">new</span> <span class="built_in">int</span>[n];</span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">0</span>; <span class="comment">//初始值</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="comment">//一直往前找直到j = 0</span></span><br><span class="line">        <span class="keyword">while</span>(needle[j] != needle[i] &amp;&amp; j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(needle[i] == needle[j]) &#123;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        next[i] = j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>博客搭建</category>
+        <category>LeetCode</category>
       </categories>
       <tags>
-        <tag>Hexo</tag>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>三次握手四次挥手详解</title>
+    <url>/2023/11/16/%E7%BD%91%E7%BB%9C/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<p>TCP 是面向连接的协议，这意味着在进行数据传输之前，通信的两端需要先建立一个连接，这个连接的建立是通过<strong>三次握手</strong>完成的。当通信结束时，双方需要进行<strong>四次挥手</strong>来关闭连接。今天就来详细介绍以下三次握手和四次挥手的过程。</p>
+<span id="more"></span>
+<h2 id="TCP协议简述"><a href="#TCP协议简述" class="headerlink" title="TCP协议简述"></a>TCP协议简述</h2><p>认识三次握手和四次挥手之前，我们要先了解一下 TCP 协议及其主要特点。<br>TCP（Transmission Control Protocol）是一种<strong>面向连接的、可靠的、基于字节流的传输层协议</strong>。以下是 TCP 协议的一些主要特点：</p>
+<ul>
+<li><p>面向连接：TCP 是一种面向连接的协议，通信的双方在传送数据之前必须先建立连接。连接的建立过程采用三次握手，确保双方都能够理解对方的状态。</p>
+</li>
+<li><p>可靠性：TCP 提供可靠的数据传输服务，通过使用序列号、确认和重传机制来确保数据的正确性和完整性。如果数据包丢失或损坏，TCP 会负责重传丢失的数据，从而保证数据的可靠传输。</p>
+</li>
+<li><p>面向字节流：TCP是基于字节流的协议，它不关心应用层的数据单元是什么，而是将数据看作是一个连续的字节流。这使得 TCP 可以适应不同应用层协议传输不同大小的数据块。</p>
+</li>
+<li><p>全双工通信：TCP 连接是全双工的，这意味着通信的双方可以独立地发送和接收数据。这使得双方能够同时进行双向通信，实现更灵活的数据交换。</p>
+</li>
+<li><p>流量控制：TCP 使用流量控制机制来防止发送方发送速度过快导致接收方无法处理的情况。通过动态调整发送方的发送速率，TCP 可以适应网络的变化，确保数据的有序传输。</p>
+</li>
+<li><p>拥塞控制：TCP 具有拥塞控制机制，它通过动态调整发送速率来避免网络拥塞的发生。当网络拥塞时，TCP 会减缓发送速率，从而减轻网络负担，提高整体性能。</p>
+</li>
+<li><p>三次握手和四次挥手：TCP 连接的建立和关闭过程分别采用了三次握手和四次挥手的机制。三次握手用于连接的建立，而四次挥手用于连接的关闭，确保连接的安全可靠地建立和关闭。</p>
+</li>
+</ul>
+<p>总体而言，TCP协议在可靠性和连接管理方面的特性使其成为互联网中最常用的传输层协议之一。</p>
+<h2 id="TCP包首部"><a href="#TCP包首部" class="headerlink" title="TCP包首部"></a>TCP包首部</h2><p>一篇详细介绍 TCP 的好文，图片示例来源：<br><a href="https://zhuanlan.zhihu.com/p/108504297">https://zhuanlan.zhihu.com/p/108504297</a></p>
+<p>网络中传输的数据包通常由两部分构成：</p>
+<ul>
+<li><p>首部（Header）：首部是数据包的元数据部分，包含了一系列的控制信息，用于指导数据包的传输、路由和处理。不同层次的协议有各自的首部结构，包含了与该层协议相关的信息。例如，在 TCP&#x2F;IP 协议栈中，数据链路层有以太网帧首部，网络层有 IP 首部，传输层有 TCP 或 UDP 首部。</p>
+</li>
+<li><p>有效载荷（Payload）：有效载荷是数据包中携带的实际数据部分。这是应用层产生的数据，需要在网络中传输到目的地。有效载荷的内容取决于上层协议，例如，在 HTTP 通信中，有效载荷可能是 HTML 网页、图片、文本等。</p>
+</li>
+</ul>
+<p>这两部分的组合构成了完整的数据包。首部提供了关于数据包的元信息，使得网络设备能够正确地处理和路由数据。有效载荷包含了需要传输的实际数据，是通信的主体。</p>
+<p>一图示例网络中传输的数据包的构成：<br><img src="/../../images/pic10/tcp_head.png" alt="数据包"></p>
+<p>这样的数据包会在网络中传输，经过各个网络设备，最终到达目的地，然后被目的设备的协议栈逐层解析，提取出有效载荷，并交付给上层应用。所以看到首部，就能够了解该协议必要的信息以及所要处理的数据。<br>那么首部主要由哪些部分构成，每部分代表什么呢？下图是 TCP 头部的规范定义，定义了 TCP 协议如何读取和解析数据。<br><img src="/../../images/pic10/head.png" alt="TCP首部"><br>我们今天的重点并不是详细分析每一位的构成，我们只需要大概了解一下这些代表的都是什么，以此来更清晰地认识 TCP 的三次握手和四次挥手的过程。</p>
+<ul>
+<li><p>源端口号 (Source Port) 和目的端口号 (Destination Port): 指明发送方的端口号和接收方的端口号。（源IP，源端口号）+ （目地IP，目的端口号）用于确定唯一连接。</p>
+</li>
+<li><p>序列号 (Sequence Number): 缩写为 seq，用于对发送的数据进行编号。序列号表示 TCP 报文中第一个数据字节的序号，通过这个来确认发送的数据有序。</p>
+</li>
+<li><p>确认号 (Acknowledgment Number): 缩写为 ack，仅在 ACK 标志位被设置时有效，表示期望接收到的下一个序列号，用于确认已成功接收到的数据。是对上一次 seq 序号做出的确认号，等于收到的 TCP 报文段的序号 seq 加1。</p>
+</li>
+<li><p>数据偏移 (Data Offset): 表示 TCP 头部的长度，以32比特为单位。由于 TCP 头部长度可变，这个字段用于指示头部的长度，从而确定数据部分的起始位置。</p>
+</li>
+<li><p>标志位 (Flags): 用于指示TCP包的状态或功能，包括：</p>
+<ul>
+<li>URG (Urgent): 表示紧急指针字段有效。</li>
+<li>ACK (Acknowledgment): 表示确认号字段有效。</li>
+<li>PSH (Push): 表示接收方应该立即将数据交给应用层而不进行排队。</li>
+<li>RST (Reset): 表示重置连接。</li>
+<li>SYN (Synchronize): 用于发起一个连接。</li>
+<li>FIN (Finish): 表示发送方已经完成数据发送。</li>
+</ul>
+</li>
+<li><p>窗口大小 (Window Size): 表示发送方愿意接收的数据量的大小。用于流量控制，接收方通过这个字段告知发送方当前它还能接收多少数据。</p>
+</li>
+<li><p>校验和 (Checksum): 用于检测TCP首部和数据的传输是否发生错误。</p>
+</li>
+<li><p>紧急指针 (Urgent Pointer): 仅在URG标志位被设置时有效。用于指示紧急数据的末尾位置。</p>
+</li>
+<li><p>选项 (Options): 可选字段，用于在TCP头部中包含一些可选的信息。例如，最大报文长度（MSS）、窗口扩大因子、时间戳等。</p>
+</li>
+</ul>
+<h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><h3 id="三次握手详细过程"><a href="#三次握手详细过程" class="headerlink" title="三次握手详细过程"></a>三次握手详细过程</h3><p>三次握手是 TCP 协议用于建立连接的过程。在这个过程中，通信的两端需要交换一系列的控制信息，确保双方都已准备好进行数据传输。这个过程需要客户端和服务器总共发送3个报文，所以叫三次握手。以下是三次握手的详细过程：<br><img src="/../../images/pic10/three_way.png" alt="三次握手图示"></p>
+<ul>
+<li><strong>第一次握手</strong><br>客户端首先向服务器发送一个 TCP 报文，其中设置 <strong>SYN</strong>（同步）标志位为1，表示客户端请求建立连接。客户端还会选择一个随机的初始序列号 <strong>seq &#x3D; x</strong>。发送完毕后，客户端进入 <strong>SYN_SENT</strong> 状态，等待服务器端确认。</li>
+<li><strong>第二次握手</strong><br>服务器处于持续的 Listen 状态，当收到客户端的数据包后，由 <strong>SYN &#x3D; 1</strong> 知道客户端想要建立连接，会回复一个TCP报文，其中设置 <strong>SYN</strong> 和 <strong>ACK</strong>（确认）标志位都为1，<strong>ack &#x3D; x + 1</strong>，表明下次期望收到的 seq 是 x + 1，并且随机生成一个 <strong>seq &#x3D; y</strong>。将该数据包发送给客户端后，服务器端进入 <strong>SYN_RCVD</strong> 状态。</li>
+<li><strong>第三次握手</strong><br>客户端收到确认后，检查 ack 是否为 x + 1，ACK是否为1，如果正确则将标志位 <strong>ACK</strong> 置为1，<strong>ack &#x3D; y + 1</strong>，<strong>seq &#x3D; x + 1</strong>，然后将该数据包发送给服务器端，客户端进入 <strong>ESTABLISHED</strong> 状态。服务器收到报文段后，检查 ack 是否为 y + 1，ACK 是否为1，如果正确则连接建立成功，服务器端进入 <strong>ESTABLISHED</strong> 状态。</li>
+</ul>
+<p>完成了上述三个步骤后，TCP 连接就建立起来了。现在，双方可以开始进行数据的传输。</p>
+<h3 id="三次握手常见问题"><a href="#三次握手常见问题" class="headerlink" title="三次握手常见问题"></a>三次握手常见问题</h3><h4 id="三次握手的目的是什么"><a href="#三次握手的目的是什么" class="headerlink" title="三次握手的目的是什么"></a>三次握手的目的是什么</h4><p>三次握手是为了建立可靠的通信连接，确认双方的发送与接收能力是否正常，同时初始化双方的序列号。</p>
+<h4 id="为什么是三次握手，不是两次或者四次"><a href="#为什么是三次握手，不是两次或者四次" class="headerlink" title="为什么是三次握手，不是两次或者四次"></a>为什么是三次握手，不是两次或者四次</h4><ul>
+<li>为什么不是两次握手：<br>tcp 是全双工通信，两次握手只能确定单向数据链路是可以通信的，并不能保证反向的通信正常。</li>
+<li>不是四次：服务端把回复 ACK 和发送SYN 的过程合并了，提高了握手效率，三次就可以完成通信建立。</li>
+</ul>
+<p>详细通俗地来说，为什么是三次握手要结合三次握手的目的：确认双方发送与接收能力是否正常。</p>
+<ol>
+<li>第一次握手：<br>客户端说：“喂，我想和你通信。”<br>服务端听到了，知道客户端的发送能力正常，自己的接收能力正常。</li>
+<li>第二次握手：<br>服务端回应：“好的，我也想和你通信。”<br>客户端听到了，知道服务端的发送和接收能力都正常，自己的发送能力和接受能力也正常。但服务端此时并不知道客户端的接收能力是否正常。</li>
+<li>第三次握手：<br>客户端再说：“好的，我们可以开始通信了。”<br>服务端听到了，知道客户端的发送和接收能力都正常，而且客户端也听到了，于是服务端也确认了自己的发送和接收能力都正常。</li>
+</ol>
+<p>通过这三次握手，双方确认了彼此的通信能力，确保了连接的可靠性。这个过程是为了避免因网络延迟或其他问题而导致的不确定性，从而建立一个稳定的连接。</p>
+<blockquote>
+<p>三次握手在很大程度上可以防止因网络中滞留的数据包导致的问题，确保了连接的可靠性。具体来说，这个过程可以防止以下两种主要情况：</p>
+<ol>
+<li>防止过期的连接请求：<br>如果只有两次握手，客户端发送了连接请求（SYN），但这个请求在网络中滞留，可能由于延迟、拥塞等原因导致服务端迟迟未收到。客户端可能会在超时后重传连接请求，但这时如果之前的连接请求已经到达服务端，服务端会认为这是一个新的连接请求，从而导致产生过期的连接。</li>
+<li>防止半开连接问题：如果只有两次握手，服务端收到了连接请求（SYN），然后发送了确认和自己的连接请求（SYN + ACK）。但是，由于网络问题，客户端未能收到服务端的确认，于是客户端不知道服务端是否成功接收了连接请求，可能会再次发送连接请求。如果此时服务端已经成功建立了连接，那么客户端的新连接请求会被服务端认为是一个新的连接，导致半开连接问题。</li>
+</ol>
+<p>通过引入第三次握手，可以解决上述问题。第三次握手中，客户端向服务端发送一个确认（ACK），表示它确实已经收到了服务端的连接确认。这样一来，就确保了双方对连接的状态有了一致的认知，从而避免了滞留导致的连接问题。</p>
+</blockquote>
+<h4 id="半连接队列（Half-Open-Connection-Queue）"><a href="#半连接队列（Half-Open-Connection-Queue）" class="headerlink" title="半连接队列（Half-Open Connection Queue）"></a>半连接队列（Half-Open Connection Queue）</h4><p>半连接队列是在服务器接收到客户端的 SYN（同步）请求后，但尚未完成三次握手建立连接时所处的状态。在这个状态下，服务器会将这些还未建立连接的请求暂时存储在半连接队列中。原因和用途如下：</p>
+<ul>
+<li>流量控制：当服务器接收到大量连接请求时，可以将这些请求放入半连接队列，逐渐处理，避免瞬间连接数过多导致资源耗尽。</li>
+<li>连接处理：服务器通过逐个处理半连接队列中的请求，进行第二次和第三次握手，最终建立完整的连接。</li>
+</ul>
+<p>还有一个全连接队列，已经完成三次握手，建立起连接的就会放在全连接队列中，如果队列满了就有可能会出现丢包现象。</p>
+<h4 id="三次握手的过程中能携带数据吗"><a href="#三次握手的过程中能携带数据吗" class="headerlink" title="三次握手的过程中能携带数据吗"></a>三次握手的过程中能携带数据吗</h4><p>在 TCP 的三次握手过程中，第一次和第二次握手通常不携带数据，而第三次握手则可以携带数据。这设计上的选择主要考虑了网络安全和可靠性的因素。</p>
+<ul>
+<li>第一次握手和第二次握手不携带数据的原因：<ul>
+<li>防止攻击： 如果允许在初始握手阶段携带大量数据，攻击者可以通过发送大量 SYN 报文，占用服务器资源，导致服务器容易受到拒绝服务（DoS）攻击。</li>
+<li>资源限制：在初始阶段，服务器并不知道客户端的可靠性和接收能力，因此不愿意接受大量数据，以防止浪费资源。</li>
+</ul>
+</li>
+<li>第三次握手可以携带数据的原因：<ul>
+<li>连接已建立：在第三次握手时，客户端已经成功与服务器建立了连接，而且服务器也已经确认了客户端的连接请求。此时，双方对彼此的状态有了更准确的了解。</li>
+<li>可靠性已确认：第三次握手表示连接已经建立，而且客户端和服务器都确认了对方的可靠性。因此，可以在这个时候携带数据进行传输。</li>
+</ul>
+</li>
+</ul>
+<p>总体而言，TCP 的设计追求在连接建立后才进行数据的传输，以确保连接的可靠性和安全性。允许在握手过程中携带数据可能会引入不必要的风险和开销。</p>
+<h4 id="SYN－FLOOD泛洪攻击"><a href="#SYN－FLOOD泛洪攻击" class="headerlink" title="SYN－FLOOD泛洪攻击"></a>SYN－FLOOD泛洪攻击</h4><p>泛洪攻击是利用三次握手中最后一次的确认握手来发起攻击。攻击者伪造源地址，向目标服务器发送大量的 SYN 请求，服务器在接收到这些伪造的 SYN 请求后，会为每个请求创建一个半连接（半开连接），确认 ACK 发送到被伪造的地址，等待客户端发送确认ACK。而真正地址的客户端并没有发起请求，所以不会理服务器的确认 ACK，服务器会重传和等待，造成资源的浪费。如果攻击者发送大量的伪造请求，困难导致服务器上的资源（例如，内存和连接表）耗尽。当服务器的资源耗尽时，它将无法再接受新的合法连接请求，导致服务拒绝，甚至可能导致服务器崩溃。</p>
+<h2 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h2><h3 id="四次挥手详细过程"><a href="#四次挥手详细过程" class="headerlink" title="四次挥手详细过程"></a>四次挥手详细过程</h3><p>四次挥手是TCP连接的关闭过程，用于在数据传输完成后，双方安全地关闭连接。这个过程需要客户端和服务器总共发送四个报文，所以叫四次挥手。以下是四次挥手的详细过程：<br><img src="/../../images/pic10/four_way.png" alt="四次握手图示"></p>
+<p>挥手请求可以是客户端，也可以是服务器发起的，我们此处假设是客户端发起。</p>
+<ul>
+<li><strong>第一次挥手</strong><br>客户端首先向服务器发送一个带有 <strong>FIN</strong>（Finish） 标志位的 TCP 报文，表示客户端不再发送数据。设置序列号 <strong>seq &#x3D; u</strong>，此时，客户端进入 <strong>FIN_WAIT_1</strong> 状态，等待服务器的确认。</li>
+<li><strong>第二次挥手</strong><br>服务器收到客户端的 FIN 后，会发送一个带有 <strong>ACK &#x3D; 1</strong> 的 TCP 报文给客户端，表示收到了客户端的关闭请求，同时设置序列号 <strong>seq &#x3D; v</strong>，<strong>ack &#x3D; u + 1</strong>。服务器进入 <strong>CLOSE_WAIT</strong> 状态，等待应用层的数据处理完成。此时的 TCP 处于半关闭状态，客户端到服务端的连接释放。客户端收到服务端的确认后，进入 <strong>FIN_WAIT2</strong> 状态，等待服务端发出的连接释放报文段。</li>
+<li><strong>第三次挥手</strong><br>一段时间后，服务器的应用层完成数据处理，服务器会发送一个带有 <strong>FIN &#x3D; 1，ACK &#x3D; 1</strong> 的 TCP 报文给客户端，同时设置 <strong>seq &#x3D; w</strong>，<strong>ack &#x3D; u + 1</strong>， 表示服务器也准备关闭连接。服务器进入 <strong>LAST_ACK</strong> 状态，等待客户端的确认。</li>
+<li><strong>第四次挥手</strong><br>客户端收到服务端的连接释放报文段后，发出确认报文段，设置 <strong>ACK &#x3D; 1，seq&#x3D; u + 1，ack &#x3D; w + 1</strong>，客户端进入 <strong>TIME_WAIT</strong>（时间等待）状态。服务器在收到客户端的确认后，进入 <strong>CLOSED</strong> 状态，表示连接已经完全关闭。而客户端需要经过时间等待计时器设置的时间 2MSL 后，客户端才进入 <strong>CLOSED</strong> 状态，表示连接已经完全关闭。</li>
+</ul>
+<p>在四次挥手的过程中，每个阶段都有特定的状态和标志位，确保双方都有足够的时间来完成数据的传输和处理。这种设计可以防止在连接关闭时可能出现的延迟数据导致的问题。</p>
+<h3 id="四次挥手常见问题"><a href="#四次挥手常见问题" class="headerlink" title="四次挥手常见问题"></a>四次挥手常见问题</h3><h4 id="为什么是四次挥手，而不是三次或者五次"><a href="#为什么是四次挥手，而不是三次或者五次" class="headerlink" title="为什么是四次挥手，而不是三次或者五次"></a>为什么是四次挥手，而不是三次或者五次</h4><p>在建立连接时，服务端收到客户端的 SYN 连接请求报文后，可以直接发送 SYN + ACK 报文。ACK 报文用于应答，SYN 报文用于同步。<br>但是关闭连接时，服务端收到客户端的 FIN 报文时，意味着客户端想断开连接，不再向服务端发送数据了。但服务器可能还有没处理完的，需要向客户端发送的数据，所以只能先回一个 ACK 报文段，表示 “你的请求我知道了，但我还不能断开连接，我还有数据没发送完。” 等服务器处理完应用数据后，才会向客户端发送 FIN 报文段，表明服务器可以断开连接了。</p>
+<blockquote>
+<p>四次挥手的设计是由于 TCP 连接全双工、半关闭的性质。<br>全双工：通信的双方能够同时进行双向的数据传输，即可以同时发送和接收数据。这种通信方式允许通信的两端在同一时间内既可以发送信息又可以接收信息，就像是一条双向的道路，数据可以在两个方向上同时传递。所以断开连接需要保证通信的两端都断开。<br>半关闭：半关闭指的是在一个全双工的连接中，当其中一方结束了它的数据发送时，会发送一个 FIN 来终止这一方向的连接，发送 FIN 只意味着这一方结束了它的数据发送，但仍然可以接收来自对方的数据。所以需要两方都发送了 FIN 并被确认，连接才会断开。</p>
+</blockquote>
+<h4 id="为什么-FIN-和-ACK-报文要分两次发送"><a href="#为什么-FIN-和-ACK-报文要分两次发送" class="headerlink" title="为什么 FIN 和 ACK 报文要分两次发送"></a>为什么 FIN 和 ACK 报文要分两次发送</h4><p>如果将服务端向客户端发送的报文的第二次挥手和第三次挥手合并为一次挥手，可能会导致服务端在发送回执后立即发送断开请求，进而造成服务端有数据没有全部发送至客户端。分两次发送的原因包括：</p>
+<ul>
+<li><p>数据传输的完整性：在关闭连接时，服务端可能仍有未发送完的数据需要传输。如果将第二次挥手和第三次挥手合并，服务端就可能在发送完 ACK 后立即发送 FIN，导致数据没有完全传输完毕。</p>
+</li>
+<li><p>等待应用层处理：在服务端发送 FIN 之前，需要等待应用层的数据处理完成，以避免数据的丢失或截断。如果合并为一次挥手，就无法区分这两个阶段。</p>
+</li>
+<li><p>确保正确的关闭流程：通过分为两次挥手，能够确保服务端在关闭连接时能够逐步通知客户端，先通知客户端它不再发送数据（第二次挥手），然后再通知客户端它已经准备关闭连接，但可能还有未发送完的数据需要传输（第三次挥手）。</p>
+</li>
+</ul>
+<p>将第二次挥手和第三次挥手分开，使得连接关闭过程更为细致，确保了数据的完整性，同时也考虑了网络和应用层处理的一些延迟和异步性。</p>
+<h4 id="CLOSE-WAIT-状态存在的意义是什么"><a href="#CLOSE-WAIT-状态存在的意义是什么" class="headerlink" title="CLOSE_WAIT 状态存在的意义是什么"></a>CLOSE_WAIT 状态存在的意义是什么</h4><p>在 CLOSE_WAIT 状态下，服务器已经收到了来自客户端的连接关闭请求（FIN），并发送了确认（ACK）。服务器在等待应用层处理完数据之后才会继续关闭连接，这个状态的存在有以下主要目的和意义：</p>
+<ul>
+<li>等待应用层处理：在服务器端，CLOSE_WAIT 状态表示服务器应用层正在处理连接上接收到的数据。这个状态允许服务器应用层有足够的时间来处理连接上的数据，确保数据的完整性和正确性。</li>
+<li>保证数据完整性：在关闭连接之前，服务器需要等待应用层完成对接收到的数据的处理。这样可以确保服务器不会在数据处理尚未完成时就立即关闭连接，从而保证了数据的完整性。</li>
+<li>避免数据丢失：如果服务器在 CLOSE_WAIT 状态时立即关闭连接，可能会导致尚未处理完的数据丢失。等待应用层处理完成后再关闭连接可以避免这种情况。</li>
+<li>防止连接池资源浪费：在高并发环境下，服务器可能同时处理多个连接。等待 CLOSE_WAIT 状态的连接完成后再关闭连接，可以避免连接池中的资源被浪费，确保资源得到有效释放。</li>
+</ul>
+<p>总体来说，CLOSE_WAIT 状态的存在是为了保证在关闭连接之前，服务器能够合理地等待应用层对数据的处理，以确保数据的完整性和正确性。这是TCP协议设计中考虑到的一种机制，用于处理连接的优雅关闭。</p>
+<h4 id="TIME-WAIT状态存在的意义是什么"><a href="#TIME-WAIT状态存在的意义是什么" class="headerlink" title="TIME_WAIT状态存在的意义是什么"></a>TIME_WAIT状态存在的意义是什么</h4><p>TIME_WAIT 状态存在的主要目的是确保在关闭连接后的一段时间内，本连接持续时间内产生的所有报文都从网络中消失，以避免新的连接受到旧连接请求报文的影响。这个状态的重要性包括以下几点：</p>
+<ul>
+<li>确保可靠的连接关闭：在正常情况下，TIME_WAIT 状态的等待时间（2倍的 MSL，即两倍的最大报文生存时间）能够确保在这段时间内，网络中的所有可能延迟到达的报文都能够被丢弃，从而避免对新的连接产生不良影响。</li>
+<li>防止混淆：在 TIME_WAIT 状态等待期间，确保旧的连接请求报文已经从网络中消失，避免了新的连接因为端口重用而受到旧连接请求的混淆。</li>
+<li>处理可能的重传：如果客户端的关闭确认（ACK）在传输途中丢失，服务端会重传关闭请求（FIN）。如果客户端没有等待 2*MSL 时间而直接进入了 CLOSED 状态，客户端就会收不到服务端再次发送的断开连接的请求报文，导致服务端无法进入 CLOSED 状态。所以设置 TIME_WAIT 状态，服务器重传时，客户端正好在该状态等待。这样，客户端能够正确地接收到服务端的重传，并响应关闭。</li>
+<li>避免端口冲突：在 TIME_WAIT 状态结束之前，确保旧连接释放的端口不被新的连接使用，防止端口重用引起的混淆。</li>
+</ul>
+<p>总的来说，TIME_WAIT 状态的存在是为了确保连接关闭的可靠性，并处理在关闭过程中可能发生的各种情况，以提高整个系统的健壮性。</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
       </tags>
   </entry>
   <entry>
@@ -1849,6 +1706,306 @@
       </categories>
       <tags>
         <tag>Unity</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo + github 博客搭建</title>
+    <url>/2023/10/18/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/Hexo+Github%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<p>记录使用Hexo+Github搭建博客的详细步骤，包含了环境安装、博客搭建、远程部署、主题更换四个部分的内容。</p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li><p><strong>git：</strong> git是一个开源的<strong>分布式版本控制系统</strong>，用以有效、高速地处理从非常小到非常大的项目版本管理。</p>
+</li>
+<li><p><strong>github：</strong> 一个基于 Git 的代码托管平台，它提供了一种集中式和协作式的方式，让开发者能够存储、管理、追踪和协作开发软件项目。。</p>
+</li>
+<li><p><strong>Github Pages：</strong> GitHub 提供的一个免费静态网站托管服务，允许用户创建和托管个人、团队或项目的静态网站，支持HTML和MarkDown类型的静态文件。Github Pages三个特点：免费托管、自带主题、支持自制页面和Jekyll。</p>
+<p>GitHub Pages 的设计理念之一是提供一个用户友好的方式来展示项目或个人信息，以减轻新手在 GitHub 上阅读源码时的困难。通过自定义项目首页，用户可以为他们的项目创建简洁、易懂的网页，提供项目的概述、用法说明、示例、文档和其他有关信息。这有助于提高项目的可访问性，使其他开发者更容易理解和使用项目。</p>
+<p>GitHub Pages 还非常适合博客、个人网站和在线履历。许多开发者和创作者使用 GitHub Pages 来分享技术文章、个人作品和项目文档。由于它的简单性和集成性，GitHub Pages 成为了一个非常受欢迎的方式来托管静态内容，并将其与 GitHub 存储库集成在一起。</p>
+</li>
+<li><p><strong>为什么使用Github Pages：</strong><br>①搭建简单且免费；<br>②可以绑定自己的域名；<br>③支持静态脚本；<br>④DIY自由发挥，支持使用模板，git、markdown、bootstrap、jekyll等；<br>⑤方便使用git做版本管理。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>两种Pages类型</strong>  </p>
+<p><strong>1.User&#x2F;Organization Pages个人或公司站点</strong></p>
+<ul>
+<li>特点：这种模式通过创建一个与用户或组织名称相对应的仓库，然后在该仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。你的网站将可以通过 <a href="https://username.github.io/">https://username.github.io</a> 或 <a href="https://organizationname.github.io/">https://organizationname.github.io</a> 的方式访问，其中 username 是你的 GitHub 用户名，organizationname 是组织的名称。  </li>
+<li>用途：主要用于创建个人或组织的官方网站，或者用于展示与用户&#x2F;组织相关的项目和信息、博客、作品集等。</li>
+</ul>
+<p><strong>2.Project Pages项目站点</strong></p>
+<ul>
+<li>特点：这种模式通过在特定项目的仓库中创建一个名为 gh-pages 或 docs 的分支来托管网站内容。项目页面将通过 <a href="https://username.github.io/repositoryname">https://username.github.io/repositoryname</a> 访问，其中 username 是你的 GitHub 用户名，repositoryname 是项目的名称。</li>
+<li>用途：主要用于创建与项目相关的二级应用页面，用于项目文档、演示、展示和其他相关信息。每个 GitHub 仓库都可以启用此功能，使项目的文档和演示更容易分享和访问。</li>
+</ul>
+<p>这种组织方式允许将主站和项目页面进行有效分离，使用者可以专注于在主站上展示个人或组织信息，同时在项目页面上为不同的项目提供特定的文档或演示。这样的架构有助于保持项目之间的独立性和整洁性。</p>
+</blockquote>
+<h2 id="环境安装"><a href="#环境安装" class="headerlink" title="环境安装"></a>环境安装</h2><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><h4 id="下载git"><a href="#下载git" class="headerlink" title="下载git"></a>下载git</h4><p>官方地址：<a href="https://">https://git-scm.com/</a><br>访问官方地址，下载对应的安装包，进行安装即可（一直点击下一步）。</p>
+<h4 id="验证git"><a href="#验证git" class="headerlink" title="验证git"></a>验证git</h4><p>安装好之后，鼠标右键可以看到：Git Bash Here，点击后打开。输入 <code>git –-version</code>或<code>git -v</code>，出现版本号说明安装成功。</p>
+<p><img src="/../images/pic1/20221204_195202_pic1.png" alt="查看Git版本"></p>
+<h3 id="安装Node"><a href="#安装Node" class="headerlink" title="安装Node"></a>安装Node</h3><h4 id="下载Node"><a href="#下载Node" class="headerlink" title="下载Node"></a>下载Node</h4><p>官方地址：<a href="https://">https://nodejs.org/en/</a></p>
+<p>访问Node官网，下载适合自己windows的版本，安装过程中一直点下一步。在Custom Setup这一步的时候，选择Add to Path（有的时候这个选项是默认的）。</p>
+<h4 id="验证Node"><a href="#验证Node" class="headerlink" title="验证Node"></a>验证Node</h4><p>安装好以后，打开cmd命令窗口，输入 <code>npm –v</code>，出现版本号则说明安装成功且环境变量已经配置好了。</p>
+<p><img src="/../images/pic1/20221204_195900_pic2.png" alt="查看Node版本"></p>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><h4 id="下载Hexo"><a href="#下载Hexo" class="headerlink" title="下载Hexo"></a>下载Hexo</h4><p>这一步可以使用git bash来安装，也可以直接使用cmd窗口，命令是一样的。官方地址：<a href="https://">https://nodejs.org/en</a></p>
+<p><code>npm install -g hexo-cli</code></p>
+<h4 id="验证Hexo"><a href="#验证Hexo" class="headerlink" title="验证Hexo"></a>验证Hexo</h4><p>安装完成后输入 <code>hexo –v</code>，出现一系列版本号就说明安装成功了。</p>
+<p><img src="/../images/pic1/20221204_200230_pic3.png" alt="查看Hexo版本"></p>
+<h2 id="创建个人站点"><a href="#创建个人站点" class="headerlink" title="创建个人站点"></a>创建个人站点</h2><h3 id="新建一个仓库"><a href="#新建一个仓库" class="headerlink" title="新建一个仓库"></a>新建一个仓库</h3><p><img src="/../images/pic1/20221204_202240_pic4.png" alt="新建仓库"></p>
+<p>仓库的名字填写username&lt;用户名&gt;.github.io，权限默认是public，所有人都可以访问我们的仓库；如果想要创建私人权限的仓库，选择“private”。</p>
+<p><img src="/../images/pic1/20221204_230931_pic19.png" alt="填写仓库名字"></p>
+<h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><p>进入仓库，点击创建文件。</p>
+<p><img src="/../images/pic1/20221204_231416_pic6.png" alt="创建文件"></p>
+<p>创建一个新的文件，名字叫做index.html（必须叫这个，静态http文件托管服务的默认访问文件就是index.html）。<br>查看网址，选择“Settings”，找到“Pages”。</p>
+<p><img src="/../images/pic1/20221204_231854_pic18.png" alt="查看网址"></p>
+<h2 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h2><p>现在开始可以使用hexo来生成一个博客了。<br>在本地创建一个文件夹，用于存储博客的本地数据。<br>cd到这个文件夹下，运行命令 <code>hexo init</code>，hexo会将这个文件夹初始化成一个博客专用文件夹，这个过程会花费一些时间。</p>
+<p><img src="/../images/pic1/20221204_212425_pic10.png" alt="初始化博客文件夹"></p>
+<p>初始化完成后，可以在source文件夹中看到一个叫hello-world的默认文章，还会有一个默认主题。先生成博客看一下效果，运行命令：<br><code>hexo generate</code>或是简写成 <code>hexo g</code>。</p>
+<p><img src="/../images/pic1/20221204_212531_pic11.png" alt="查看效果"></p>
+<p>然后hexo会开始生成博客，生成结束后，原文件下多了一个public文件夹，这个文件夹是hexo生成的一个完整的静态网站，也就是我们的博客。网站生成好后，我们可以启动服务器来浏览博客，运行命令：<code>hexo server</code>。</p>
+<p><img src="/../images/pic1/20221204_213120_pic12.png" alt="浏览博客"></p>
+<p>打开浏览器，输入localhost:4000就可以浏览博客了。</p>
+<p><img src="/../images/pic1/20221204_213408_pic13.png" alt="本地浏览博客"></p>
+<blockquote>
+<p>Tips：如果出现页面加载不出来，可能是端口被占用了。Ctrl+C 关闭服务器，运行 <code>hexo server -p 5000</code> 更改端口号后重试。</p>
+<p>Hexo 博客文件夹目录结构如下：</p>
+<p><img src="/../images/pic1/20221204_213953_pic14.png" alt="Hexo博客文件夹目录"></p>
+</blockquote>
+<h2 id="远程部署"><a href="#远程部署" class="headerlink" title="远程部署"></a>远程部署</h2><p>此时运行的服务器，是我们的本地服务器，只有在本机上才可以访问。为了让别人能访问我们的博客，需要进行远程部署，将我们生成好的博客部署到远程仓库去。如果远程仓库支持pages服务，就可以通过这样的方法发布和更新博客。</p>
+<p>在博客文件夹内右键，点击Git Bash here。</p>
+<p>初始化git仓库。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>配置github账户信息。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Github用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>继续输入以下命令来生成关联邮箱的密钥：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –t rsa –C <span class="string">&quot;Github邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>按git给出的路径，找到id_rsa.pub文件，并复制其中的内容（用记事本就可以打开）。<br>如果电脑上找不到.ssh文件，使用下边的命令来生成(<strong>记得再执行一次前一条命令</strong>)：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen –o</span><br></pre></td></tr></table></figure>
+
+<p>进到仓库，点击右上角setting进入设置。Title随便写，Key的内容填刚才id_rsa.pub文件中复制的内容。</p>
+<p><img src="/../images/pic1/20221204_220509_pic15.png" alt="设置key"></p>
+<p>校验ssh key是否成功：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/pic1/20221205_000741_pic20.png" alt="校验key是否成功"></p>
+<p>修改博客目录配置文件（_congif.yml）中的deploy字段，如下：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git仓库地址</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Git仓库地址</p>
+<p><img src="/../images/pic1/20221204_221355_pic16.png" alt="修改deploy字段"></p>
+</blockquote>
+<p>要使用远程部署，需要先安装 <code>hexo-deployer-git</code>，这是适用于git类型仓库的方法。cd到博客文件夹后运行命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save  <span class="comment">#安装部署工具</span></span><br></pre></td></tr></table></figure>
+
+<p>验证：在你的 Hexo 项目目录中，打开 package.json 文件。在这个文件中，你可以找到项目的依赖项列表，查看是否包含了 hexo-deployer-git。</p>
+<p>把本地仓库部署到云端：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果成功部署到github，却访问不了网站，重启路由器。</strong></p>
+<h2 id="更换博客主题"><a href="#更换博客主题" class="headerlink" title="更换博客主题"></a>更换博客主题</h2><p>hexo主题网站：<a href="https://hexo.io/themes/index.html">https://hexo.io/themes/index.html</a><br>找到博客文件夹的themes文件夹，这是存放博客主题的文件夹。<br><img src="/../images/pic1/themes.png" alt="themes文件夹"><br>挑选一个喜欢的博客主题，进入到对应的git仓库，并下载到本地来（具体可以参考每个主题的README文档），也可以直接下载压缩包，解压到themes文件夹。<br><img src="/../images/pic1/zip.png" alt="zip下载">  </p>
+<blockquote>
+<p>Tips:</p>
+<ul>
+<li>在博客文件夹下打开git命令窗口，执行相关指令；</li>
+<li>按照README执行指令时，如果使用git clone命令时出现了<code> OpenSSL SSL_read: Connection was reset, errno 10054</code>报错，看下是否是README是否没更新https。</li>
+</ul>
+</blockquote>
+<p>确认已经下载好主题到themes文件夹后，打开博客文件夹下的_config.yml文件，修改theme为你所选主题的对应文件夹名，示例：<code>theme:next</code></p>
+<blockquote>
+<p>Tips:每个主题文件夹下也有一个_config.yml文件，这是该主题的配置文件，按照主题文档修改即可，不要和博客的_config.yml搞混了。</p>
+</blockquote>
+<p>然后执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean  <span class="comment">#清除缓存</span></span><br><span class="line">hexo g  <span class="comment">#生成静态界面</span></span><br><span class="line">hexo d  <span class="comment">#部署到github</span></span><br></pre></td></tr></table></figure>
+
+<p>再次打开对应站点应该就可以看到页面被更换为了新主题。也可以启动hexo服务器后访问<code>localhost:4000</code>本地查看后再部署。</p>
+]]></content>
+      <categories>
+        <category>博客搭建</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NexT主题配置和优化</title>
+    <url>/2023/10/19/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[<p>修改NexT主题的配置，并添加一些常见的功能，让博客页面更加美观，功能更加齐全。</p>
+<span id="more"></span>
+
+<h2 id="修改站点配置文件"><a href="#修改站点配置文件" class="headerlink" title="修改站点配置文件"></a>修改站点配置文件</h2><p>在站点配置文件_config.yml中修改博客的基本信息，如标题，副标题，描述，作者等。此时要执行<code>hexo g</code>和<code>hexo s</code>之后才能刷新在本地看到效果。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">title: tsq的博客</span><br><span class="line">subtitle: <span class="string">&#x27;&#x27;</span></span><br><span class="line">description: <span class="string">&#x27;&#x27;</span></span><br><span class="line">keywords: <span class="string">&quot;C#, C++, Lua, Unity, 数据结构, 算法&quot;</span></span><br><span class="line">author: TongShuqi</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: <span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="修改主题配置文件"><a href="#修改主题配置文件" class="headerlink" title="修改主题配置文件"></a>修改主题配置文件</h2><p>Next是常用的hexo主题，之前已经讲过如何使用新主题，今天说一下如何配置和优化NexT主题，修改配置需要修改NexT主题的_config.yml文件（区分于博客站点的配置文件，以下称为<strong>主题配置文件</strong>）。<br>查看配置修改效果只需要启动hexo服务器（在博客文件夹下打开git命令行，执行<code>hexo s</code>）,修改配置保存后通过<code>localhost:4000</code>刷新查看即可（部分内容需要重新hexo g生成静态文件才能看到效果）。  </p>
+<h3 id="修改Schemes"><a href="#修改Schemes" class="headerlink" title="修改Schemes"></a>修改Schemes</h3><p>Next有四种主题，通过修改<code>scheme</code>来进行修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scheme: Muse</span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line"><span class="comment">#scheme: Pisces</span></span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="设置站点icon"><a href="#设置站点icon" class="headerlink" title="设置站点icon"></a>设置站点icon</h3><p>一个常用的icon下载地址：<a href="https://www.iconfont.cn/">iconfont</a>。</p>
+<ul>
+<li>把下载好的icon图片放在 &#x2F;themes&#x2F;next&#x2F;source&#x2F;img&#x2F; 文件夹下。</li>
+<li>修改主题配置文件中<code>favicon</code>的内容，也可以直接替换图片。</li>
+</ul>
+<h3 id="设置菜单栏选项"><a href="#设置菜单栏选项" class="headerlink" title="设置菜单栏选项"></a>设置菜单栏选项</h3><p>修改<code>menu</code>中的内容，把需要的菜单栏取消注释即可。</p>
+<h3 id="创建页面"><a href="#创建页面" class="headerlink" title="创建页面"></a>创建页面</h3><p>菜单栏配置修改完后，需要分别创建菜单栏页面。</p>
+<ul>
+<li><p>在博客文件夹下打开git命令窗口，执行以下命令。</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo new page about</span><br><span class="line">hexo new page categories</span><br><span class="line">hexo new page tags</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以目录为例，执行命令后，成功会显示<code>INFO  Created: ~/Documents/blog/source/categories/index.md</code>，可以在source文件夹下看见这几个新生成的目录。</p>
+</li>
+<li><p>根据上面的路径，找到index.md这个文件，打开后默认内容是这样的：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: categories</span><br><span class="line"><span class="built_in">date</span>: 2023-10-20 22:55:09</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>添加<code>type</code>：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章分类</span><br><span class="line"><span class="built_in">date</span>: 2023-10-20 22:55:09</span><br><span class="line"><span class="built_in">type</span>: <span class="string">&quot;categories&quot;</span></span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>按这种方式为tags添加type。</p>
+</li>
+<li><p>同理，我们也可以自己创建菜单，使用以上命令，并在配置文件的<code>menu</code>中添加即可。</p>
+</li>
+</ul>
+<h3 id="修改博客头像"><a href="#修改博客头像" class="headerlink" title="修改博客头像"></a>修改博客头像</h3><p>保存图片到 &#x2F;themes&#x2F;next&#x2F;source&#x2F;img&#x2F; 文件夹下，在主题配置文件中修改<code>avatar</code>的内容，填写url路径即可。</p>
+<h3 id="添加搜索功能"><a href="#添加搜索功能" class="headerlink" title="添加搜索功能"></a>添加搜索功能</h3><p>当博客文章变多后，找到一篇文章就很困难。NexT支持为博客添加搜索功能，可以通过文章内容词汇快速搜索。</p>
+<ul>
+<li>在博客根目录打开黑窗口输入命令：</li>
+</ul>
+<p><code>npm install hexo-generator-search --save</code></p>
+<ul>
+<li><p>修改<strong>站点配置文件</strong>,加入以下内容（选项内容可适当修改）：</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  <span class="built_in">limit</span>: 1000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改<strong>主题配置文件</strong>：</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">local_search:</span><br><span class="line"><span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="设置社交界面"><a href="#设置社交界面" class="headerlink" title="设置社交界面"></a>设置社交界面</h3><p>可以添加一些常用的社交链接，例如Github、Twitter、CSDN等，也可以自定义链接。</p>
+<ul>
+<li>在主题配置文件中修改<code>social</code>字段，把想要展示的内容取消注释。</li>
+<li>也可以自己添加，格式为:显示文本: 链接地址 || Front Awesome图标名称</li>
+</ul>
+<h3 id="添加阅读时间和字数提示"><a href="#添加阅读时间和字数提示" class="headerlink" title="添加阅读时间和字数提示"></a>添加阅读时间和字数提示</h3><p>Hexo支持添加单篇文章和全站点的阅读时间及字数提示。步骤如下：</p>
+<ul>
+<li><p>博客根目录黑窗口下载插件：<br><code>npm install hexo-symbols-count-time</code></p>
+</li>
+<li><p>在站点配置文件末尾加入如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">  symbols: <span class="literal">true</span></span><br><span class="line">  time: <span class="literal">true</span></span><br><span class="line">  total_symbols: <span class="literal">true</span></span><br><span class="line">  total_time: <span class="literal">true</span></span><br><span class="line">  exclude_codeblock: <span class="literal">false</span></span><br><span class="line">  awl: 2    </span><br><span class="line">  wpm: 275</span><br><span class="line">  suffix: <span class="string">&quot;mins.&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">symbols_count_time:</span><br><span class="line">  separated_meta: <span class="literal">true</span></span><br><span class="line">  item_text_post: <span class="literal">true</span></span><br><span class="line">  item_text_total: <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="添加阅读人次统计"><a href="#添加阅读人次统计" class="headerlink" title="添加阅读人次统计"></a>添加阅读人次统计</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">busuanzi_count:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="去掉网页Hexo自带底部信息"><a href="#去掉网页Hexo自带底部信息" class="headerlink" title="去掉网页Hexo自带底部信息"></a>去掉网页Hexo自带底部信息</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">powered: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="右上角实现github按钮"><a href="#右上角实现github按钮" class="headerlink" title="右上角实现github按钮"></a>右上角实现github按钮</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">github_banner:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  permalink: https://github.com/yourname</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置回到顶部按钮"><a href="#配置回到顶部按钮" class="headerlink" title="配置回到顶部按钮"></a>配置回到顶部按钮</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">back2top:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>边栏和滚动百分比可以按照需求自行添加。</p>
+<h3 id="添加已读进度条"><a href="#添加已读进度条" class="headerlink" title="添加已读进度条"></a>添加已读进度条</h3><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">reading_progress:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>进度条的位置，颜色，高度等属性可以自行设置。</p>
+<h3 id="配置代码样式"><a href="#配置代码样式" class="headerlink" title="配置代码样式"></a>配置代码样式</h3><p>在主题配置文件中搜索<code>codeblock</code>，按需求进行样式修改即可。</p>
+<h3 id="更改背景图片"><a href="#更改背景图片" class="headerlink" title="更改背景图片"></a>更改背景图片</h3><ul>
+<li><p>在主题配置文件中找到<code>custom_file_path</code>，把<code>style</code>取消注释。</p>
+</li>
+<li><p>在博客根目录的 source 文件夹下新建 _data 文件夹（不是主题目文件夹的 source）。</p>
+</li>
+<li><p>文件夹里新建 styles.styl 文件。</p>
+</li>
+<li><p>styles 文件里加入如下内容，注意图片要放在next文件夹的next&#x2F;source&#x2F;images下:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">//背景图片设置</span><br><span class="line">body &#123;</span><br><span class="line">    background-image: url(/images/background.jpg); </span><br><span class="line">    background-repeat: no-repeat;</span><br><span class="line">    background-attachment: fixed;</span><br><span class="line">    background-size: 100% 100%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="设置边框圆角矩形"><a href="#设置边框圆角矩形" class="headerlink" title="设置边框圆角矩形"></a>设置边框圆角矩形</h3><ul>
+<li><p>在主题配置文件中找到<code>custom_file_path</code>，把<code>variable</code>取消注释。</p>
+</li>
+<li><p>主题文件夹的 source 文件夹里新建 variables.styl 文件。</p>
+</li>
+<li><p>variables 文件里加入如下内容:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">// 圆角设置</span><br><span class="line"><span class="variable">$border</span>-radius-inner     = 30px 30px 30px 30px;</span><br><span class="line"><span class="variable">$border</span>-radius           = 30px;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="打赏功能添加"><a href="#打赏功能添加" class="headerlink" title="打赏功能添加"></a>打赏功能添加</h3><ul>
+<li><p>首先需要有一个微信或支付宝的二维码图片，放在 &#x2F;next&#x2F;source&#x2F;images 下。</p>
+</li>
+<li><p>修改主题配置文件，会在每篇文章末尾生成一个打赏按钮，可以根据情况选择打赏方式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">reward_settings:</span><br><span class="line"><span class="comment"># If true, a donate button will be displayed in every article by default.</span></span><br><span class="line"><span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">animation: <span class="literal">false</span></span><br><span class="line">comment: づ♡ど</span><br><span class="line"></span><br><span class="line">reward:</span><br><span class="line">  wechatpay: /images/wechatpay.png</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="评论功能添加"><a href="#评论功能添加" class="headerlink" title="评论功能添加"></a>评论功能添加</h3><p>NexT 主题支持多种评论系统，如Disqus、GitTalk等。<br>这里介绍使用 gitalk 和 utterances 来实现评论功能。</p>
+<h4 id="gitalk"><a href="#gitalk" class="headerlink" title="gitalk"></a>gitalk</h4><p>PS：官方服务器已炸，现在不能直接用了，建议使用别的评论系统，此时仅作记录，之后有时间再研究解决方案。</p>
+<ul>
+<li><p>在开始之前，你需要创建一个 GitHub OAuth App。这将用于 Gittalk 连接到你的 GitHub 仓库。<br>登陆到自己的GitHub账户，点击头像-Settings-Developer settings。</p>
+</li>
+<li><p>在 “Developer settings” 页面上，点击 “OAuth Apps” 选项卡，然后点击注册按钮。</p>
+</li>
+<li><p>在 “Register a new OAuth application” 页面上，填写 OAuth App 的详细信息:<br>Application name：应用名称，随便写。<br>Homepage URL：博客主页。<br>Application description：应用的简短描述。<br>Authorization callback URL：回调 URL，可以是博客主页。</p>
+</li>
+<li><p>获取 Client ID 和 Client Secret：<br>在成功创建 OAuth App 后，你会看到一个页面，其中包含你的 OAuth App 的详细信息，包括 “Client ID” 和 “Client Secret”。这些是你的 OAuth App 的凭证，将用于与 GitHub 进行授权。<br><img src="/../images/pic2/pic1.png" alt="OAuth"></p>
+</li>
+<li><p>在主题配置文件中，修改如下配置（NexT8内置了gittalk，无需安装）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  github_id: <span class="comment"># GitHub 仓库的所有者（repo owner）的用户名</span></span><br><span class="line">  repo: <span class="comment"># 存储评论的 GitHub 仓库的名称</span></span><br><span class="line">  client_id: <span class="comment"># OAuth App 的 Client ID </span></span><br><span class="line">  client_secret: <span class="comment"># OAuth App 的 Client Secret</span></span><br><span class="line">  admin_user: <span class="comment"># 评论管理者的 GitHub 用户名，通常是你自己，以便你可以管理评论</span></span><br><span class="line">  distraction_free_mode: <span class="literal">true</span> <span class="comment"># Facebook-like</span></span><br><span class="line">  language: zh-CN</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">comments:</span><br><span class="line">  style: tabs</span><br><span class="line">  active: gitalk</span><br><span class="line">  storage: <span class="literal">true</span></span><br><span class="line">  lazyload: <span class="literal">false</span></span><br><span class="line">  nav:</span><br><span class="line">    gitalk:</span><br><span class="line">    order: -1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行以下代码：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署完成后，登录博客，任一一篇博文下应该变成了<br><img src="/../images/pic2/pic2.png" alt="issue"></p>
+</li>
+<li><p>登录，验证。应该能看到评论了。假如出现：<br><img src="/../images/pic2/pic3.png" alt="issue"><br>查一下主题配置文件中gitalk的proxy是不是 <code>https://github.com/login/oauth/access_token</code> 。<br>如果是，改为 <code>https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token</code> 。</p>
+</li>
+</ul>
+<h4 id="utterances"><a href="#utterances" class="headerlink" title="utterances"></a>utterances</h4><p>同样是依托于 github 的 issue 做评论区，但是索取的权限更少，也不需要指定某个人来初始化，因此好用得多。较新版本的NexT已经集成了utterances，使用非常简单。</p>
+<ul>
+<li><p>新建一个仓库用于存储博客评论。</p>
+</li>
+<li><p>授权<a href="https://github.com/apps/utterances">utterances</a>，选择建立的仓库。</p>
+</li>
+<li><p>在主题配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">comments:</span><br><span class="line">  style: tabs</span><br><span class="line">  active: utterances <span class="comment">#激活utterances</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">utterances:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  repo: tsq0316/blog-comments <span class="comment"># Your Github repository owner and name</span></span><br><span class="line">  issue_term: title</span><br><span class="line">  label: utteranc</span><br><span class="line">  theme: github-light</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在站点配置文件中进行如下修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">url: http://tsq0316.github.io/ <span class="comment"># Your Github site</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>博客搭建</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>NexT</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客文章发布流程</title>
+    <url>/2023/10/20/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0%E5%8F%91%E5%B8%83/</url>
+    <content><![CDATA[<p>简单介绍下将文章发布到博客，并且放到对应的目录下，同时添加相应标签的流程。</p>
+<span id="more"></span>
+<h2 id="创建一篇新文章"><a href="#创建一篇新文章" class="headerlink" title="创建一篇新文章"></a>创建一篇新文章</h2><p>在hexo博客根目录，使用git bash创建一篇新文章<code>hexo new post &quot;your-article-title&quot;</code>，替换”your-article-title”为文章的标题。打开刚创建的 Markdown 文件，使用 Markdown 语法编写文章内容。<br>如果有已经写好的markdown文件，直接复制到 &#x2F;source&#x2F;_posts 文件夹下。</p>
+<blockquote>
+<p>注意：<br>如果直接复制的md文件引用了图片，记得把图片一并放到博客文件夹下，可以自己整理目录结构，例如在 source 文件夹下建立 images 文件夹，images 文件夹里又可以创建子文件夹，分别存储每篇博文的引用图片。<br>markdown文件里的图片引用地址也要替换为图片和博文的相对地址,例如..&#x2F;images&#x2F;blog1&#x2F;pic1.png。</p>
+</blockquote>
+<h2 id="为文章添加标签和分类"><a href="#为文章添加标签和分类" class="headerlink" title="为文章添加标签和分类"></a>为文章添加标签和分类</h2><p>在博文最开头添加以下内容：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 文章标题</span><br><span class="line"><span class="built_in">date</span>: 发布时间</span><br><span class="line">description: 摘要。也可以不写，而是在文章中想要截断的地方加入 &lt;!-- more --&gt; ，这样首页就只会显示截断之前的内容，而不显示全文</span><br><span class="line">categories:</span><br><span class="line">  - 分类</span><br><span class="line">  - 子分类</span><br><span class="line">tags:</span><br><span class="line">  - 标签1</span><br><span class="line">  - 标签2</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>在博客根目录执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p>博文就被推到博客相关的目录下了，并且已经加上了对应的标签。</p>
+]]></content>
+      <categories>
+        <category>博客搭建</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
       </tags>
   </entry>
 </search>
